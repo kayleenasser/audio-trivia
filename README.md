@@ -1,5 +1,4 @@
-# Audio Trivia
-## Magnet Forensics Hackathon
+# Audio Trivia - Magnet Forensics Hackathon
 ### By Ari Rubin, Emily Tang, Kaylee Nasser, and Raven Sim
 
 Build an application that takes a folder of audio files (or other source) and plays a random file at a random timestamp for a specified interval and allows you to guess the name of the file (or other success criteria).
@@ -8,7 +7,7 @@ Could be used for guessing music, my encyclopedic knowledge of Avatar the Last A
 
 Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.
 
-# Description
+## Description
 *Build an application that takes a folder of audio files (or other source) and plays a random file at a random timestamp for a specified interval and allows you to guess the name of the file (or other success criteria).  
 Could be used for guessing music, my encyclopedic knowledge of Avatar the Last Airbender episodes, or even language learning: import foreign media files and use it for listening practice!  
 Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.*
@@ -33,7 +32,7 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 	- 
 ​
 ​
-# ❓ Questions ❓
+## ❓ Questions ❓
 - What is the scope of the project? What would we like to have completed by the demo?
 	- upload 2+ audio files (mp3 to start, mp4 also would be cool)
 		- youtube links as input as well
@@ -69,11 +68,11 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 				- could run into some barriers with getting the audio + user management
 - Research/rabbit hole: how the heck to subtitle tracks work? if they're embedded into certain filetypes, 
 ​
-# Pages
-## Main
+## Pages
+### Main
 - **button**: upload files
 - **button**: open an existing "session"
-## Session
+### Session
 - **button**: play
 	- plays a random audio at a random timestamp following the settings
 - **slider**/settings: interval
@@ -88,7 +87,7 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 			- whisper.ai?
 - **button**: check/x for success/fail
 	- extra: or multiple choice option?
-## Settings
+### Settings
 - slider/settings: default interval
 	- how long each audio initially plays for
 - slider/settings: start/end buffer
@@ -98,7 +97,7 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 	- interface for adding/removing audio from a specific session?
 - setting: change path to downloads
 ​
-# Other Thoughts
+## Other Thoughts
 - probably just store a `settings.json` for main settings, and have different `session_name.json` for settings of individual sessions + references to the files/folders
 - should set up a git at some point (can someone else do this i dont wanna :sob:)
 
