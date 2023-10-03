@@ -24,12 +24,10 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 ​
 - classes -> audio files (tracks)
 	- props
-		- filename, session, duration, 
-​
+		- filename, session, duration
 ​
 - class -> session
 	- a collection of tracks for a single session
-	- 
 ​
 ​
 ## ❓ Questions ❓
@@ -97,7 +95,7 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 	- interface for adding/removing audio from a specific session?
 - setting: change path to downloads
 ​
-## Other Thoughts
+### Other Thoughts
 - probably just store a `settings.json` for main settings, and have different `session_name.json` for settings of individual sessions + references to the files/folders
 - should set up a git at some point (can someone else do this i dont wanna :sob:)
 
