@@ -6,6 +6,7 @@ SETTINGS = "Settings"
 SESSION = "Session"
 HOME = "Home"
 OPEN_SESSION = "Open Session"
+NEW_SESSION = "New Session"
 
 EXAMPLE_SESSIONS = [
     "session1",
