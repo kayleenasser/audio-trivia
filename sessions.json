@@ -1,0 +1,11 @@
+{
+  "default" : {
+    "name" : "default",
+    "data" : [],
+    "settings" : {
+      "intlength" : 10,
+      "StartDelay" : 0,
+      "EndDelay" : 0
+    }
+  }
+}
