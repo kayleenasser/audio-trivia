@@ -1,7 +1,7 @@
 import json
 
 """
-A module to manage sessions.
+A module to perform CRUD operations on sessions.json.
 """
 
 SESSIONS_DB_FILENAME = 'sessions.json'
