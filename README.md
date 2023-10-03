@@ -24,6 +24,11 @@ If you want to start working on a new part of the product, you first need to cre
 
 - First, make sure you pull from `main`, since that is what you'll eventually be merging your code into (and we want the most up-to-date info).
 
+```bash
+git switch main
+git pull
+```
+
 - Then, make a new branch and automatically switch to it with:
 
 ```bash
