@@ -19,6 +19,6 @@ class Audio:
 # Time stamp second - int second 0 - 59 
 # Duration - int seconds 
 
-audio_obj = Audio("AvaterTheme.mp3", "C:\Files\Hackathon\\test-audio", 3, 40, 10)
+audio_obj = Audio("AvaterTheme.mp3", "C:\Files\Hackathon\\res\\test_audio", 3, 40, 10)
 
 audio_obj.Play_Audio()
