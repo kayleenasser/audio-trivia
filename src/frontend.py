@@ -108,6 +108,79 @@ class SettingsPage(tk.Frame):
 		row+=1
 
 
+# consists of:
+# a play/pause button
+# a restart button
+# a +5s button
+# a show answer button
+# an answer text label (hidden until answer button pressed)
+# 2 success/fail buttons
+class SessionPage(tk.Frame):
+
+	def __init__(self, parent, controller, sessionName=constants.SESSION):
+		tk.Frame.__init__(self, parent)
+		row = 0
+		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		label.grid(row = row, column = 4, padx = 10, pady = 10)
+		row+=1
+
+		# switch to HOME
+		btn_home = ttk.Button(self, text =constants.HOME,
+							command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = row, column = 1, padx = 10, pady = 5)
+		row+=1
+
+		# switch to SETTINGS
+		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
+							command = lambda : controller.show_frame(SettingsPage))
+		btn_sessions.grid(row = row, column = 1, padx = 10, pady = 5)
+		row+=1
+
+		# Audio buttons
+		row = 1
+		audio_button_column = 3
+		
+		# play/pause
+		## get a symbol/icon eventually
+		play_button = ttk.Button(self, text ="Play",
+							command = lambda : controller.show_frame(SettingsPage))
+		play_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+		# replay
+		## get a symbol/icon eventually
+		replay_button = ttk.Button(self, text ="Relay",
+							command = lambda : controller.show_frame(SettingsPage))
+		replay_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+
+		# increase interval
+		increase_button = ttk.Button(self, text ="+5s",
+							command = lambda : controller.show_frame(SettingsPage))
+		increase_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+		# show/hide answer
+		# toggle value when pressed and show/hide the answer label (need to make)
+		answer_button = ttk.Button(self, text =constants.SHOW_ANSWER,
+							command = lambda : controller.show_frame(SettingsPage))
+		answer_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+		# success
+		success_button = ttk.Button(self, text ="Check",
+							command = lambda : controller.show_frame(SettingsPage))
+		success_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+		# failure
+		failure_button = ttk.Button(self, text ="X",
+							command = lambda : controller.show_frame(SettingsPage))
+		failure_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+
 class tkinterApp(tk.Tk):
 	
 	# __init__ function for class tkinterApp
@@ -117,7 +190,7 @@ class tkinterApp(tk.Tk):
 		
 		# Setup
 		self.title(constants.APP_TITLE)
-		self.geometry('400x250') #widthxheight
+		self.geometry('350x500') #widthxheight
 		
 		# creating a container
 		container = tk.Frame(self)
