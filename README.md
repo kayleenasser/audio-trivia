@@ -8,6 +8,100 @@ Could be used for guessing music, my encyclopedic knowledge of Avatar the Last A
 
 Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.
 
+# Description
+*Build an application that takes a folder of audio files (or other source) and plays a random file at a random timestamp for a specified interval and allows you to guess the name of the file (or other success criteria).  
+Could be used for guessing music, my encyclopedic knowledge of Avatar the Last Airbender episodes, or even language learning: import foreign media files and use it for listening practice!  
+Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.*
+​
+​
+- Want to work directly with files
+	- probably easier/better to work with references to files stored locally rather than doing any copying
+- we need user settings to be stored, if we do Slackbot, does that require some db work? because we'd be keeping users separate on the backend 
+​
+- importing
+- playing files from a certain spot
+- user settings stored locally -> importing/saving
+- frontend
+​
+- classes -> audio files (tracks)
+	- props
+		- filename, session, duration, 
+​
+​
+- class -> session
+	- a collection of tracks for a single session
+	- 
+​
+​
+# ❓ Questions ❓
+- What is the scope of the project? What would we like to have completed by the demo?
+	- upload 2+ audio files (mp3 to start, mp4 also would be cool)
+		- youtube links as input as well
+			- download audio/video(?) from youtube and store locally
+				- default to title name, allow option to change
+		- presets? and options to add
+	- upload audio to different groups/sessions
+	- press a button to play a random audio file at a random timestamp for a specified interval
+	- have the ability to change the interval length
+	- have the ability to set start/end bounds to account for things like end credits/theme songs
+	- have the ability to switch between "sessions"/groups of audio files
+	- 
+- Team preferences/experience?
+	- frontend/backend, have you worked with audio, etc
+	- anything you'd hate doing?
+		- Emily -> no frontend lol
+	- anything in particular you want to learn? 
+		- Kaylee -> nice to do some real coding pls
+			- frontend or backend (prefer back)
+			- did yt to audio in python before -> does library still exist?
+		- Ari -> no preference
+	- hours/availability? How often are we checking in?
+		- 9-5
+- Tech stack
+		- what language/libraries are we using?
+			- standalone desktop app
+			**- python? easy, intuitive, I have a bit of Tkinter experience for frontend**
+				- .NET? there's Maui for frontend that looks pretty straightforward
+					- makes it more applicable to magnet, so we could work with audio files in a more interesting way
+					- unity?
+			- Slackbot/js? 
+				- ppl could test it 
+				- could run into some barriers with getting the audio + user management
+- Research/rabbit hole: how the heck to subtitle tracks work? if they're embedded into certain filetypes, 
+​
+# Pages
+## Main
+- **button**: upload files
+- **button**: open an existing "session"
+## Session
+- **button**: play
+	- plays a random audio at a random timestamp following the settings
+- **slider**/settings: interval
+- **button**: +5s 
+	- to be used after the initial audio is played, to allow an additional X seconds to play
+- **button**: replay
+	- replays the entire duration of the audio played so far from the beginning
+		- so if they pressed +5s, and the original interval was 3s, then pressing replay would play the whole 8s over again
+- **button**: show answer
+	- reveals the filename, or the subtitles if available:
+		- auto captions?
+			- whisper.ai?
+- **button**: check/x for success/fail
+	- extra: or multiple choice option?
+## Settings
+- slider/settings: default interval
+	- how long each audio initially plays for
+- slider/settings: start/end buffer
+	- if applicable, tracks will skip the first/last X seconds
+		- if the remaining audio is shorter than a certain threshold, ignore this
+- list/button: manage session audio
+	- interface for adding/removing audio from a specific session?
+- setting: change path to downloads
+​
+# Other Thoughts
+- probably just store a `settings.json` for main settings, and have different `session_name.json` for settings of individual sessions + references to the files/folders
+- should set up a git at some point (can someone else do this i dont wanna :sob:)
+
 ## Getting your development environment set up
 
 The first step is to pull the code from this remote repository onto your computer:
