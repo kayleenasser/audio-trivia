@@ -1,0 +1,13 @@
+{
+    "default": {
+        "audio_file_paths": [
+            "path1.mp3",
+            "path2.mp3"
+        ],
+        "settings": {
+            "interval_length": 10,
+            "start_delay": 0,
+            "end_delay": 0
+        }
+    }
+}

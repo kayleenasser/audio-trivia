@@ -16,14 +16,6 @@ class tkinterApp(tk.Tk):
 		self.title(constants.APP_TITLE)
 		self.geometry('350x200') #widthxheight
 		
-		# MENU BAR
-		menu = tk.Menu(self)
-		item = tk.Menu(menu, tearoff=0)
-		item.add_command(label=constants.SETTINGS)
-		menu.add_cascade(label='File', menu=item)
-		self.config(menu=menu)
-		
-		
 		# creating a container
 		container = tk.Frame(self)
 		container.pack(side = "top", fill = "both", expand = True)
@@ -40,83 +32,185 @@ class tkinterApp(tk.Tk):
 
 			frame = F(container, self)
 
-			# initializing frame of that object from
-			# startpage, page1, page2 respectively with
-			# for loop
+			# initializing frame of that object from startpage, page1, page2 respectively with for loop
 			self.frames[F] = frame
 
 			frame.grid(row = 0, column = 0, sticky ="nsew")
 
 		self.show_frame(HomePage)
 
-	# to display the current frame passed as
-	# parameter
-	def show_frame(self, cont):
+	# change pages
+	def show_frame(self, cont, *args):
 		frame = self.frames[cont]
-		frame.tkraise()
+		frame.tkraise(*args)
 
-# first window frame startpage
+	# generic message popup helper
+	def open_popup(self, message, isBlocking):
+		popup = tk.Toplevel(self)
+		popup.wm_title("Popup")
+		popup.geometry('50x50')
+		# popup.overrideredirect(True) # hide minimize/x button/drag bar
 
+		# Calculate the center coordinates for the popup window
+		app_x = self.winfo_x()
+		app_y = self.winfo_y()
+		app_width = self.winfo_width()
+		app_height = self.winfo_height()
+		popup_width = 200
+		popup_height = 100
+		x = app_x + app_width // 2 - popup_width // 2
+		y = app_y + app_height // 2 - popup_height // 2
+
+		popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")  # Set popup window size and position
+
+
+		label = tk.Label(popup, text=message)
+		label.pack(side="top", fill="x", pady=10)
+		button = ttk.Button(popup, text="Close", command=popup.destroy)
+		button.pack()
+		if isBlocking:
+			popup.grab_set()
+			self.wait_window(popup)
+
+	# popup for selecting a session
+	def open_session_popup(self, items, callback):
+		popup = tk.Toplevel(self)
+		popup.wm_title("Select an Item")
+
+		listbox = tk.Listbox(popup)
+		for item in items:
+			listbox.insert(tk.END, item)
+		listbox.pack()
+
+		# Calculate the center coordinates for the popup window
+		app_x = self.winfo_x()
+		app_y = self.winfo_y()
+		app_width = self.winfo_width()
+		app_height = self.winfo_height()
+		popup_width = 200
+		popup_height = 100
+		x = app_x + app_width // 2 - popup_width // 2
+		y = app_y + app_height // 2 - popup_height // 2
+
+		popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")  # Set popup window size and position
+
+		# Function to handle item selection
+		def on_select():
+			selected_index = listbox.curselection()
+			if selected_index:
+				selected_item = listbox.get(selected_index)
+				callback(selected_item)
+			popup.destroy()
+
+		# Bind double-click event to the listbox
+		listbox.bind("<Double-Button-1>", lambda event: on_select())
+
+		# Okay button to confirm selection
+		okay_button = ttk.Button(popup, text="Okay", command=lambda: on_select())
+		okay_button.pack()
+
+		# Make the popup modal (force user interaction)
+		popup.grab_set()
+
+		# Wait until the popup is closed before continuing
+		self.wait_window(popup)
+
+
+	# example callback for selecting a session
+	def handle_selected_item(self, item):
+		print(f"Selected item: {item}")
+		self.show_frame(SessionPage)
+
+
+# consists of:
+# a button to open a session, 
+# a button to create a session
+# a button to go to settings
 class HomePage(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
+		row = 0
 
 		label = ttk.Label(self, text =constants.HOME, font = LARGEFONT)
-
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+		label.grid(row = row, column = 4, padx = 10, pady = 10)
+		row+=1
 
 		# Switch to SETTINGS
-		button1 = ttk.Button(self, text =constants.SETTINGS,
-		command = lambda : controller.show_frame(SettingsPage))
-		button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+		btn_settings = ttk.Button(self, text =constants.SETTINGS, 
+					   command = lambda : controller.show_frame(SettingsPage))
+		btn_settings.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
 
-		# Switch to SESSION
-		button2 = ttk.Button(self, text =constants.SESSION,
-		command = lambda : controller.show_frame(SessionPage))
-		button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+		# # Switch to SESSION
+		# btn_session = ttk.Button(self, text =constants.SESSION,
+		# 				command = lambda : controller.show_frame(SessionPage))
+		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
+		# row+=1
 
+		btn_open_session = ttk.Button(self, text =constants.OPEN_SESSION,
+						command = lambda : controller.open_session_popup(constants.EXAMPLE_SESSIONS, controller.handle_selected_item))
+		btn_open_session.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
+
+
+
+# consists of:
+# a sidebar with a list of sessions
+# a list of settings that can be edited
+# a button to save/update the settings
 class SettingsPage(tk.Frame):
 	
 	def __init__(self, parent, controller):
+
+		row = 0;
 		
 		tk.Frame.__init__(self, parent)
 		label = ttk.Label(self, text =constants.SETTINGS, font = LARGEFONT)
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+		label.grid(row = row, column = 4, padx = 10, pady = 10)
+		row+=1
 
-		# Switch to LANDING PAGE
-		button1 = ttk.Button(self, text =constants.HOME,
+		# Switch to HOME
+		btn_home = ttk.Button(self, text =constants.HOME,
 							command = lambda : controller.show_frame(HomePage))
-	
-		# putting the button in its place
-		# by using grid
-		button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
 
-		# Switch to SESSIONS
-		button2 = ttk.Button(self, text =constants.SESSION,
-							command = lambda : controller.show_frame(SessionPage))
-	
-		# putting the button in its place by
-		# using grid
-		button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+		# # Switch to SESSIONS
+		# btn_session = ttk.Button(self, text =constants.SESSION,
+		# 					command = lambda : controller.show_frame(SessionPage))
+		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
+		# row+=1
+
+		btn_test_popup = ttk.Button(self, text ="TEST",
+							command = lambda : controller.open_popup("test message", True))
+		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
 
 
+
+# consists of:
+# a play/pause button
+# a restart button
+# a +5s button
+# a show answer button
+# an answer text label (hidden until answer button pressed)
+# 2 success/fail buttons
 class SessionPage(tk.Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent, controller, sessionName=constants.SESSION):
 		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =constants.SESSION, font = LARGEFONT)
+		label = ttk.Label(self, text =sessionName, font = LARGEFONT)
 		label.grid(row = 0, column = 4, padx = 10, pady = 10)
 
 		# switch to HOME
-		button1 = ttk.Button(self, text =constants.HOME,
+		btn_home = ttk.Button(self, text =constants.HOME,
 							command = lambda : controller.show_frame(HomePage))
-		button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
 
 		# switch to SETTINGS
-		button2 = ttk.Button(self, text =constants.SETTINGS,
+		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
 							command = lambda : controller.show_frame(SettingsPage))
-		button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
+	
 
-
-# Driver Code
 app = tkinterApp()
 app.mainloop()
