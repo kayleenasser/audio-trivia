@@ -7,30 +7,61 @@ Could be used for guessing music, my encyclopedic knowledge of Avatar the Last A
 
 Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.
 
-## Description
+# Description
 *Build an application that takes a folder of audio files (or other source) and plays a random file at a random timestamp for a specified interval and allows you to guess the name of the file (or other success criteria).  
 Could be used for guessing music, my encyclopedic knowledge of Avatar the Last Airbender episodes, or even language learning: import foreign media files and use it for listening practice!  
 Bonus points if we could import subtitle tracks and display the subtitle of that timestamp as part of the answer.*
-​
-​
+
+
 - Want to work directly with files
 	- probably easier/better to work with references to files stored locally rather than doing any copying
 - we need user settings to be stored, if we do Slackbot, does that require some db work? because we'd be keeping users separate on the backend 
-​
-- importing
+
+- Emily: importing from local -> associating to a certain session? 
+	- import folder and individual files?
+		- files for now
+		- every session has a `sessionName.json` that holds a list of filepaths for the tracks
+```
+{
+	"sessionname": "value"
+}
+	"audiopaths":[
+	"path/tofile",
+	"other/path"
+	]
+}
+```
+
+- assume you're given a list/array of filepaths (frontend will get this for you)
+- settings.py -> probs just json/functions #ari
+- tracks.py -> class #kaylee
+- sessions.py -> probs a class 
+	- json for import #emily
+- frontend.py -> tkinter #raven
+- utilities.py -> common functions 
+
 - playing files from a certain spot
+	- audiofile class?
+		- - props
+		- filename, session, duration, 
 - user settings stored locally -> importing/saving
-- frontend
-​
+	- given a settings page exists, how are we storing a user's settings?
+		- json file
+		- 
+- Raven: frontend -> hello world tkinter -> making some pages
+- success criteria/points
+	- some basic functions for tracking score
+
 - classes -> audio files (tracks)
 	- props
-		- filename, session, duration
-​
+		- filename, session, duration, 
+
 - class -> session
 	- a collection of tracks for a single session
-​
-​
-## ❓ Questions ❓
+	- 
+
+
+# ❓ Questions ❓
 - What is the scope of the project? What would we like to have completed by the demo?
 	- upload 2+ audio files (mp3 to start, mp4 also would be cool)
 		- youtube links as input as well
@@ -65,12 +96,12 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 				- ppl could test it 
 				- could run into some barriers with getting the audio + user management
 - Research/rabbit hole: how the heck to subtitle tracks work? if they're embedded into certain filetypes, 
-​
-## Pages
-### Main
+
+# Pages
+## Main
 - **button**: upload files
 - **button**: open an existing "session"
-### Session
+## Session
 - **button**: play
 	- plays a random audio at a random timestamp following the settings
 - **slider**/settings: interval
@@ -85,7 +116,7 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 			- whisper.ai?
 - **button**: check/x for success/fail
 	- extra: or multiple choice option?
-### Settings
+## Settings
 - slider/settings: default interval
 	- how long each audio initially plays for
 - slider/settings: start/end buffer
@@ -94,11 +125,10 @@ Bonus points if we could import subtitle tracks and display the subtitle of that
 - list/button: manage session audio
 	- interface for adding/removing audio from a specific session?
 - setting: change path to downloads
-​
-### Other Thoughts
+
+# Other Thoughts
 - probably just store a `settings.json` for main settings, and have different `session_name.json` for settings of individual sessions + references to the files/folders
 - should set up a git at some point (can someone else do this i dont wanna :sob:)
-
 ## Getting your development environment set up
 
 The first step is to pull the code from this remote repository onto your computer:
