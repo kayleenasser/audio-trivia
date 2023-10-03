@@ -9,5 +9,38 @@
             "start_delay": 0,
             "end_delay": 0
         }
+    },
+    "session1": {
+        "audio_file_paths": [
+            "example1.mp3",
+            "example2.mp3"
+        ],
+        "settings": {
+            "interval_length": 1,
+            "start_delay": 1,
+            "end_delay": 1
+        }
+    },
+    "session2": {
+        "audio_file_paths": [
+            "example1.mp3",
+            "example2.mp3"
+        ],
+        "settings": {
+            "interval_length": 2,
+            "start_delay": 2,
+            "end_delay": 2
+        }
+    },
+    "Session": {
+        "audio_file_paths": [
+            "example1.mp3",
+            "example2.mp3"
+        ],
+        "settings": {
+            "interval_length": 10,
+            "start_delay": 0,
+            "end_delay": 0
+        }
     }
 }
