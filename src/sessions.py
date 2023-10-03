@@ -44,7 +44,6 @@ def get_session(session_name : str) -> dict:
     if session_name in sessions_dict:
         return sessions_dict[session_name]
 
-# FIXME: add a fail-safe to check whether if the session name already exists
 def add_session(session_name : str, audio_fpaths : list[str],
     interval_length=10, start_delay=0, end_delay=0):
     """
@@ -60,8 +59,14 @@ def add_session(session_name : str, audio_fpaths : list[str],
             seconds.
         end_delay: An integer representing the end delay. Default is 0
             seconds.
+
+    Raises:
+        KeyError: If session_name already exists.
     """
     sessions_dict = get_all_sessions()
+    if session_name in sessions_dict:
+        raise KeyError(f"The session name '{session_name}' already exists. \
+            Please use another name.")
     sessions_dict[session_name] = {
         AUDIO_FILE_PATHS_KEY: audio_fpaths,
         SETTINGS_KEY: {
