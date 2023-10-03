@@ -3,7 +3,9 @@ from tkinter import ttk
 from tkinter import *
 import constants as constants
 
-LARGE_FONT = ("Verdana", 35)
+LARGE_FONT = ('Verdana', 35)
+MEDIUM_FONT = ('Verdana', 18)
+SMALL_FONT = ('Verdana', 12)
 
 # consists of:
 # a button to open a session
@@ -17,18 +19,18 @@ class HomePage(tk.Frame):
 		label = ttk.Label(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
 
-		# Switch to NEW_SESSION
+		# switch to NEW_SESSION
 		new_session_btn = ttk.Button(self, text=constants.NEW_SESSION,
 			command=lambda : controller.show_frame(NewSessionPage))
 		new_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
 
-		# Switch to OPEN_SESSION
+		# switch to OPEN_SESSION
 		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
 			command=lambda : controller.open_session_popup(
 			constants.EXAMPLE_SESSIONS, controller.handle_selected_item))
 		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
 
-		# Switch to SETTINGS
+		# switch to SETTINGS
 		settings_btn = ttk.Button(self, text=constants.SETTINGS, 
 			command= lambda: controller.show_frame(SettingsPage))
 		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
@@ -39,8 +41,38 @@ class NewSessionPage(tk.Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
 
-		label = ttk.Label(self, text="HIIII", font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.5, anchor=CENTER)
+		label = ttk.Label(self, text='Create a New Session', font=MEDIUM_FONT)
+		label.place(relx=0.5, rely=0.1, anchor=CENTER)
+
+		label = ttk.Label(self, text='Session Name', font=SMALL_FONT)
+		label.place(relx=0.25, rely=0.2, anchor=CENTER)
+		session_name = ttk.Entry(self, width=15)
+		session_name.place(relx=0.6, rely=0.2, anchor=CENTER)
+
+
+# consists of:
+# a play/pause button
+# a restart button
+# a +5s button
+# a show answer button
+# an answer text label (hidden until answer button pressed)
+# 2 success/fail buttons
+class SessionPage(tk.Frame):
+
+	def __init__(self, parent, controller, sessionName=constants.SESSION):
+		tk.Frame.__init__(self, parent)
+		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		# switch to HOME
+		btn_home = ttk.Button(self, text =constants.HOME,
+							command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+		# switch to SETTINGS
+		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
+							command = lambda : controller.show_frame(SettingsPage))
+		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
 
 
 # consists of:
@@ -76,31 +108,6 @@ class SettingsPage(tk.Frame):
 		row+=1
 
 
-# consists of:
-# a play/pause button
-# a restart button
-# a +5s button
-# a show answer button
-# an answer text label (hidden until answer button pressed)
-# 2 success/fail buttons
-class SessionPage(tk.Frame):
-
-	def __init__(self, parent, controller, sessionName=constants.SESSION):
-		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
-
-		# switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
-
-		# switch to SETTINGS
-		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
-							command = lambda : controller.show_frame(SettingsPage))
-		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
-
-
 class tkinterApp(tk.Tk):
 	
 	# __init__ function for class tkinterApp
@@ -110,7 +117,7 @@ class tkinterApp(tk.Tk):
 		
 		# Setup
 		self.title(constants.APP_TITLE)
-		self.geometry('350x200') #widthxheight
+		self.geometry('400x250') #widthxheight
 		
 		# creating a container
 		container = tk.Frame(self)
