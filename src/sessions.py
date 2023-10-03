@@ -45,17 +45,7 @@ def get_session(session_name : str) -> dict:
     """
     sessions_dict = get_all_sessions()
     if session_name in sessions_dict:
-        session_info = sessions_dict[session_name]
-        settings = session_info.get(SETTINGS_KEY, {})
-        interval_length = settings.get(INTERVAL_LENGTH_KEY, 10)  # Default value is 10
-        start_delay = settings.get(START_DELAY_KEY, 0)  # Default value is 0
-        end_delay = settings.get(END_DELAY_KEY, 0)  # Default value is 0
-        return {
-            'interval_length': interval_length,
-            'start_delay': start_delay,
-            'end_delay': end_delay
-        }
-    return None  # Session not found
+        return sessions_dict[session_name]
 
 
 def add_session(session_name : str, audio_fpaths : list[str],

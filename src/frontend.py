@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import constants as constants
+import trivia
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -27,7 +28,7 @@ class HomePage(tk.Frame):
 		# switch to OPEN_SESSION
 		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
 			command=lambda : controller.open_session_popup(
-			constants.EXAMPLE_SESSIONS, controller.handle_selected_item))
+			constants.EXAMPLE_SESSIONS, controller.handle_selected_session))
 		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
 
 		# switch to SETTINGS
@@ -48,31 +49,6 @@ class NewSessionPage(tk.Frame):
 		label.place(relx=0.25, rely=0.2, anchor=CENTER)
 		session_name = ttk.Entry(self, width=15)
 		session_name.place(relx=0.6, rely=0.2, anchor=CENTER)
-
-
-# consists of:
-# a play/pause button
-# a restart button
-# a +5s button
-# a show answer button
-# an answer text label (hidden until answer button pressed)
-# 2 success/fail buttons
-class SessionPage(tk.Frame):
-
-	def __init__(self, parent, controller, sessionName=constants.SESSION):
-		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
-
-		# switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
-
-		# switch to SETTINGS
-		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
-							command = lambda : controller.show_frame(SettingsPage))
-		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
 
 
 # consists of:
@@ -119,6 +95,7 @@ class SessionPage(tk.Frame):
 
 	def __init__(self, parent, controller, sessionName=constants.SESSION):
 		tk.Frame.__init__(self, parent)
+
 		row = 0
 		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
 		label.grid(row = row, column = 4, padx = 10, pady = 10)
@@ -142,9 +119,17 @@ class SessionPage(tk.Frame):
 		
 		# play/pause
 		## get a symbol/icon eventually
-		play_button = ttk.Button(self, text ="Play",
-							command = lambda : controller.show_frame(SettingsPage))
-		play_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		self.is_paused = False # default to playing (probably will change if we add a start button or smth)
+		btn_play = ttk.Button(self, text =constants.PAUSE_BUTTON,
+							command = lambda : self.toggle_state(
+								[self.is_paused], 
+								btn_play,
+								constants.PLAY_BUTTON, 
+								constants.PAUSE_BUTTON, 
+								self.UpdatePlayToggle,
+								self.trivia.PlayPauseTrack)
+							)
+		btn_play.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# replay
@@ -162,11 +147,23 @@ class SessionPage(tk.Frame):
 		row+=1
 
 		# show/hide answer
-		# toggle value when pressed and show/hide the answer label (need to make)
-		answer_button = ttk.Button(self, text =constants.SHOW_ANSWER,
-							command = lambda : controller.show_frame(SettingsPage))
-		answer_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		# toggle value when pressed and show/hide the answer label
+		self.is_answer_showing = False
+		btn_answer = ttk.Button(self, text =constants.SHOW_ANSWER,
+							command = lambda : self.toggle_state(
+								[self.is_answer_showing], 
+								btn_answer,
+								constants.HIDE_ANSWER, 
+								constants.SHOW_ANSWER, 
+								self.UpdateAnswerToggle,
+								None)
+							)
+		btn_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
+
+		# this will change and can't be initialized once, so will have to move to a callback probably? We'll see 
+		# self.answer = trivia.GetAnswer()
+		# self.lbl_answer = ttk.Label(self, text = answer, font = LARGE_FONT)
 
 		# success
 		success_button = ttk.Button(self, text ="Check",
@@ -179,6 +176,42 @@ class SessionPage(tk.Frame):
 							command = lambda : controller.show_frame(SettingsPage))
 		failure_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
+	
+	# for play/pause and show/hide answer
+	# need to make it a list so that it's mutable
+	def toggle_state(self, state_list, button, true_text, false_text, updater, callback):
+		state_list[0] = not state_list[0]
+		# Toggle the state
+		if state_list[0]:
+			button.config(text=true_text)
+		else:
+			button.config(text=false_text)
+
+		# Pass the current state to a function
+		if updater:
+			updater(state_list[0], callback)
+	
+	def UpdatePlayToggle(self, isPaused, callback):
+		self.is_paused = isPaused
+		if callback:
+			callback(self.is_paused)
+
+	def UpdateAnswerToggle(self, is_answer_showing, callback):
+		self.is_answer_showing = is_answer_showing
+		if callback:
+			callback(self.is_answer_showing)
+	
+	def ShowHideAnswer(self, is_answer_showing):
+		if is_answer_showing:
+			label.show()
+		else:
+			label.hide()
+
+	def initialize_trivia(self, session_name):
+		# Check if trivia instance is already created
+		if not (hasattr(self, 'trivia')):
+			self.trivia = trivia.Trivia(session_name)  # Create Trivia instance here
+	
 
 
 class tkinterApp(tk.Tk):
@@ -214,10 +247,14 @@ class tkinterApp(tk.Tk):
 			frame.grid(row = 0, column = 0, sticky ="nsew")
 
 		self.show_frame(HomePage)
+		
+	
 
 	# change pages
 	def show_frame(self, cont, *args):
 		frame = self.frames[cont]
+		if cont == SessionPage:
+			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
 		frame.tkraise(*args)
 
 	# generic message popup helper
@@ -293,10 +330,12 @@ class tkinterApp(tk.Tk):
 
 
 	# example callback for selecting a session
-	def handle_selected_item(self, item):
-		print(f"Selected item: {item}")
+	def handle_selected_session(self, session_name):
+		self.session_name = session_name
+		print(f"Selected item: {session_name}")
 		self.show_frame(SessionPage)	
 
+	
 
 if __name__ == '__main__':
 	app = tkinterApp()

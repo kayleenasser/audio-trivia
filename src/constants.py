@@ -12,6 +12,10 @@ NEW_SESSION = "New Session"
 # session buttons
 SHOW_ANSWER = "Show Answer"
 HIDE_ANSWER = "Hide Answer"
+PLAY_BUTTON = "Play"
+PAUSE_BUTTON = "Pause"
+REPLAY_BUTTON = "Replay"
+
 
 
 EXAMPLE_SESSIONS = [

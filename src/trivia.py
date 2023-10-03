@@ -13,6 +13,7 @@ class Trivia:
 
         try:
             session_info = sessions.get_session(self.session_name)
+            print(session_info)
             if session_info:
                 self.interval_length = session_info['settings']['interval_length']
                 self.start_delay = session_info['settings']['start_delay']
@@ -29,13 +30,16 @@ class Trivia:
     # OnNextButtonPressed / OnFailButtonPress
     def PlayNextTrack(self):
         # get the track and the start timestamp
-        self.track = tracks.GetRandomTrack(self.session_name) # get a random track from the session
+        self.track = tracks.GetRandomTrack(self.session_name) # get a random track from the session (name)
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
 
         #play the track right away
         self.track.Play(self.timeStamp, self.interval_length)
 
-    def PlayPauseTrack
+    # OnPlayPauseButtonPressed
+    # should just pass in the current value of the boolean and use that i think?
+    def PlayPauseTrack(self, isPaused):
+        print(isPaused)
 
     # OnReplayButtonPressed
     def ReplayTrack(self):
@@ -46,6 +50,9 @@ class Trivia:
     def UpdateIntervalLength(self, interval_change):
         # if we change the interval, it will override the end_delay and keep playing to the end of the song if it needs to 
         self.interval_length += interval_change
+
+    def GetAnswer(self):
+        return self.track.name # or other success criteria
 
     # OnSuccessButtonPressed
     def UpdateScore(self):
@@ -66,8 +73,8 @@ class SessionNotFoundError(Exception):
     pass
 
 # Example usage:
-if __name__ == '__main__':
-    session_name = "example_session"
-    trivia_game = Trivia(session_name)
-    print(trivia_game.interval_length)  # Access session settings using trivia_game.settings
+# if __name__ == '__main__':
+#     session_name = "example_session"
+#     trivia_game = Trivia(session_name)
+#     print(trivia_game.interval_length)  # Access session settings using trivia_game.settings
     
