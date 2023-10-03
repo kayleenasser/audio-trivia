@@ -27,16 +27,18 @@ class Trivia:
             # raise e
 
     # OnNextButtonPressed / OnFailButtonPress
-    def PlayNextAudio(self):
+    def PlayNextTrack(self):
         # get the track and the start timestamp
-        self.track = tracks.GetRandomAudio(self.session_name) # get a random track from the session
+        self.track = tracks.GetRandomTrack(self.session_name) # get a random track from the session
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
 
         #play the track right away
         self.track.Play(self.timeStamp, self.interval_length)
 
+    def PlayPauseTrack
+
     # OnReplayButtonPressed
-    def ReplayAudio(self):
+    def ReplayTrack(self):
         #play it again from the same timestamp
         self.track.Play(self.timeStamp, self.interval_length)
 
@@ -48,7 +50,7 @@ class Trivia:
     # OnSuccessButtonPressed
     def UpdateScore(self):
         score+=1
-        self.PlayNextAudio(self.session_name)
+        self.PlayNextTrack(self.session_name)
 
     # used for init, do we want a reset button?
     def ResetScore(self):
