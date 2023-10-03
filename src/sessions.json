@@ -9,5 +9,16 @@
             "start_delay": 0,
             "end_delay": 0
         }
+    },
+    "test3": {
+        "audio_file_paths": [
+            "example1.mp3",
+            "example2.mp3"
+        ],
+        "settings": {
+            "interval_length": 5,
+            "start_delay": 10,
+            "end_delay": 5
+        }
     }
 }
