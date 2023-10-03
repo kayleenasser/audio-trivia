@@ -42,8 +42,10 @@ def get_audio_length(file_path):
     mixer.quit()
     return length_in_seconds
 
+
+if __name__ == '__main__':
 # ------------ MORE TEST STUFF ------------
-mypath = Path("C:/Files/Hackathon/res/test_audio/")
-audio_obj = Audio("AvatarTheme.mp3", mypath, 5)
-Play_Audio(audio_obj)
+	mypath = Path("res/test_audio/AvatarTheme.mp3")
+	audio_obj = Audio("AvatarTheme.mp3", mypath, 5)
+	Play_Audio(audio_obj)
 # -----------------------------------------
