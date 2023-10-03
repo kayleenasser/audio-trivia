@@ -3,7 +3,103 @@ from tkinter import ttk
 from tkinter import *
 import constants as constants
 
-LARGE_FONT =("Verdana", 35)
+LARGE_FONT = ("Verdana", 35)
+
+# consists of:
+# a button to open a session
+# a button to create a session
+# a button to go to settings
+class HomePage(tk.Frame):
+
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+
+		label = ttk.Label(self, text=constants.HOME, font=LARGE_FONT)
+		label.place(relx=0.5, rely=0.2, anchor=CENTER)
+
+		# Switch to NEW_SESSION
+		new_session_btn = ttk.Button(self, text=constants.NEW_SESSION,
+			command=lambda : controller.show_frame(NewSessionPage))
+		new_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
+
+		# Switch to OPEN_SESSION
+		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
+			command=lambda : controller.open_session_popup(
+			constants.EXAMPLE_SESSIONS, controller.handle_selected_item))
+		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
+
+		# Switch to SETTINGS
+		settings_btn = ttk.Button(self, text=constants.SETTINGS, 
+			command= lambda: controller.show_frame(SettingsPage))
+		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
+
+
+class NewSessionPage(tk.Frame):
+
+	def __init__(self, parent, controller):
+		Frame.__init__(self, parent)
+
+		label = ttk.Label(self, text="HIIII", font=LARGE_FONT)
+		label.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+
+# consists of:
+# a sidebar with a list of sessions
+# a list of settings that can be edited
+# a button to save/update the settings
+class SettingsPage(tk.Frame):
+	
+	def __init__(self, parent, controller):
+
+		row = 0;
+		
+		tk.Frame.__init__(self, parent)
+		label = ttk.Label(self, text =constants.SETTINGS, font = LARGE_FONT)
+		label.grid(row = row, column = 4, padx = 10, pady = 10)
+		row+=1
+
+		# Switch to HOME
+		btn_home = ttk.Button(self, text =constants.HOME,
+							command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
+
+		# # Switch to SESSIONS
+		# btn_session = ttk.Button(self, text =constants.SESSION,
+		# 					command = lambda : controller.show_frame(SessionPage))
+		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
+		# row+=1
+
+		btn_test_popup = ttk.Button(self, text ="TEST",
+							command = lambda : controller.open_popup("test message", True))
+		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
+		row+=1
+
+
+# consists of:
+# a play/pause button
+# a restart button
+# a +5s button
+# a show answer button
+# an answer text label (hidden until answer button pressed)
+# 2 success/fail buttons
+class SessionPage(tk.Frame):
+
+	def __init__(self, parent, controller, sessionName=constants.SESSION):
+		tk.Frame.__init__(self, parent)
+		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		# switch to HOME
+		btn_home = ttk.Button(self, text =constants.HOME,
+							command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+		# switch to SETTINGS
+		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
+							command = lambda : controller.show_frame(SettingsPage))
+		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
+
 
 class tkinterApp(tk.Tk):
 	
@@ -119,102 +215,9 @@ class tkinterApp(tk.Tk):
 	# example callback for selecting a session
 	def handle_selected_item(self, item):
 		print(f"Selected item: {item}")
-		self.show_frame(SessionPage)
+		self.show_frame(SessionPage)	
 
 
-# consists of:
-# a button to open a session
-# a button to create a session
-# a button to go to settings
-class HomePage(tk.Frame):
-
-	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
-
-		label = ttk.Label(self, text=constants.HOME, font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.2, anchor=CENTER)
-
-		# Switch to NEW_SESSION
-		new_session_btn = ttk.Button(self, text=constants.NEW_SESSION,
-			command=lambda : controller.show_frame(NewSessionPage))
-		new_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
-
-		# Switch to OPEN_SESSION
-		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
-			command=lambda : controller.open_session_popup(
-			constants.EXAMPLE_SESSIONS, controller.handle_selected_item))
-		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
-
-		# Switch to SETTINGS
-		settings_btn = ttk.Button(self, text=constants.SETTINGS, 
-			command= lambda: controller.show_frame(SettingsPage))
-		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
-
-
-class NewSessionPage(tk.Frame):
-
-	def __init__(self, parent, controller):
-		Frame.__init__(self, parent)
-
-		label = ttk.Label(self, text="HIIII", font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.5, anchor=CENTER)
-
-
-# consists of:
-# a sidebar with a list of sessions
-# a list of settings that can be edited
-# a button to save/update the settings
-class SettingsPage(tk.Frame):
-	
-	def __init__(self, parent, controller):
-
-		row = 0;
-		
-		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =constants.SETTINGS, font = LARGE_FONT)
-		label.grid(row = row, column = 4, padx = 10, pady = 10)
-		row+=1
-
-		# Switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
-		row+=1
-
-		# # Switch to SESSIONS
-		# btn_session = ttk.Button(self, text =constants.SESSION,
-		# 					command = lambda : controller.show_frame(SessionPage))
-		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
-		# row+=1
-
-		btn_test_popup = ttk.Button(self, text ="TEST",
-							command = lambda : controller.open_popup("test message", True))
-		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
-		row+=1
-
-# consists of:
-# a play/pause button
-# a restart button
-# a +5s button
-# a show answer button
-# an answer text label (hidden until answer button pressed)
-# 2 success/fail buttons
-class SessionPage(tk.Frame):
-	def __init__(self, parent, controller, sessionName=constants.SESSION):
-		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
-
-		# switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = 1, column = 1, padx = 10, pady = 10)
-
-		# switch to SETTINGS
-		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
-							command = lambda : controller.show_frame(SettingsPage))
-		btn_sessions.grid(row = 2, column = 1, padx = 10, pady = 10)
-	
-
-app = tkinterApp()
-app.mainloop()
+if __name__ == '__main__':
+	app = tkinterApp()
+	app.mainloop()
