@@ -1,4 +1,5 @@
 import json
+import os
 
 """
 A module to perform CRUD operations on sessions.json.
@@ -12,6 +13,8 @@ INTERVAL_LENGTH_KEY = 'interval_length'
 START_DELAY_KEY = 'start_delay'
 END_DELAY_KEY = 'end_delay'
 
+DIRECTORY = 'src'
+
 def _update_sessions_json(sessions_dict : dict):
     """
     Serializes the specified dict and updates sessions.json with its contents.
@@ -21,7 +24,7 @@ def _update_sessions_json(sessions_dict : dict):
             sessions.json.
     """
     sessions_obj = json.dumps(sessions_dict, indent=4)
-    with open(SESSIONS_DB_FILENAME, 'w') as openfile:
+    with open(os.path.join( DIRECTORY,SESSIONS_DB_FILENAME), 'w') as openfile:
         openfile.write(sessions_obj)
 
 def get_all_sessions() -> dict:
@@ -29,7 +32,7 @@ def get_all_sessions() -> dict:
     Returns:
         dict: A dictionary containing all sessions and their associated info.
     """
-    with open(SESSIONS_DB_FILENAME, 'r') as openfile:
+    with open(os.path.join( DIRECTORY, SESSIONS_DB_FILENAME), 'r') as openfile:
         return json.load(openfile)
 
 def get_session(session_name : str) -> dict:

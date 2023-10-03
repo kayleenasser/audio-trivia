@@ -9,16 +9,22 @@ class Trivia:
     # OnSessionOpened
     def __init__(self, session_name):
         self.session_name = session_name
-        session_info = sessions.get_session(self.session_name)
         self.ResetScore()
 
-        if session_info:
-            self.interval_length = session_info['interval_length']
-            self.start_delay = session_info['start_delay']
-            self.end_delay = session_info['end_delay']
-        else:
-            # Handle the case where the session does not exist
-            pass
+        try:
+            session_info = sessions.get_session(self.session_name)
+            if session_info:
+                self.interval_length = session_info['settings']['interval_length']
+                self.start_delay = session_info['settings']['start_delay']
+                self.end_delay = session_info['settings']['end_delay']
+                self.ResetScore()
+            else:
+                raise SessionNotFoundError(f"Session '{session_name}' not found.")
+        except SessionNotFoundError as e:
+            print(f"Error: {e}")
+            # Handle the error, show an error message to the user, or return an error response to the frontend
+            # You can also raise the exception again if you want to handle it at a higher level in your code
+            # raise e
 
     # OnNextButtonPressed / OnFailButtonPress
     def PlayNextAudio(self):
@@ -53,7 +59,13 @@ class Trivia:
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
         self.track.Play(self.timeStamp, self.interval_length)
 
+# ERRORS
+class SessionNotFoundError(Exception):
+    pass
+
 # Example usage:
-session_name = "example_session"
-trivia_game = Trivia(session_name)
-print(trivia_game.interval_length)  # Access session settings using trivia_game.settings
+if __name__ == '__main__':
+    session_name = "example_session"
+    trivia_game = Trivia(session_name)
+    print(trivia_game.interval_length)  # Access session settings using trivia_game.settings
+    
