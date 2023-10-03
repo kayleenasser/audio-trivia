@@ -1,5 +1,6 @@
 import time
-import playsound
+from pathlib import Path
+from pygame import mixer
 
 class Audio:
     def __init__(self, name, audio_path, start_minute, start_second, duration):
@@ -10,7 +11,14 @@ class Audio:
         self.duration = duration
 
     def Play_Audio(self): 
-        playsound.playsound(self.audio_path + "\\" + self.name)
+        path = Path(self.audio_path)
+        song = path / self.name
+
+        mixer.init() # Starting the mixer
+        mixer.music.load(song) # Loading the song
+        mixer.music.set_volume(0.7)  # Setting the volume 
+        mixer.music.play(start = (self.start_minute * 60) + self.start_second) # Starting song from second indicated
+      
         time.sleep(5)
 
 # Name - string
@@ -18,7 +26,9 @@ class Audio:
 # Time stamp min - int min 
 # Time stamp second - int second 0 - 59 
 # Duration - int seconds 
+# Format - string 
 
-audio_obj = Audio("AvaterTheme.mp3", "C:\Files\Hackathon\\res\\test_audio", 3, 40, 10)
-
+# ----- Test stuff ------
+mypath = Path("C:/Files/Hackathon/res/test_audio/")
+audio_obj = Audio("AvatarTheme.mp3", mypath, 0, 15, 10)
 audio_obj.Play_Audio()
