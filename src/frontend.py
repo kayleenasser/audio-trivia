@@ -173,16 +173,30 @@ class SessionPage(tk.Frame):
 		row+=1
 
 		# success
-		success_button = ttk.Button(self, text ="Check",
-							command = lambda : controller.show_frame(SettingsPage))
-		success_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		# add point (and go to next)
+		btn_success = ttk.Button(self, text ="Check",
+							command = lambda : self.trivia.UpdateScore())
+		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# failure
-		failure_button = ttk.Button(self, text ="X",
-							command = lambda : controller.show_frame(SettingsPage))
-		failure_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		# no points, just go to next
+		btn_failure = ttk.Button(self, text ="X",
+							command = lambda : self.trivia.PlayNextTrack())
+		btn_failure.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
+
+		# retry
+		btn_retry = ttk.Button(self, text ="X",
+							command = lambda : controller.show_frame(SettingsPage))
+		btn_retry.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		row+=1
+
+		# Score
+		self.score_var = StringVar()
+		self.score_var.set("Score: 0") # default
+		self.lbl_score = ttk.Label(self, textvariable=self.score_var, font=SMALL_FONT)
+		self.lbl_score.grid(row = 0, column = 0, padx = 5, pady = 5)
 	
 	# for play/pause and show/hide answer
 	# need to make it a list so that it's mutable
@@ -207,6 +221,11 @@ class SessionPage(tk.Frame):
 		self.is_answer_showing = is_answer_showing
 		if callback:
 			callback(self.is_answer_showing)
+	
+	def UpdateScore(self):
+		self.trivia.UpdateScore()
+		self.score_var = f"{self.trivia.GetScore} points"
+
 	
 	def ShowHideAnswer(self, is_answer_showing):
 		if is_answer_showing:

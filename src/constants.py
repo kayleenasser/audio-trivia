@@ -17,6 +17,17 @@ PAUSE_BUTTON = "Pause"
 REPLAY_BUTTON = "Replay"
 
 
+# SESSIONS.py
+SESSIONS_DB_FILENAME = 'sessions.json'
+
+AUDIO_FILE_PATHS_KEY = 'audio_file_paths'
+SETTINGS_KEY = 'settings'
+INTERVAL_LENGTH_KEY = 'interval_length'
+START_DELAY_KEY = 'start_delay'
+END_DELAY_KEY = 'end_delay'
+
+DIRECTORY = 'src'
+
 
 EXAMPLE_SESSIONS = [
     "session1",
