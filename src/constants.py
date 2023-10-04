@@ -9,6 +9,8 @@ OPEN_SESSION = "Open Session"
 NEW_SESSION = "New Session"
 
 
+
+
 # session buttons
 SHOW_ANSWER = "Show Answer"
 HIDE_ANSWER = "Hide Answer"
@@ -18,6 +20,7 @@ REPLAY_BUTTON = "Replay"
 
 
 # SESSIONS.py
+DEFAULT_SESSION_NAME = "default"
 SESSIONS_DB_FILENAME = 'sessions.json'
 
 AUDIO_FILE_PATHS_KEY = 'audio_file_paths'
