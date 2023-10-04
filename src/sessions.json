@@ -1,8 +1,9 @@
 {
     "default": {
         "audio_file_paths": [
-            "path1.mp3",
-            "path2.mp3"
+            "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
+            "res/test_audio/1-03 The Southern Air Temple.mp3",
+            "res/test_audio/1-04 The Warriors of Kyoshi.mp3"
         ],
         "settings": {
             "interval_length": 10,

@@ -2,6 +2,7 @@ import random
 import time
 import os
 import sessions
+import constants
 from pathlib import Path
 from pygame import mixer
 
@@ -17,7 +18,7 @@ class Track:
 	def PlayTrack(self, start_delay, end_delay, interval):
 		print(start_delay, self.duration, end_delay, interval)
 		try:
-			start_point = random.randint(start_delay, (self.duration - end_delay - interval))
+			start_point = random.randint(start_delay, int(self.duration - end_delay - interval))
 			
 		except:
 			print("No valid timestamp available. Ignoring delays.")
@@ -45,32 +46,40 @@ class Track:
 
 
 # get a random filepath from the session, and return a Track object
-	def GetRandomTrack(self, filepath_list):
-		while (filepath_list.len() > 0) :
+def GetRandomTrack(filepath_list):
+	while (len(filepath_list) > 0) :
 
-			# try getting a path
-			track_number = random.randint(0, filepath_list.len())
-			path = filepath_list[track_number]
+		# try getting a path
+		print ()
+		track_number = random.randint(0, len(filepath_list)-1)
+		path = Path(filepath_list[track_number])
+		print(track_number)
 
-			#if it doesn't exist, remove it from the list 
-			if not os.path.exists(path):
-				filepath_list.remove(track_number)
-				# should also remove it from the session? and warn the user? later problem
-			else: 
-				# create the track and return it
-				path = Path(path)
-				return Track(path.name, path)
-						
-			# load session data
+		#if it doesn't exist, remove it from the list 
+		if not os.path.exists(path):
+			filepath_list.pop(track_number)
+			# should also remove it from the session? and warn the user? later problem
+		else: 
+			# create the track and return it
+			path = Path(path)
+			track = Track(path.name, path)
+			print(track)
 			return track
-		# all tracks are invalid
-		return None
+
+
+	# all tracks are invalid
+	return None
 	
 
 if __name__ == '__main__':
 # ------------ MORE TEST STUFF ------------
 	mypath = Path("res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3")
-	track = Track(mypath.name, mypath)
+
+	track_list = sessions.get_session(constants.DEFAULT_SESSION_NAME)[constants.AUDIO_FILE_PATHS_KEY]
+
+	track = GetRandomTrack(track_list)
+
 	print(track)
-	track.PlayTrack(0,0,10)
+	if track:
+		track.PlayTrack(0,0,5)
 # -----------------------------------------
