@@ -20,6 +20,12 @@ def _update_sessions_json(sessions_dict : dict):
         'w') as f:
         f.write(sessions_obj)
 
+def default_sessions_json():
+    """
+    Resets sessions.json with default session.
+    """
+    _update_sessions_json(const.DEFAULT_SESSION)
+
 def get_all_sessions() -> dict:
     """
     Returns:
@@ -201,39 +207,40 @@ if __name__ == '__main__':
     """
     For testing purposes.
     """
-    audio_fpaths = [
-        {
-            "path": "example1.mp3",
-            "answer": "Example 1"
-        },
-        {
-            "path": "example2.mp3",
-            "answer": "Example 2"
-        }
-    ]
-    add_session('test1', audio_fpaths)
+    default_sessions_json()
+    # audio_fpaths = [
+    #     {
+    #         "path": "example1.mp3",
+    #         "answer": "Example 1"
+    #     },
+    #     {
+    #         "path": "example2.mp3",
+    #         "answer": "Example 2"
+    #     }
+    # ]
+    # add_session('test1', audio_fpaths)
 
-    delete_session('test1')
+    # delete_session('test1')
 
-    add_session('test2', audio_fpaths, 30, 20, 10, 5)
+    # add_session('test2', audio_fpaths, 30, 20, 10, 5)
 
-    update_session_name('test2', 'test3')
+    # update_session_name('test2', 'test3')
 
-    audio_fpaths = [
-        {
-            "path": "test1.mp3",
-            "answer": "Test 1"
-        },
-        {
-            "path": "test2.mp3",
-            "answer": "Test 2"
-        }
-    ]
-    update_session_audio_files('test3', audio_fpaths)
+    # audio_fpaths = [
+    #     {
+    #         "path": "test1.mp3",
+    #         "answer": "Test 1"
+    #     },
+    #     {
+    #         "path": "test2.mp3",
+    #         "answer": "Test 2"
+    #     }
+    # ]
+    # update_session_audio_files('test3', audio_fpaths)
 
-    add_audio_file('test3', {"path": "test3.mp3", "answer": "Test 3"})
-    delete_audio_file('test3', "Test 2")
+    # add_audio_file('test3', {"path": "test3.mp3", "answer": "Test 3"})
+    # delete_audio_file('test3', "Test 2")
 
-    update_session_settings('test3', None, 5, None, 5)
-    update_session_settings('test3', 10, 10, 10, 10)
-    update_session_settings('test3', 5, None, 5, 10)
+    # update_session_settings('test3', None, 5, None, 5)
+    # update_session_settings('test3', 10, 10, 10, 10)
+    # update_session_settings('test3', 5, None, 5, 10)
