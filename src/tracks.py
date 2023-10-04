@@ -8,10 +8,9 @@ from pygame import mixer
 
 class Track:
 	def __init__(self, name, filepath):
-		self.name = name # filename or custom?
+		self.name = name # filename or custom? @TODO
 		self.filepath = Path(filepath)
 		print(self.filepath)
-		self.name = self.filepath.name
 		self.duration = self.GetTrackLength()
 
 	# play this track
@@ -37,6 +36,8 @@ class Track:
 			mixer.music.unload(self.filepath) # Unloads the song
 		time.wait(int(interval * 1000))  # Wait for the specified interval in milliseconds (pygame, not os)
 		mixer.music.stop()
+		# @TODO : How to update the Play/Pause button in Trivia based on the music playing/not?
+		# right now just being updated by pressing the button, but we also "pause" inherently at the end of the track
 		mixer.quit()
 
 	def Stop(self):
