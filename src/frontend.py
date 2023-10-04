@@ -97,9 +97,11 @@ class SessionPage(tk.Frame):
 		tk.Frame.__init__(self, parent)
 
 		row = 0
-		self.title_label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
-		self.title_label.grid(row = row, column = 4, padx = 10, pady = 10)
+		self.lbl_title = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		self.lbl_title.grid(row = row, column = 4, padx = 10, pady = 10)
 		row+=1
+
+		# NAV BUTTONS
 
 		# switch to HOME
 		btn_home = ttk.Button(self, text =constants.HOME,
@@ -113,7 +115,8 @@ class SessionPage(tk.Frame):
 		btn_sessions.grid(row = row, column = 1, padx = 10, pady = 5)
 		row+=1
 
-		# Audio buttons
+
+		# AUDIO BUTTONS
 		row = 1
 		audio_button_column = 3
 		
@@ -135,15 +138,16 @@ class SessionPage(tk.Frame):
 		# replay
 		## get a symbol/icon eventually
 		replay_button = ttk.Button(self, text ="Relay",
-							command = lambda : controller.show_frame(SettingsPage))
+							command = lambda : self.trivia.ReplayTrack())
 		replay_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 
 		# increase interval
-		increase_button = ttk.Button(self, text ="+5s",
-							command = lambda : controller.show_frame(SettingsPage))
-		increase_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		# lazy initialization, updates in the initialize_trivia()
+		self.btn_increase = ttk.Button(self, text="",
+							command = lambda : self.trivia.IncreaseIntervalLength())
+		self.btn_increase.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# show/hide answer
@@ -216,6 +220,8 @@ class SessionPage(tk.Frame):
 		# Check if trivia instance is already created
 		if not (hasattr(self, 'trivia')):
 			self.trivia = trivia.Trivia(session_name)  # Create Trivia instance here
+
+		self.btn_increase.config(text=f"+{self.trivia.GetIncreaseAmount()}s") # update the value once it's been initialized
 	
 
 
@@ -260,7 +266,7 @@ class tkinterApp(tk.Tk):
 		frame = self.frames[cont]
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
-			frame.title_label.config(text=self.session_name)
+			frame.lbl_title.config(text=self.session_name)
 		frame.tkraise(*args)
 
 	# generic message popup helper
