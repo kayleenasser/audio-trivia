@@ -1,5 +1,6 @@
 import sessions
 import tracks
+import constants
 
 # an instance of Trivia is made every time you load a session. When you close and reopen, the score resets, etc
 # when this launches, the settings are set. All this is is a mapping for the LOGIC functions needed for the frontend
@@ -14,14 +15,14 @@ class Trivia:
         # @TODO add this to settings! 
         self.increase_amount = 5 
 
-
         try:
             session_info = sessions.get_session(self.session_name)
             print(session_info)
             if session_info:
-                self.interval_length = session_info['settings']['interval_length']
-                self.start_delay = session_info['settings']['start_delay']
-                self.end_delay = session_info['settings']['end_delay']
+                self.interval_length = session_info[constants.SETTINGS_KEY][constants.INTERVAL_LENGTH_KEY]
+                self.start_delay = session_info[constants.SETTINGS_KEY][constants.START_DELAY_KEY]
+                self.end_delay = session_info[constants.SETTINGS_KEY][constants.END_DELAY_KEY]
+                self.track_list = session_info[constants.AUDIO_FILE_PATHS_KEY]
                 self.ResetScore()
             else:
                 raise SessionNotFoundError(f"Session '{session_name}' not found.")
@@ -35,7 +36,7 @@ class Trivia:
     def PlayNextTrack(self):
         print("PlayNextTrack.")
         # get the track and the start timestamp
-        self.track = tracks.GetRandomTrack(self.session_name) # get a random track from the session (name)
+        self.track = tracks.GetRandomTrack(self.track_list) # get a random track from the session (name)
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
 
         #play the track right away
@@ -67,8 +68,11 @@ class Trivia:
     # OnSuccessButtonPressed
     def UpdateScore(self):
         print("UpdateScore.")
-        score+=1
-        self.PlayNextTrack(self.session_name)
+        self.score+=1
+        self.PlayNextTrack()
+    
+    def GetScore(self):
+        return self.score
 
     # used for init, do we want a reset button?
     def ResetScore(self):
