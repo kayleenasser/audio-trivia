@@ -302,7 +302,9 @@ class tkinterApp(ctk.CTk):
 		# Setup
 		self.title(constants.APP_TITLE)
 		self.geometry('800x600') #widthxheight
-		
+
+		self.after(201, lambda :app.iconbitmap('src\\assets\icon.ico'))
+
 		# creating a container
 		container = ctk.CTkFrame(self)
 		container.pack(side = "top", fill = "both", expand = True)
