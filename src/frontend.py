@@ -96,6 +96,7 @@ class SettingsPage(tk.Frame):
 # a show answer button
 # an answer text label (hidden until answer button pressed)
 # 2 success/fail buttons
+# a Retry button that picks a different timestamp from the same audio
 class SessionPage(tk.Frame):
 
 	def __init__(self, parent, controller, sessionName=constants.SESSION):
@@ -181,14 +182,14 @@ class SessionPage(tk.Frame):
 		# success
 		# add point (and go to next)
 		btn_success = ttk.Button(self, text ="Check",
-							command = lambda : self.UpdateScore(self.trivia.PlayNextTrack))
+							command = lambda : self.UpdateScore(is_success=True, callback=self.trivia.PlayNextTrack))
 		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# failure
 		# no points, just go to next
 		btn_failure = ttk.Button(self, text ="X",
-							command = lambda : self.trivia.PlayNextTrack())
+							command = lambda : self.UpdateScore(is_success=False, callback=self.trivia.PlayNextTrack))
 		btn_failure.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
@@ -233,15 +234,16 @@ class SessionPage(tk.Frame):
 		if callback:
 			callback(self.is_answer_showing)
 	
-	def UpdateScore(self, callback):
+	def UpdateScore(self, is_success, callback):
 		if self.track_has_played:
-			self.trivia.UpdateScore()
+			if is_success:
+				self.trivia.UpdateScore()
+				self.score_var.set(f"{self.trivia.GetScore()} points")
+				app.update_idletasks() # update score immediately before continuing
 		
-		self.score_var.set(f"{self.trivia.GetScore()} points")
-		app.update_idletasks() # update score immediately before continuing
-		# typically play next song
-		if callback:
-			callback()
+			# typically play next song
+			if callback:
+				callback()
 
 	
 	def ShowHideAnswer(self, is_answer_showing):
@@ -256,10 +258,17 @@ class SessionPage(tk.Frame):
 		# Check if trivia instance is already created
 		if not (hasattr(self, 'trivia')):
 			self.trivia = trivia.Trivia(session_name)  # Create Trivia instance here
-
+		else:
+			#reset when reopen sessionpage
+			self.trivia.Reset(session_name)
+		
+		# reset/update buttons, labels, & score
+		self.score_var.set(f"Score: {self.trivia.GetScore()}")
 		self.btn_increase.config(text=f"+{self.trivia.GetIncreaseAmount()}s") # update the value once it's been initialized
-	
-
+		self.is_answer_showing = False
+		self.track_has_played = False
+		# force update
+		app.update_idletasks()
 
 class tkinterApp(tk.Tk):
 	

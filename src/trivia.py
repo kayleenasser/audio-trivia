@@ -9,8 +9,13 @@ class Trivia:
 
     # OnSessionOpened
     def __init__(self, session_name):
+        self.Reset(session_name)
+    
+    # resets the trivia instance based on the current session
+    def Reset(self, session_name):
         self.session_name = session_name
         self.ResetScore()
+        print("resetting. score = ", self.score)
 
         # @TODO add this to settings! 
         self.increase_amount = 5 
@@ -22,8 +27,8 @@ class Trivia:
                 self.interval_length = session_info[constants.SETTINGS_KEY][constants.INTERVAL_LENGTH_KEY]
                 self.start_delay = session_info[constants.SETTINGS_KEY][constants.START_DELAY_KEY]
                 self.end_delay = session_info[constants.SETTINGS_KEY][constants.END_DELAY_KEY]
+                # self.increase_amount = session_info[constants.SETTINGS_KEY][constants.INCREASE_AMOUNT_KEY]
                 self.track_list = session_info[constants.AUDIO_FILE_PATHS_KEY]
-                self.ResetScore()
             else:
                 raise SessionNotFoundError(f"Session '{session_name}' not found.")
         except SessionNotFoundError as e:
@@ -39,7 +44,7 @@ class Trivia:
         self.track = tracks.GetRandomTrack(self.track_list) # get a random track from the session (name)
         self.timeStamp = self.track.GetRandomTimestamp(self.start_delay, self.end_delay, self.interval_length)
 
-        print(self.track)
+        print("playnext: ", self.track)
 
         #play the track right away
         self.track.Play(self.timeStamp, self.interval_length)

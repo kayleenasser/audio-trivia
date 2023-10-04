@@ -57,10 +57,8 @@ def GetRandomTrack(filepath_list):
 	while (len(filepath_list) > 0) :
 
 		# try getting a path
-		print ()
 		track_number = random.randint(0, len(filepath_list)-1)
 		path = Path(filepath_list[track_number])
-		print(track_number)
 
 		#if it doesn't exist, remove it from the list 
 		if not os.path.exists(path):
@@ -70,7 +68,6 @@ def GetRandomTrack(filepath_list):
 			# create the track and return it
 			path = Path(path)
 			track = Track(path.name, path)
-			print(track)
 			return track
 
 
@@ -85,8 +82,6 @@ if __name__ == '__main__':
 	track_list = sessions.get_session(constants.DEFAULT_SESSION_NAME)[constants.AUDIO_FILE_PATHS_KEY]
 
 	track = GetRandomTrack(track_list)
-
-	print(track)
 	if track:
 		interval = 5
 		track.Play(track.GetRandomTimestamp(0,0,interval),interval)
