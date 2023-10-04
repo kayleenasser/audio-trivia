@@ -1,6 +1,11 @@
+import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from sessions import _update_sessions_json
+
+import CTkListbox
+
 import constants as constants
 import customtkinter as ctk
 from CTkListbox import *
@@ -107,16 +112,94 @@ class SettingsPage(ctk.CTkFrame):
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
 
-		# # Switch to SESSIONS
-		# btn_session = ctk.Button(self, text =constants.SESSION,
-		# 					command = lambda : controller.show_frame(SessionPage))
-		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
-		# row+=1
+		f = open('src/sessions.json')
+		data = json.load(f)
+		sessionsList = list(data.keys())
+		listbox_sessions = CTkListbox(height=300, width=150, master=self, text_color="black")
+		listbox_sessions.place(x=200, y=200)
+		for i in range(1, len(sessionsList) + 1):
+			listbox_sessions.insert(i, sessionsList[i - 1])
+		#remove and rename session button
+		def rename_session():
+			if(listbox_sessions.curselection()==None):
+				return
+			popup = ctk.CTkToplevel(self)
+			popup.wm_title("Rename")
+			popup.geometry('150x150')
+			app_x = self.winfo_x()
+			app_y = self.winfo_y()
+			app_width = self.winfo_width()
+			app_height = self.winfo_height()
+			popup_width = 250
+			popup_height = 200
+			x = app_x + app_width // 2 - popup_width // 2
+			y = app_y + app_height // 2 - popup_height // 2
+			popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")  # Set popup window size and position
+			inputtxt = tk.Text(popup,
+                   height = 5,
+                   width = 20)
+
+			def changename():
+				newname = inputtxt.get(1.0, "end-1c")
+				if(newname in data):
+					errormessage = ctk.CTkLabel(popup,text="No duplicate session names",text_color="red")
+					errormessage.place(x=50,y=110)
+				else:
+					data[newname] = data[listbox_sessions.get(listbox_sessions.curselection())]
+					del data[listbox_sessions.get(listbox_sessions.curselection())]
+					_update_sessions_json(data)
+					listbox_sessions.insert(listbox_sessions.curselection(),newname)
+					listbox_sessions.delete(listbox_sessions.curselection())
+					popup.destroy()
+					return
+
+			submit_btn = ctk.CTkButton(popup,text="Submit",command=changename)
+			submit_btn.place(x=50,y=70)
+			inputtxt.pack()
+			if True:
+				popup.grab_set()
+				self.wait_window(popup)
+
+		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
+								 command=lambda: controller.show_frame(HomePage))
+		btn_remove_session.place(x=50,y=300)
+
+		btn_rename_session = ctk.CTkButton(self, text="Rename Session",
+								 command=lambda: rename_session())
+		btn_rename_session.place(x=50,y=350)
+
+
+		#Songs Box
+		listbox_songs = CTkListbox(height=300, width=200, master=self, text_color="black")
+		listbox_songs.place(x=400, y=200)
+		def loadSongs(evt):
+			if(listbox_sessions.selected!=None):
+				print(listbox_sessions.get(listbox_sessions.curselection()))
+				selsesh = data[listbox_sessions.get(listbox_sessions.curselection())]
+				audfiles = selsesh['audio_files']
+				for i in range(1,len(audfiles)+1):
+					listbox_songs.insert(i, audfiles[i - 1]['answer'])
+		listbox_sessions.bind("<Double-Button-1>", loadSongs)
+
+		#Song option buttons
+		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
+										   command=lambda: controller.show_frame(HomePage))
+		btn_remove_song.place(x=630, y=280)
+
+		btn_rename_song = ctk.CTkButton(self, text="Rename Song",
+										   command=lambda: controller.show_frame(HomePage))
+		btn_rename_song.place(x=630, y=330)
+
+		btn_add_song = ctk.CTkButton(self, text="Add Song",
+										command=lambda: controller.show_frame(HomePage))
+		btn_add_song.place(x=630, y=480)
 
 		btn_test_popup = ctk.CTkButton(self, text ="TEST",
 							command = lambda : controller.open_popup("test message", True))
 		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
+
+
 
 
 # consists of:
