@@ -30,6 +30,7 @@ DEFAULT_SESSION_NAME = "default"
 SESSIONS_DB_FILENAME = 'sessions.json'
 
 AUDIO_FILES_KEY = 'audio_files'
+PATH_KEY = 'path'
 ANSWER_KEY = 'answer'
 SETTINGS_KEY = 'settings'
 INTERVAL_LENGTH_KEY = 'interval_length'
