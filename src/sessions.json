@@ -20,23 +20,5 @@
             "start_delay": 0,
             "end_delay": 0
         }
-    },
-    "test3": {
-        "audio_files": [
-            {
-                "path": "test1.mp3",
-                "answer": "Test 1"
-            },
-            {
-                "path": "test3.mp3",
-                "answer": "Test 3"
-            }
-        ],
-        "settings": {
-            "interval_length": 5,
-            "increase_amount": 10,
-            "start_delay": 5,
-            "end_delay": 10
-        }
     }
 }
