@@ -322,8 +322,10 @@ class SessionPage(ctk.CTkFrame):
 
 		# increase interval
 		self._btn_increase = ctk.CTkButton(self, text='+3 secs.',
-			command=lambda: self._trivia.IncreaseIntervalLength())
+			command=lambda: self._increase_interval_length())
 		self._btn_increase.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
+		self._lbl_audio_length = ctk.CTkLabel(self, text=SMALL_FONT)
+		self._lbl_audio_length.place(relx=0.5, rely=0.35, anchor=ctk.CENTER)
 
 		# replay
 		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
@@ -336,13 +338,13 @@ class SessionPage(ctk.CTkFrame):
 			command=lambda: self._toggle_state([self._is_answer_showing],
 			btn_answer, constants.HIDE_ANSWER, constants.SHOW_ANSWER,
 			self._update_answer_toggle, self._show_hide_answer))
-		btn_answer.place(relx=0.5, rely=0.45, anchor=ctk.CENTER)
+		btn_answer.place(relx=0.5, rely=0.55, anchor=ctk.CENTER)
 
 		# this will change and can't be initialized once, so will have to move
 		# to a callback probably? we'll see 
 		# self._answer = trivia.GetAnswer()
 		self._lbl_answer = ctk.CTkLabel(self, text='', font=SMALL_FONT)
-		self._lbl_answer.place(relx=0.5, rely=0.55, anchor=ctk.CENTER)
+		self._lbl_answer.place(relx=0.5, rely=0.6, anchor=ctk.CENTER)
 
 		# success (add point to score, go to next)
 		btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
@@ -408,6 +410,11 @@ class SessionPage(ctk.CTkFrame):
 		else:
 			self._lbl_answer.configure(text='')
 
+	def _increase_interval_length(self):
+		self._trivia.IncreaseIntervalLength()
+		self._lbl_audio_length.configure(
+			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
+
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
 		if not (hasattr(self, 'trivia')):
@@ -422,6 +429,8 @@ class SessionPage(ctk.CTkFrame):
 		# update the value once it's been initialized
 		self._btn_increase.configure(text= \
 			f'+{self._trivia.GetIncreaseAmount()} sec.')
+		self._lbl_audio_length.configure(
+			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
 		self._is_answer_showing = False
 		self._track_has_played = False
 		app.update_idletasks() # force update
