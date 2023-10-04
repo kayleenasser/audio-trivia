@@ -315,7 +315,7 @@ class tkinterApp(ctk.CTk):
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
 			frame.lbl_title.config(text=self.session_name)
-		frame.ctkraise(*args)
+		frame.tkraise(*args)
 
 	# generic message popup helper
 	def open_popup(self, message, isBlocking):
