@@ -1,6 +1,10 @@
+import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+
+import CTkListbox
+
 import constants as constants
 import customtkinter as ctk
 from CTkListbox import *
@@ -86,16 +90,55 @@ class SettingsPage(ctk.CTkFrame):
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
 
-		# # Switch to SESSIONS
-		# btn_session = ctk.Button(self, text =constants.SESSION,
-		# 					command = lambda : controller.show_frame(SessionPage))
-		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
-		# row+=1
+		f = open('src/sessions.json')
+		data = json.load(f)
+		sessionsList = list(data.keys())
+		listbox_sessions = CTkListbox(height=300, width=150, master=self, text_color="black")
+		listbox_sessions.place(x=200, y=200)
+		for i in range(1, len(sessionsList) + 1):
+			listbox_sessions.insert(i, sessionsList[i - 1])
+		#remove and rename session button
+
+		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
+								 command=lambda: controller.show_frame(HomePage))
+		btn_remove_session.place(x=50,y=300)
+
+		btn_rename_session = ctk.CTkButton(self, text="Rename Session",
+								 command=lambda: controller.show_frame(HomePage))
+		btn_rename_session.place(x=50,y=350)
+
+
+		#Songs Box
+		listbox_songs = CTkListbox(height=300, width=200, master=self, text_color="black")
+		listbox_songs.place(x=400, y=200)
+		def loadSongs(evt):
+			if(listbox_sessions.selected!=None):
+				print(listbox_sessions.get(listbox_sessions.curselection()))
+				selsesh = data[listbox_sessions.get(listbox_sessions.curselection())]
+				audfiles = selsesh['audio_files']
+				for i in range(1,len(audfiles)+1):
+					listbox_songs.insert(i, audfiles[i - 1]['answer'])
+		listbox_sessions.bind("<Double-Button-1>", loadSongs)
+
+		#Song option buttons
+		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
+										   command=lambda: controller.show_frame(HomePage))
+		btn_remove_song.place(x=630, y=280)
+
+		btn_rename_song = ctk.CTkButton(self, text="Rename Song",
+										   command=lambda: controller.show_frame(HomePage))
+		btn_rename_song.place(x=630, y=330)
+
+		btn_add_song = ctk.CTkButton(self, text="Add Song",
+										command=lambda: controller.show_frame(HomePage))
+		btn_add_song.place(x=630, y=480)
 
 		btn_test_popup = ctk.CTkButton(self, text ="TEST",
 							command = lambda : controller.open_popup("test message", True))
 		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
+
+
 
 
 # consists of:
