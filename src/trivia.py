@@ -52,7 +52,7 @@ class Trivia:
         self.interval_length += interval_change
 
     def GetAnswer(self):
-        return self.track.name # or other success criteria
+        return "self.track.name" #self.track.name # or other success criteria
 
     # OnSuccessButtonPressed
     def UpdateScore(self):
