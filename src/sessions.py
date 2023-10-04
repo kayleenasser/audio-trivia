@@ -26,14 +26,33 @@ def default_sessions_json():
     """
     _update_sessions_json(const.DEFAULT_SESSION)
 
-def get_all_sessions() -> dict:
+def get_all_sessions(include_default=True) -> list[dict]:
     """
+    Args:
+        include_default: True, if default session is to be returned. False, if
+            not. Default is True.
+
     Returns:
-        dict: A dictionary containing all sessions and their associated info.
+        list[dict]: A list of dictionaries containing all sessions and their
+            associated info.
     """
     with open(os.path.join(const.DIRECTORY, const.SESSIONS_DB_FILENAME), \
         'r') as f:
-        return json.load(f)
+        sessions_dict = json.load(f)
+        if not include_default:
+            del sessions_dict[const.DEFAULT_SESSION_NAME]
+        return sessions_dict
+
+def get_num_sessions(include_default=True) -> int:
+    """
+    Args:
+        include_default: True, if default session is to be included in the
+            count. False, if not. Default is True.
+        
+    Returns:
+        int: An integer representing the number of sessions in sessions.json.
+    """
+    return len(get_all_sessions(include_default))
 
 def get_session(session_name : str) -> dict:
     """
