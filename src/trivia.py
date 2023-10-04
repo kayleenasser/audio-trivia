@@ -50,7 +50,7 @@ class Trivia:
         print("playnext: ", self.track)
 
         #play the track right away
-        self.track.Play(self.timeStamp, self.interval_length)
+        self.track.PlayThreaded(self.timeStamp, self.interval_length)
 
     # OnPlayPauseButtonPressed
     # currently just restarts doesn't resume (need a tracker for progress)
