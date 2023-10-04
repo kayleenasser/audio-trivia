@@ -3,7 +3,7 @@ import os
 import sessions
 import constants
 from pathlib import Path
-from pygame import time
+import pygame
 from pygame import mixer
 
 class Track:
@@ -12,6 +12,11 @@ class Track:
 		self.filepath = Path(filepath)
 		print(self.filepath)
 		self.duration = self.GetTrackLength()
+		pygame.init()
+		
+
+	def __del__(self):
+		mixer.quit()
 
 	# play this track
 	def GetRandomTimestamp(self, start_delay, end_delay, interval):
@@ -27,18 +32,41 @@ class Track:
 
 	def Play(self, timestamp, interval):
 		print("Playing track from: ", timestamp, " seconds.")
-		mixer.init() # Starting the mixer
+		mixer.init()
 		mixer.music.load(self.filepath) # Loading the song
 		mixer.music.set_volume(0.7)  # Setting the volume 
 		mixer.music.play(start = timestamp) # Starting song from second indicated
-		if mixer.music.get_pos == interval:
-			mixer.music.stop()
-			mixer.music.unload(self.filepath) # Unloads the song
-		time.wait(int(interval * 1000))  # Wait for the specified interval in milliseconds (pygame, not os)
+
+		clock = pygame.time.Clock()
+		running = True
+		while running:
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					running = False
+				# Handle your button inputs here
+				# For example:
+				# if event.type == pygame.KEYDOWN:
+				#     if event.key == pygame.K_SPACE:
+				#         # Handle spacebar press
+				#     elif event.key == pygame.K_ESCAPE:
+				#         running = False
+
+			# Check if the music has played for the desired interval
+			current_pos = mixer.music.get_pos() / 1000  # Convert milliseconds to seconds
+			if current_pos >= interval:
+				running = False
+
+			clock.tick(30)  # Limit the frame rate to 30 FPS
+
 		mixer.music.stop()
+		mixer.music.unload() # Unloads the song
+		return True # the value can be used for is_paused? 
+	
+		# time.wait(int(interval * 1000))  # Wait for the specified interval in milliseconds (pygame, not os)
+		#mixer.music.stop()
 		# @TODO : How to update the Play/Pause button in Trivia based on the music playing/not?
 		# right now just being updated by pressing the button, but we also "pause" inherently at the end of the track
-		mixer.quit()
+		#mixer.quit()
 
 	def Stop(self):
 		print("Stopping Track (placeholder)")

@@ -22,7 +22,8 @@ class Trivia:
             session_info = sessions.get_session(self.session_name)
             print(session_info)
             if session_info:
-                self.interval_length = session_info[constants.SETTINGS_KEY][constants.INTERVAL_LENGTH_KEY]
+                self.setting_interval_length = session_info[constants.SETTINGS_KEY][constants.INTERVAL_LENGTH_KEY]
+                self.interval_length = self.setting_interval_length #initialize as the same, but cache the original for reseting
                 self.start_delay = session_info[constants.SETTINGS_KEY][constants.START_DELAY_KEY]
                 self.end_delay = session_info[constants.SETTINGS_KEY][constants.END_DELAY_KEY]
                 self.increase_amount = session_info[constants.SETTINGS_KEY][constants.INCREASE_AMOUNT_KEY]
@@ -102,6 +103,8 @@ class Trivia:
     # when you want to try the same track again from a different spot
     def PlayDifferentInterval(self):
         print("PlayDifferentInterval.")
+        # reset the interval length to the original from the settings
+        self.interval_length = self.setting_interval_length
         # get a new timestamp and play it (same file)
         self.timeStamp = self.track.GetRandomTimestamp(self.interval_length, self.start_delay, self.end_delay)
         self.track.Play(self.timeStamp, self.interval_length)
