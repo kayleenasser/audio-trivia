@@ -1,6 +1,7 @@
 import sessions
 import tracks
 import constants
+import util
 
 # an instance of Trivia is made every time you load a session. When you close and reopen, the score resets, etc
 # when this launches, the settings are set. All this is is a mapping for the LOGIC functions needed for the frontend
@@ -17,9 +18,6 @@ class Trivia:
         self.ResetScore()
         print("resetting. score = ", self.score)
 
-        # @TODO add this to settings! 
-        self.increase_amount = 5 
-
         try:
             session_info = sessions.get_session(self.session_name)
             print(session_info)
@@ -27,8 +25,12 @@ class Trivia:
                 self.interval_length = session_info[constants.SETTINGS_KEY][constants.INTERVAL_LENGTH_KEY]
                 self.start_delay = session_info[constants.SETTINGS_KEY][constants.START_DELAY_KEY]
                 self.end_delay = session_info[constants.SETTINGS_KEY][constants.END_DELAY_KEY]
-                # self.increase_amount = session_info[constants.SETTINGS_KEY][constants.INCREASE_AMOUNT_KEY]
-                self.track_list = session_info[constants.AUDIO_FILE_PATHS_KEY]
+                self.increase_amount = session_info[constants.SETTINGS_KEY][constants.INCREASE_AMOUNT_KEY]
+
+                self.track_list = []
+                util.extract_data_from_json(session_info, constants.PATH_KEY, values=self.track_list)
+                #self.track_list = session_info[constants.AUDIO_FILES_KEY][constants.PATH_KEY] # a list of only the paths
+                print(self.track_list)
             else:
                 raise SessionNotFoundError(f"Session '{session_name}' not found.")
         except SessionNotFoundError as e:
