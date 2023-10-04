@@ -97,7 +97,7 @@ class CreateSessionPage(ctk.CTkFrame):
 class SettingsPage(ctk.CTkFrame):
 	
 	def __init__(self, parent, controller):
-
+		#test
 		row = 0
 		
 		ctk.CTkFrame.__init__(self, parent)
