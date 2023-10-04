@@ -119,17 +119,16 @@ class SessionPage(ctk.CTkFrame):
 		# NAV BUTTONS
 
 		# switch to HOME
-		btn_home = ctk.CTkButton(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
+		btn_home = ctk.CTkButton(self, text=constants.HOME,
+			command=lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 5)
-		row+=1
+		row += 1
 
 		# switch to SETTINGS
-		btn_sessions = ctk.CTkButton(self, text =constants.SETTINGS,
-							command = lambda : controller.show_frame(SettingsPage))
-		btn_sessions.grid(row = row, column = 1, padx = 10, pady = 5)
-		row+=1
-
+		btn_sessions = ctk.CTkButton(self, text=constants.SETTINGS,
+			command=lambda : controller.show_frame(SettingsPage))
+		btn_sessions.grid(row=row, column=1, padx=10, pady=5)
+		row += 1
 
 		# AUDIO BUTTONS
 		row = 1
@@ -140,79 +139,71 @@ class SessionPage(ctk.CTkFrame):
 		self.is_paused = True # default to paused (need to press play for first track)
 		self.track_has_played = False # default, use this to prevent success/x button use until track played
 		btn_play = ctk.CTkButton(self, text =constants.PLAY_BUTTON,
-							command = lambda : self.toggle_state(
-								[self.is_paused], 
-								btn_play,
-								constants.PLAY_BUTTON, 
-								constants.PAUSE_BUTTON, 
-								self.UpdatePlayToggle,
-								self.trivia.PlayPauseTrack)
-							)
-		btn_play.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+			command=lambda : self.toggle_state(
+			[self.is_paused], btn_play, constants.PLAY_BUTTON,
+			constants.PAUSE_BUTTON, self.UpdatePlayToggle,
+			self.trivia.PlayPauseTrack))
+		btn_play.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# replay
 		## get a symbol/icon eventually
-		replay_button = ctk.CTkButton(self, text =constants.REPLAY_BUTTON,
-							command = lambda : self.trivia.ReplayTrack())
-		replay_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
+			command=lambda : self.trivia.ReplayTrack())
+		replay_button.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 
 		# increase interval
 		# lazy initialization, updates in the initialize_trivia()
 		self.btn_increase = ctk.CTkButton(self, text="",
-							command = lambda : self.trivia.IncreaseIntervalLength())
-		self.btn_increase.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+			command=lambda : self.trivia.IncreaseIntervalLength())
+		self.btn_increase.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# show/hide answer
 		# toggle value when pressed and show/hide the answer label
 		self.is_answer_showing = False
-		btn_answer = ctk.CTkButton(self, text =constants.SHOW_ANSWER,
-							command = lambda : self.toggle_state(
-								[self.is_answer_showing], 
-								btn_answer,
-								constants.HIDE_ANSWER, 
-								constants.SHOW_ANSWER, 
-								self.UpdateAnswerToggle,
-								self.ShowHideAnswer)
-							)
-		btn_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+		btn_answer = ctk.CTkButton(self, text=constants.SHOW_ANSWER,
+			command=lambda : self.toggle_state(
+			[self.is_answer_showing], btn_answer, constants.HIDE_ANSWER,
+			constants.SHOW_ANSWER, self.UpdateAnswerToggle,
+			self.ShowHideAnswer))
+		btn_answer.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# this will change and can't be initialized once, so will have to move to a callback probably? We'll see 
 		# self.answer = trivia.GetAnswer()
-		self.lbl_answer = ctk.CTkLabel(self, text = "myanswer", font = SMALL_FONT)
-		self.lbl_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		self.lbl_answer = ctk.CTkLabel(self, text="myanswer", font=SMALL_FONT)
+		self.lbl_answer.grid(row=row, column=audio_button_column, padx=10, pady=5)
 		self.lbl_answer.grid_remove()
-		row+=1
+		row += 1
 
 		# success
 		# add point (and go to next)
-		btn_success = ctk.CTkButton(self, text =constants.SUCCESS_BUTTON,
-							command = lambda : self.UpdateScore(is_success=True, callback=self.trivia.PlayNextTrack))
-		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+		btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
+			command=lambda : self.UpdateScore(is_success=True, callback=self.trivia.PlayNextTrack))
+		btn_success.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# failure
 		# no points, just go to next
-		btn_failure = ctk.CTkButton(self, text =constants.FAILURE_BUTTON,
-							command = lambda : self.UpdateScore(is_success=False, callback=self.trivia.PlayNextTrack))
-		btn_failure.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+		btn_failure = ctk.CTkButton(self, text=constants.FAILURE_BUTTON,
+			command=lambda : self.UpdateScore(is_success=False, callback=self.trivia.PlayNextTrack))
+		btn_failure.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# retry
-		btn_retry = ctk.CTkButton(self, text =constants.RETRY_BUTTON,
-							command = lambda : self.trivia.PlayDifferentInterval())
-		btn_retry.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
-		row+=1
+		btn_retry = ctk.CTkButton(self, text=constants.RETRY_BUTTON,
+			command=lambda : self.trivia.PlayDifferentInterval())
+		btn_retry.grid(row=row, column=audio_button_column, padx=10, pady=5)
+		row += 1
 
 		# Score
 		self.score_var = StringVar()
 		self.score_var.set("Score: 0") # default
 		self.lbl_score = ctk.CTkLabel(self, textvariable=self.score_var, font=SMALL_FONT)
-		self.lbl_score.grid(row = 0, column = 0, padx = 5, pady = 5)
+		self.lbl_score.grid(row=0, column=0, padx=5, pady=5)
 	
 	# for play/pause and show/hide answer
 	# need to make it a list so that it's mutable
