@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter import simpledialog
 from tkinter.filedialog import askopenfilename
 from sessions import _update_sessions_json
 
@@ -73,9 +74,10 @@ class HomePage(ctk.CTkFrame):
 class CreateSessionPage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
-		audio = []
-
+		
 		ctk.CTkFrame.__init__(self, parent)
+
+		audio = []
 
 		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.20, anchor=CENTER)
@@ -92,8 +94,23 @@ class CreateSessionPage(ctk.CTkFrame):
 							command = lambda : self.upload_audio(audio))
 		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
 
-		self.load_audio_files(audio)
 		
+
+		self.listbox = tk.Listbox(self, selectmode=tk.SINGLE, width=75)
+		self.listbox.place(relx = 0.5, rely = 0.725, anchor=CENTER)
+		
+		#self.scrollbar = tk.Scrollbar(self, command=self.listbox.yview)
+		#self.scrollbar.place(relx=0.73, rely=0.7, anchor=CENTER)
+		#self.listbox.config(yscrollcommand=self.scrollbar.set)
+		
+		#self.load_audio_files(audio)
+			
+		self.edit_button = tk.Button(self, text="Edit", 
+							   command=lambda : self.edit_selected_row(audio=audio))
+		self.edit_button.place(relx=0.85, rely=0.7, anchor=CENTER)
+		
+		self.listbox.bind('<ButtonRelease-1>', self.on_select)
+
 		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
@@ -111,19 +128,33 @@ class CreateSessionPage(ctk.CTkFrame):
 		self.load_audio_files(audio)
 
 	def load_audio_files(self, audio):
-		listbox1 = CTkListbox(self, width=300)
-		for item in audio:
-			listbox1.insert(tk.END, item['path'])
-		listbox1.place(relx = 0.3, rely = 0.725, anchor=CENTER)
 
-		listbox2 = CTkListbox(self, width=300)
 		for item in audio:
-			listbox2.insert(tk.END, item['answer'])
-		listbox2.place(relx = 0.7, rely = 0.725, anchor=CENTER)
+			print("item")
+			self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
+		
+
+	def on_select(self, audio):
+		selected_index = self.listbox.curselection()
+		if selected_index:
+			index = int(selected_index[0])
+			print("Selected:", audio[index])
+
+	def edit_selected_row(self, audio):
+		print("edit")
+		selected_index = self.listbox.curselection()
+		if selected_index:
+			index = int(selected_index[0])
+			new_answer = simpledialog.askstring("Edit Answer", "Enter new answer:")
+			if new_answer is not None:
+				audio[index] = {'path': audio[index]['path'], 'answer' : new_answer}
+				self.listbox.delete(0, tk.END)
+				for item in audio:
+					self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
 
 	def clear_and_home(self, audio, session_name, controller):
 		audio = []
-		self.load_audio_files(audio)
+		#self.load_audio_files(audio)
 		session_name.delete(0, END)
 		controller.show_frame(HomePage)
 
