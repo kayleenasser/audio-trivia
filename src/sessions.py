@@ -1,19 +1,10 @@
 import json
 import os
+import constants
 
 """
 A module to perform CRUD operations on sessions.json.
 """
-
-SESSIONS_DB_FILENAME = 'sessions.json'
-
-AUDIO_FILE_PATHS_KEY = 'audio_file_paths'
-SETTINGS_KEY = 'settings'
-INTERVAL_LENGTH_KEY = 'interval_length'
-START_DELAY_KEY = 'start_delay'
-END_DELAY_KEY = 'end_delay'
-
-DIRECTORY = 'src'
 
 def _update_sessions_json(sessions_dict : dict):
     """
@@ -24,7 +15,7 @@ def _update_sessions_json(sessions_dict : dict):
             sessions.json.
     """
     sessions_obj = json.dumps(sessions_dict, indent=4)
-    with open(os.path.join( DIRECTORY,SESSIONS_DB_FILENAME), 'w') as openfile:
+    with open(os.path.join( constants.DIRECTORY,constants.SESSIONS_DB_FILENAME), 'w') as openfile:
         openfile.write(sessions_obj)
 
 def get_all_sessions() -> dict:
@@ -32,7 +23,7 @@ def get_all_sessions() -> dict:
     Returns:
         dict: A dictionary containing all sessions and their associated info.
     """
-    with open(os.path.join( DIRECTORY, SESSIONS_DB_FILENAME), 'r') as openfile:
+    with open(os.path.join( constants.DIRECTORY, constants.SESSIONS_DB_FILENAME), 'r') as openfile:
         return json.load(openfile)
 
 def get_session(session_name : str) -> dict:
@@ -72,11 +63,11 @@ def add_session(session_name : str, audio_fpaths : list[str],
         raise KeyError(f"The session name '{session_name}' already exists. \
             Please use another name.")
     sessions_dict[session_name] = {
-        AUDIO_FILE_PATHS_KEY: audio_fpaths,
-        SETTINGS_KEY: {
-            INTERVAL_LENGTH_KEY: interval_length,
-            START_DELAY_KEY: start_delay,
-            END_DELAY_KEY: end_delay
+        constants.AUDIO_FILE_PATHS_KEY: audio_fpaths,
+        constants.SETTINGS_KEY: {
+            constants.INTERVAL_LENGTH_KEY: interval_length,
+            constants.START_DELAY_KEY: start_delay,
+            constants.END_DELAY_KEY: end_delay
         }
     }
     _update_sessions_json(sessions_dict)
@@ -93,7 +84,7 @@ def add_audio_fpath(session_name : str, audio_fpath : str):
     sessions_dict = get_all_sessions()
     if session_name in sessions_dict:
         session = sessions_dict[session_name]
-        session[AUDIO_FILE_PATHS_KEY].append(audio_fpath)
+        session[constants.AUDIO_FILE_PATHS_KEY].append(audio_fpath)
         sessions_dict[session_name] = session
     _update_sessions_json(sessions_dict)
 
@@ -126,7 +117,7 @@ def update_session_audio_fpaths(session_name : str, audio_fpaths : list[str]):
     sessions_dict = get_all_sessions()
     if session_name in sessions_dict:
         session = sessions_dict[session_name]
-        session[AUDIO_FILE_PATHS_KEY] = audio_fpaths
+        session[constants.AUDIO_FILE_PATHS_KEY] = audio_fpaths
         sessions_dict[session_name] = session
     _update_sessions_json(sessions_dict)
 
@@ -148,14 +139,14 @@ def update_session_settings(session_name : str, interval_length=None,
     """
     sessions_dict = get_all_sessions()
     if session_name in sessions_dict:
-        session_settings = sessions_dict[session_name][SETTINGS_KEY]
+        session_settings = sessions_dict[session_name][constants.SETTINGS_KEY]
         if interval_length:
-            session_settings[INTERVAL_LENGTH_KEY] = interval_length
+            session_settings[constants.INTERVAL_LENGTH_KEY] = interval_length
         if start_delay:
-            session_settings[START_DELAY_KEY] = start_delay
+            session_settings[constants.START_DELAY_KEY] = start_delay
         if end_delay:
-            session_settings[END_DELAY_KEY] = end_delay
-        sessions_dict[session_name][SETTINGS_KEY] = session_settings
+            session_settings[constants.END_DELAY_KEY] = end_delay
+        sessions_dict[session_name][constants.SETTINGS_KEY] = session_settings
     _update_sessions_json(sessions_dict)
 
 def delete_session(session_name : str):
@@ -182,7 +173,7 @@ def delete_audio_fpath(session_name : str, audio_fpath : str):
     sessions_dict = get_all_sessions()
     if session_name in sessions_dict:
         session = sessions_dict[session_name]
-        session[AUDIO_FILE_PATHS_KEY].remove(audio_fpath)
+        session[constants.AUDIO_FILE_PATHS_KEY].remove(audio_fpath)
         sessions_dict[session_name] = session
     _update_sessions_json(sessions_dict)
 
