@@ -153,7 +153,7 @@ class SessionPage(ctk.CTkFrame):
 
 		# replay
 		## get a symbol/icon eventually
-		replay_button = ctk.CTkButton(self, text ="Relay",
+		replay_button = ctk.CTkButton(self, text =constants.REPLAY_BUTTON,
 							command = lambda : self.trivia.ReplayTrack())
 		replay_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
@@ -190,21 +190,21 @@ class SessionPage(ctk.CTkFrame):
 
 		# success
 		# add point (and go to next)
-		btn_success = ctk.CTkButton(self, text ="Check",
+		btn_success = ctk.CTkButton(self, text =constants.SUCCESS_BUTTON,
 							command = lambda : self.UpdateScore(is_success=True, callback=self.trivia.PlayNextTrack))
 		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# failure
 		# no points, just go to next
-		btn_failure = ctk.CTkButton(self, text ="X",
+		btn_failure = ctk.CTkButton(self, text =constants.FAILURE_BUTTON,
 							command = lambda : self.UpdateScore(is_success=False, callback=self.trivia.PlayNextTrack))
 		btn_failure.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# retry
-		btn_retry = ctk.CTkButton(self, text ="Retry",
-							command = lambda : self.trivia.ReplayTrack())
+		btn_retry = ctk.CTkButton(self, text =constants.RETRY_BUTTON,
+							command = lambda : self.trivia.PlayDifferentInterval())
 		btn_retry.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
@@ -220,9 +220,9 @@ class SessionPage(ctk.CTkFrame):
 		state_list[0] = not state_list[0]
 		# Toggle the state
 		if state_list[0]:
-			button.config(text=true_text)
+			button.configure(text=true_text)
 		else:
-			button.config(text=false_text)
+			button.configure(text=false_text)
 
 		# Pass the current state to a function
 		if updater:
@@ -259,7 +259,7 @@ class SessionPage(ctk.CTkFrame):
 		if is_answer_showing:
 			self.answer = self.trivia.GetAnswer()
 			self.lbl_answer.grid()
-			self.lbl_answer.config(text=self.answer)
+			self.lbl_answer.configure(text=self.answer)
 		else:
 			self.lbl_answer.grid_remove()
 
@@ -273,7 +273,7 @@ class SessionPage(ctk.CTkFrame):
 		
 		# reset/update buttons, labels, & score
 		self.score_var.set(f"Score: {self.trivia.GetScore()}")
-		self.btn_increase.config(text=f"+{self.trivia.GetIncreaseAmount()}s") # update the value once it's been initialized
+		self.btn_increase.configure(text=f"+{self.trivia.GetIncreaseAmount()}s") # update the value once it's been initialized
 		self.is_answer_showing = False
 		self.track_has_played = False
 		# force update
@@ -321,7 +321,7 @@ class tkinterApp(ctk.CTk):
 		frame = self.frames[cont]
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
-			frame.lbl_title.config(text=self.session_name)
+			frame.lbl_title.configure(text=self.session_name)
 		frame.tkraise(*args)
 
 	# generic message popup helper
@@ -377,9 +377,10 @@ class tkinterApp(ctk.CTk):
 		# Function to handle item selection
 		def on_select():
 			selected_index = listbox.curselection()
-			if selected_index:
+			if selected_index is not None:
 				selected_item = listbox.get(selected_index)
-				callback(selected_item)
+				self.session_name = selected_item
+				self.show_frame(SessionPage)
 			popup.destroy()
 
 		# Bind double-click event to the listbox
