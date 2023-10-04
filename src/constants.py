@@ -6,7 +6,7 @@ SETTINGS = "Settings"
 SESSION = "Session"
 HOME = "Home"
 OPEN_SESSION = "Open Session"
-NEW_SESSION = "New Session"
+CREATE_SESSION = "Create Session"
 
 # session buttons
 SHOW_ANSWER = "Show Answer"
