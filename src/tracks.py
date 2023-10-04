@@ -5,6 +5,7 @@ import constants
 from pathlib import Path
 import pygame
 from pygame import mixer
+import threading
 
 class Track:
 	def __init__(self, name, filepath):
@@ -13,10 +14,17 @@ class Track:
 		print(self.filepath)
 		self.duration = self.GetTrackLength()
 		pygame.init()
-		
 
+		self.playing = False
+		self.play_thread = None
+		
 	def __del__(self):
 		mixer.quit()
+
+	def PlayThreaded(self, timestamp, interval):
+		if not self.is_playing():
+			self.play_thread = threading.Thread(target=self.Play, args=(timestamp, interval))
+			self.play_thread.start()
 
 	# play this track
 	def GetRandomTimestamp(self, start_delay, end_delay, interval):
@@ -32,6 +40,7 @@ class Track:
 
 	def Play(self, timestamp, interval):
 		print("Playing track from: ", timestamp, " seconds.")
+		self.playing = True
 		mixer.init()
 		mixer.music.load(self.filepath) # Loading the song
 		mixer.music.set_volume(0.7)  # Setting the volume 
@@ -58,7 +67,7 @@ class Track:
 
 			clock.tick(30)  # Limit the frame rate to 30 FPS
 
-		mixer.music.stop()
+		self.Stop()
 		mixer.music.unload() # Unloads the song
 		return True # the value can be used for is_paused? 
 	
@@ -68,8 +77,23 @@ class Track:
 		# right now just being updated by pressing the button, but we also "pause" inherently at the end of the track
 		#mixer.quit()
 
+	def Pause(self):
+		self.playing = False
+		mixer.music.pause()
+		print("Pausing track.")
+
+	def Resume(self):
+		self.playing = True
+		mixer.music.unpause()
+		print("Resuming track.")
+
 	def Stop(self):
-		print("Stopping Track (placeholder)")
+		self.playing = False
+		mixer.music.stop()
+		print("Stopping track.")
+	
+	def is_playing(self):
+		return self.playing
 
 	# get the length of this track (INT ONLY)
 	def GetTrackLength(self):
@@ -102,15 +126,3 @@ def GetRandomTrack(filepath_list):
 	# all tracks are invalid
 	return None
 	
-
-if __name__ == '__main__':
-# ------------ MORE TEST STUFF ------------
-	mypath = Path("res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3")
-
-	track_list = sessions.get_session(constants.DEFAULT_SESSION_NAME)[constants.AUDIO_FILE_PATHS_KEY]
-
-	track = GetRandomTrack(track_list)
-	if track:
-		interval = 5
-		track.Play(track.GetRandomTimestamp(0,0,interval),interval)
-# -----------------------------------------
