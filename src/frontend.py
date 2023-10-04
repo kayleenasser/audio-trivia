@@ -22,21 +22,24 @@ class HomePage(ctk.CTkFrame):
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
 
+		label = ctk.CTkLabel(self, text="Welcome to audio trivia!\n Please choose how you would like to run your session!", font=MEDIUM_FONT)
+		label.place(relx=0.5, rely=0.3, anchor=CENTER)
+
 		# switch to CREATE_SESSION
 		create_session_btn = ctk.CTkButton(self, text=constants.CREATE_SESSION,
-			command=lambda : controller.show_frame(CreateSessionPage))
-		create_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
+			command=lambda : controller.show_frame(CreateSessionPage),height= 50, width=250)
+		create_session_btn.place(relx=0.45, rely=0.5, anchor=E)
 
 		# switch to OPEN_SESSION
 		open_session_btn = ctk.CTkButton(self, text=constants.OPEN_SESSION,
 			command=lambda : controller.open_session_popup(
-			constants.EXAMPLE_SESSIONS, controller.handle_selected_session))
-		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
+			constants.EXAMPLE_SESSIONS, controller.handle_selected_session),height= 50, width=250)
+		open_session_btn.place(relx=0.55, rely=0.5, anchor=W)
 
 		# switch to SETTINGS
 		settings_btn = ctk.CTkButton(self, text=constants.SETTINGS, 
-			command= lambda: controller.show_frame(SettingsPage))
-		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
+			command= lambda: controller.show_frame(SettingsPage),height= 10, width=10)
+		settings_btn.place(relx=0.05, rely=0.05, anchor=NW)
 
 
 class CreateSessionPage(ctk.CTkFrame):
@@ -44,17 +47,21 @@ class CreateSessionPage(ctk.CTkFrame):
 	def __init__(self, parent, controller):
 		ctk.CTkFrame.__init__(self, parent)
 
-		label = ctk.CTkLabel(self, text='Create a New Session', font=MEDIUM_FONT)
-		label.place(relx=0.5, rely=0.1, anchor=CENTER)
+		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
+		label.place(relx=0.5, rely=0.25, anchor=CENTER)
 
-		label = ctk.CTkLabel(self, text='Session Name', font=SMALL_FONT)
-		label.place(relx=0.25, rely=0.2, anchor=CENTER)
-		session_name = ctk.CTkEntry(self, width=15)
-		session_name.place(relx=0.6, rely=0.2, anchor=CENTER)
+		label = ctk.CTkLabel(self, text='Please enter session name:', font=MEDIUM_FONT)
+		label.place(relx=0.5, rely=0.4, anchor=CENTER)
+		session_name = ctk.CTkEntry(self, width=200)
+		session_name.place(relx=0.5, rely=0.5, anchor=CENTER)
 		
-		btn_home = ctk.CTkButton(self, text =constants.HOME,
+		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
+
+		btn_OK = ctk.CTkButton(self, text = "OK",
+							command = lambda : controller.show_frame(CreateSessionPage))
+		btn_OK.place(relx=0.5, rely=0.6, anchor=CENTER)
 		
 
 
@@ -282,7 +289,7 @@ class tkinterApp(ctk.CTk):
 		ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 		# Setup
 		self.title(constants.APP_TITLE)
-		self.geometry('1000x1000') #widthxheight
+		self.geometry('800x600') #widthxheight
 		
 		# creating a container
 		container = ctk.CTkFrame(self)
@@ -321,7 +328,7 @@ class tkinterApp(ctk.CTk):
 	def open_popup(self, message, isBlocking):
 		popup = ctk.CTkToplevel(self)
 		popup.wm_title("Popup")
-		popup.geometry('50x50')
+		popup.geometry('100x100')
 		# popup.overrideredirect(True) # hide minimize/x button/drag bar
 
 		# Calculate the center coordinates for the popup window
