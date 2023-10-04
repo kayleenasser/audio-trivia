@@ -112,9 +112,9 @@ class SessionPage(ctk.CTkFrame):
 		ctk.CTkFrame.__init__(self, parent)
 
 		row = 0
-		self.lbl_title = ctk.CTkLabel(self, text =sessionName, font = LARGE_FONT)
-		self.lbl_title.grid(row = row, column = 4, padx = 10, pady = 10)
-		row+=1
+		self.lbl_title = ctk.CTkLabel(self, text=sessionName, font=LARGE_FONT)
+		self.lbl_title.grid(row=row, column=4, padx=10, pady=10)
+		row += 1
 
 		# NAV BUTTONS
 
