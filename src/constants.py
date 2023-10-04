@@ -1,5 +1,5 @@
 # frontend.py ################################################################
-APP_TITLE = "Audio Trivia"
+APP_TITLE = "Listen Up!"
 SETTINGS = "Settings"
 SESSION = "Session"
 HOME = "Home"
