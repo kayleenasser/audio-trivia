@@ -294,7 +294,11 @@ class SessionPage(ctk.CTkFrame):
 		self._score.set("Score: 0")
 		lbl_score = ctk.CTkLabel(self, textvariable=self._score,
 			font=MEDIUM_FONT)
-		lbl_score.place(relx=0.95, rely=0.08, anchor=NE)
+		lbl_score.place(relx=0.95, rely=0.07, anchor=ctk.NE)
+
+		self._replay_count = 0
+		self._lbl_replay = ctk.CTkLabel(self, text='Replays: 0', font=MEDIUM_FONT)
+		self._lbl_replay.place(relx=0.95, rely=1, anchor=ctk.NE)
 
 		# NAV BUTTONS ########################################################
 		# switch to HOME
@@ -329,7 +333,7 @@ class SessionPage(ctk.CTkFrame):
 
 		# replay
 		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
-			command=lambda: self._trivia.ReplayTrack())
+			command=lambda: self._replay_track())
 		replay_button.place(relx=0.6, rely=0.3, anchor=ctk.W)
 		
 		# toggle value when pressed and show/hide the answer label
@@ -414,6 +418,11 @@ class SessionPage(ctk.CTkFrame):
 		self._trivia.IncreaseIntervalLength()
 		self._lbl_audio_length.configure(
 			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
+		
+	def _replay_track(self):
+		self._trivia.ReplayTrack()
+		self._replay_count += 1
+		self._lbl_replay.configure(text=f'Replays: {self._replay_count}')
 
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
@@ -426,6 +435,8 @@ class SessionPage(ctk.CTkFrame):
 		
 		# reset/update buttons, labels, & score
 		self._score.set(f'Score: {self._trivia.GetScore()}')
+		self._replay_count = 0
+		self._lbl_replay.configure(text=f'Replays: {self._replay_count}')
 		# update the value once it's been initialized
 		self._btn_increase.configure(text= \
 			f'+{self._trivia.GetIncreaseAmount()} sec.')
