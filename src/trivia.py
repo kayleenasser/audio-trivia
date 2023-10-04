@@ -11,6 +11,10 @@ class Trivia:
         self.session_name = session_name
         self.ResetScore()
 
+        # @TODO add this to settings! 
+        self.increase_amount = 5 
+
+
         try:
             session_info = sessions.get_session(self.session_name)
             print(session_info)
@@ -29,6 +33,7 @@ class Trivia:
 
     # OnNextButtonPressed / OnFailButtonPress
     def PlayNextTrack(self):
+        print("PlayNextTrack.")
         # get the track and the start timestamp
         self.track = tracks.GetRandomTrack(self.session_name) # get a random track from the session (name)
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
@@ -39,31 +44,41 @@ class Trivia:
     # OnPlayPauseButtonPressed
     # should just pass in the current value of the boolean and use that i think?
     def PlayPauseTrack(self, isPaused):
-        print(isPaused)
+        print("PlayPauseTrack. isPaused: ", isPaused)
 
     # OnReplayButtonPressed
     def ReplayTrack(self):
+        print("ReplayTrack.")
         #play it again from the same timestamp
         self.track.Play(self.timeStamp, self.interval_length)
 
     # OnIncreaseIntervalButtonPressed
-    def UpdateIntervalLength(self, interval_change):
+    def IncreaseIntervalLength(self):
+        print("UpdateIntervalLength.")
         # if we change the interval, it will override the end_delay and keep playing to the end of the song if it needs to 
-        self.interval_length += interval_change
+        self.interval_length += self.increase_amount
 
     def GetAnswer(self):
         return "self.track.name" #self.track.name # or other success criteria
+    
+    def GetIncreaseAmount(self):
+        return self.increase_amount
 
     # OnSuccessButtonPressed
     def UpdateScore(self):
+        print("UpdateScore.")
         score+=1
         self.PlayNextTrack(self.session_name)
 
     # used for init, do we want a reset button?
     def ResetScore(self):
+        print("ResetScore.")
         self.score=0
 
+    # OnRetryTrackButtonPressed
+    # when you want to try the same track again from a different spot
     def PlayDifferentInterval(self):
+        print("PlayDifferentInterval.")
         # get a new timestamp and play it (same file)
         self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
         self.track.Play(self.timeStamp, self.interval_length)
