@@ -17,7 +17,7 @@ SMALL_FONT = ('Verdana', 12)
 class HomePage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
+		ctk.CTkFrame.__init__(self, parent)
 
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
@@ -278,7 +278,8 @@ class tkinterApp(ctk.CTk):
 	def __init__(self, *args, **kwargs):
 
 		ctk.CTk.__init__(self, *args, **kwargs)
-
+		ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
+		ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 		# Setup
 		self.title(constants.APP_TITLE)
 		self.geometry('1000x1000') #widthxheight
