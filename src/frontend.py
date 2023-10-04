@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter.filedialog import askopenfilename
 from sessions import _update_sessions_json
 import util
 
@@ -14,6 +15,8 @@ import trivia
 import sessions
 import os
 from PIL import Image, ImageTk
+from sessions import *
+import os
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -63,23 +66,61 @@ class HomePage(ctk.CTkFrame):
 class CreateSessionPage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
+		audio = []
+
 		ctk.CTkFrame.__init__(self, parent)
 
 		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.25, anchor=CENTER)
+		label.place(relx=0.5, rely=0.20, anchor=CENTER)
 
 		label = ctk.CTkLabel(self, text='Please enter session name:', font=MEDIUM_FONT)
-		label.place(relx=0.5, rely=0.4, anchor=CENTER)
+		label.place(relx=0.5, rely=0.3, anchor=CENTER)
 		session_name = ctk.CTkEntry(self, width=200)
-		session_name.place(relx=0.5, rely=0.5, anchor=CENTER)
+		session_name.place(relx=0.5, rely=0.35, anchor=CENTER)
+
+		label = ctk.CTkLabel(self, text='Please select audio files:', font=MEDIUM_FONT)
+		label.place(relx=0.5, rely=0.45, anchor=CENTER)
+
+		btn_home = ctk.CTkButton(self, text ="Browse",
+							command = lambda : self.upload_audio(audio))
+		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
+
+		self.load_audio_files(audio)
 		
 		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-		btn_OK = ctk.CTkButton(self, text = "OK",
-							command = lambda : controller.show_frame(CreateSessionPage))
-		btn_OK.place(relx=0.5, rely=0.6, anchor=CENTER)
+		btn_OK = ctk.CTkButton(self, text = "Save",
+							command = lambda : add_session(session_name.get(), audio, callback=self.clear_and_home(audio, session_name, controller)))
+		btn_OK.place(relx=0.5, rely=0.95, anchor=CENTER)
+
+	def upload_audio(self, audio):
+		tk.Tk().withdraw()
+		fp = askopenfilename()
+		fn = os.path.basename(fp)
+		
+		audio.append({'path': fp, 'answer': fn})
+		self.load_audio_files(audio)
+
+	def load_audio_files(self, audio):
+		listbox1 = CTkListbox(self, width=300)
+		for item in audio:
+			listbox1.insert(tk.END, item['path'])
+		listbox1.place(relx = 0.3, rely = 0.725, anchor=CENTER)
+
+		listbox2 = CTkListbox(self, width=300)
+		for item in audio:
+			listbox2.insert(tk.END, item['answer'])
+		listbox2.place(relx = 0.7, rely = 0.725, anchor=CENTER)
+
+	def clear_and_home(self, audio, session_name, controller):
+		audio = []
+		self.load_audio_files(audio)
+		session_name.delete(0, END)
+		controller.show_frame(HomePage)
+
+
 		
 
 
