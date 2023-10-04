@@ -20,10 +20,10 @@ class HomePage(tk.Frame):
 		label = ttk.Label(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
 
-		# switch to NEW_SESSION
-		new_session_btn = ttk.Button(self, text=constants.NEW_SESSION,
-			command=lambda : controller.show_frame(NewSessionPage))
-		new_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
+		# switch to CREATE_SESSION
+		create_session_btn = ttk.Button(self, text=constants.CREATE_SESSION,
+			command=lambda : controller.show_frame(CreateSessionPage))
+		create_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
 
 		# switch to OPEN_SESSION
 		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
@@ -37,7 +37,7 @@ class HomePage(tk.Frame):
 		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
 
 
-class NewSessionPage(tk.Frame):
+class CreateSessionPage(tk.Frame):
 
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
@@ -284,7 +284,7 @@ class tkinterApp(tk.Tk):
 
 		# iterating through a tuple consisting
 		# of the different page layouts
-		for F in (HomePage, NewSessionPage, SettingsPage, SessionPage):
+		for F in (HomePage, CreateSessionPage, SettingsPage, SessionPage):
 
 			frame = F(container, self)
 
