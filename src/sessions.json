@@ -1,47 +1,42 @@
 {
     "default": {
-        "audio_file_paths": [
-            "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
-            "res/test_audio/1-03 The Southern Air Temple.mp3",
-            "res/test_audio/1-04 The Warriors of Kyoshi.mp3"
+        "audio_files": [
+            {
+                "path": "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
+                "answer": "The Boy in the Iceberg"
+            },
+            {
+                "path": "res/test_audio/1-03 The Southern Air Temple.mp3",
+                "answer": "The Southern Air Temple"
+            },
+            {
+                "path": "res/test_audio/1-04 The Warriors of Kyoshi.mp3",
+                "answer": "The Warriors of Kyoshi"
+            }
         ],
         "settings": {
             "interval_length": 5,
+            "increase_amount": 3,
             "start_delay": 0,
             "end_delay": 0
         }
     },
-    "session1": {
-        "audio_file_paths": [
-            "example1.mp3",
-            "example2.mp3"
+    "test3": {
+        "audio_files": [
+            {
+                "path": "test1.mp3",
+                "answer": "Test 1"
+            },
+            {
+                "path": "test3.mp3",
+                "answer": "Test 3"
+            }
         ],
         "settings": {
-            "interval_length": 1,
-            "start_delay": 1,
-            "end_delay": 1
-        }
-    },
-    "session2": {
-        "audio_file_paths": [
-            "example1.mp3",
-            "example2.mp3"
-        ],
-        "settings": {
-            "interval_length": 2,
-            "start_delay": 2,
-            "end_delay": 2
-        }
-    },
-    "Session": {
-        "audio_file_paths": [
-            "example1.mp3",
-            "example2.mp3"
-        ],
-        "settings": {
-            "interval_length": 10,
-            "start_delay": 0,
-            "end_delay": 0
+            "interval_length": 5,
+            "increase_amount": 10,
+            "start_delay": 5,
+            "end_delay": 10
         }
     }
 }
