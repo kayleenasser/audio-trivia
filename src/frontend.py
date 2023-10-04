@@ -7,7 +7,7 @@ from CTkListbox import *
 import trivia
 import sessions
 import os
-#from PIL import ImageTk
+from PIL import Image, ImageTk
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -23,26 +23,36 @@ class HomePage(ctk.CTkFrame):
 		ctk.CTkFrame.__init__(self, parent)
 		self.controller = controller
 
+		banner = Image.open("C:\Files\Hackathon\src\\assets\\dark-bg.PNG")
+		banner_photo = ImageTk.PhotoImage(banner)
+		baner_label = tk.Label(image=banner_photo)
+		baner_label.config(borderwidth=0)
+		baner_label.image = banner_photo
+		# Position banner
+		baner_label.place(relx=0.5, rely=0, anchor=N)
+		baner_label
+
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.2, anchor=CENTER)
+		label.place(relx=0.5, rely=0.35, anchor=N)
 
 		label = ctk.CTkLabel(self, text="Welcome to audio trivia!\n Please choose how you would like to run your session!", font=MEDIUM_FONT)
-		label.place(relx=0.5, rely=0.3, anchor=CENTER)
+		label.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 		# switch to CREATE_SESSION
 		create_session_btn = ctk.CTkButton(self, text=constants.CREATE_SESSION,
 			command=lambda : controller.show_frame(CreateSessionPage),height= 50, width=250)
-		create_session_btn.place(relx=0.45, rely=0.5, anchor=E)
+		create_session_btn.place(relx=0.45, rely=0.6, anchor=E)
 
 		# switch to OPEN_SESSION
 		open_session_btn = ctk.CTkButton(self, text=constants.OPEN_SESSION,
 			command=lambda : self.OnOpenSessionClicked(),height= 50, width=250)
-		open_session_btn.place(relx=0.55, rely=0.5, anchor=W)
+		open_session_btn.place(relx=0.55, rely=0.6, anchor=W)
 
 		# switch to SETTINGS
 		settings_btn = ctk.CTkButton(self, text=constants.SETTINGS, 
 			command= lambda: controller.show_frame(SettingsPage),height= 10, width=10)
-		settings_btn.place(relx=0.05, rely=0.05, anchor=NW)
+		settings_btn.place(relx=0.05, rely=0.95, anchor=SW)
+		settings_btn.lift()
 	
 	def OnOpenSessionClicked(self):
 		if sessions.get_num_sessions() == 1:
@@ -296,9 +306,9 @@ class tkinterApp(ctk.CTk):
 	def __init__(self, *args, **kwargs):
 
 		ctk.CTk.__init__(self, *args, **kwargs)
-		ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
+		ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
 		ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-		self.after(201, lambda :app.iconbitmap('src\\assets\icon.ico'))
+		self.after(201, lambda :self.iconbitmap('src\\assets\icon.ico'))
 		# Setup
 		self.title(constants.APP_TITLE)
 		self.geometry('800x600') #widthxheight
