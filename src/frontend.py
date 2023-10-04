@@ -6,6 +6,8 @@ import customtkinter as ctk
 from CTkListbox import *
 import trivia
 import sessions
+import os
+#from PIL import ImageTk
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -296,6 +298,7 @@ class tkinterApp(ctk.CTk):
 		ctk.CTk.__init__(self, *args, **kwargs)
 		ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
 		ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+		self.after(201, lambda :app.iconbitmap('src\\assets\icon.ico'))
 		# Setup
 		self.title(constants.APP_TITLE)
 		self.geometry('800x600') #widthxheight
