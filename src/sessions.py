@@ -67,7 +67,7 @@ def get_session(session_name : str) -> dict:
         return sessions_dict[session_name]
 
 
-def add_session(session_name : str, audio_files : list[dict[str, str]],
+def add_session(session_name : str, audio_files : list[dict[str, str]], callback,
     interval_length=10, increase_amount=3, start_delay=0, end_delay=0):
     """
     Adds a new session to sessions.json with the specified arguments.
@@ -103,6 +103,9 @@ def add_session(session_name : str, audio_files : list[dict[str, str]],
         }
     }
     _update_sessions_json(sessions_dict)
+
+    if (callback):
+        callback
 
 def add_audio_file(session_name : str, audio_file : dict[str, str]):
     """
