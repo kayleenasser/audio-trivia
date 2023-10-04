@@ -80,9 +80,10 @@ class Trivia:
     def UpdateScore(self):
         print("UpdateScore.")
         self.score+=1
-        self.PlayNextTrack()
+        print("Score: ", self.score)
     
     def GetScore(self):
+        print("score: ", self.score)
         return self.score
 
     # used for init, do we want a reset button?

@@ -49,6 +49,11 @@ class NewSessionPage(tk.Frame):
 		label.place(relx=0.25, rely=0.2, anchor=CENTER)
 		session_name = ttk.Entry(self, width=15)
 		session_name.place(relx=0.6, rely=0.2, anchor=CENTER)
+		
+		btn_home = ttk.Button(self, text =constants.HOME,
+							command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
+		
 
 
 # consists of:
@@ -122,7 +127,8 @@ class SessionPage(tk.Frame):
 		
 		# play/pause
 		## get a symbol/icon eventually
-		self.is_paused = True # default to playing (probably will change if we add a start button or smth)
+		self.is_paused = True # default to paused (need to press play for first track)
+		self.track_has_played = False # default, use this to prevent success/x button use until track played
 		btn_play = ttk.Button(self, text =constants.PLAY_BUTTON,
 							command = lambda : self.toggle_state(
 								[self.is_paused], 
@@ -175,7 +181,7 @@ class SessionPage(tk.Frame):
 		# success
 		# add point (and go to next)
 		btn_success = ttk.Button(self, text ="Check",
-							command = lambda : self.trivia.UpdateScore())
+							command = lambda : self.UpdateScore(self.trivia.PlayNextTrack))
 		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
@@ -187,8 +193,8 @@ class SessionPage(tk.Frame):
 		row+=1
 
 		# retry
-		btn_retry = ttk.Button(self, text ="X",
-							command = lambda : controller.show_frame(SettingsPage))
+		btn_retry = ttk.Button(self, text ="Retry",
+							command = lambda : self.trivia.ReplayTrack())
 		btn_retry.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
@@ -214,6 +220,11 @@ class SessionPage(tk.Frame):
 	
 	def UpdatePlayToggle(self, isPaused, callback):
 		self.is_paused = isPaused
+		# the first time (or rather, every time) it plays the track, update that one has been played. 
+		# (this is to ensure we don't add score before it's been played)
+		if not self.is_paused:
+			self.track_has_played = True
+
 		if callback:
 			callback(self.is_paused)
 
@@ -222,9 +233,15 @@ class SessionPage(tk.Frame):
 		if callback:
 			callback(self.is_answer_showing)
 	
-	def UpdateScore(self):
-		self.trivia.UpdateScore()
-		self.score_var = f"{self.trivia.GetScore} points"
+	def UpdateScore(self, callback):
+		if self.track_has_played:
+			self.trivia.UpdateScore()
+		
+		self.score_var.set(f"{self.trivia.GetScore()} points")
+		app.update_idletasks() # update score immediately before continuing
+		# typically play next song
+		if callback:
+			callback()
 
 	
 	def ShowHideAnswer(self, is_answer_showing):
