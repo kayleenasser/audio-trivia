@@ -37,14 +37,25 @@ class Trivia:
         print("PlayNextTrack.")
         # get the track and the start timestamp
         self.track = tracks.GetRandomTrack(self.track_list) # get a random track from the session (name)
-        self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
+        self.timeStamp = self.track.GetRandomTimestamp(self.start_delay, self.end_delay, self.interval_length)
+
+        print(self.track)
 
         #play the track right away
         self.track.Play(self.timeStamp, self.interval_length)
 
     # OnPlayPauseButtonPressed
-    # should just pass in the current value of the boolean and use that i think?
+    # currently just restarts doesn't resume (need a tracker for progress)
     def PlayPauseTrack(self, isPaused):
+        print("paused? ", isPaused)
+        if not isPaused:
+            if not hasattr(self, 'track'):
+                self.PlayNextTrack()
+            else:
+                self.ReplayTrack() #will resume instead
+        else:
+            self.track.Stop()
+            
         print("PlayPauseTrack. isPaused: ", isPaused)
 
     # OnReplayButtonPressed

@@ -1,9 +1,9 @@
 import random
-import time
 import os
 import sessions
 import constants
 from pathlib import Path
+from pygame import time
 from pygame import mixer
 
 class Track:
@@ -15,25 +15,32 @@ class Track:
 		self.duration = self.GetTrackLength()
 
 	# play this track
-	def PlayTrack(self, start_delay, end_delay, interval):
+	def GetRandomTimestamp(self, start_delay, end_delay, interval):
 		print(start_delay, self.duration, end_delay, interval)
 		try:
-			start_point = random.randint(start_delay, int(self.duration - end_delay - interval))
+			timestamp = random.randint(start_delay, int(self.duration - end_delay - interval))
 			
 		except:
 			print("No valid timestamp available. Ignoring delays.")
-			start_point = random.randint(0, int(self.duration - interval))
+			timestamp = random.randint(0, int(self.duration - interval))
 
-		print("Playing track from: ", start_point, " seconds")
+		return timestamp
 
+	def Play(self, timestamp, interval):
+		print("Playing track from: ", timestamp, " seconds.")
 		mixer.init() # Starting the mixer
 		mixer.music.load(self.filepath) # Loading the song
 		mixer.music.set_volume(0.7)  # Setting the volume 
-		mixer.music.play(start = start_point) # Starting song from second indicated
+		mixer.music.play(start = timestamp) # Starting song from second indicated
 		if mixer.music.get_pos == interval:
 			mixer.music.stop()
 			mixer.music.unload(self.filepath) # Unloads the song
-		time.sleep(interval)
+		time.wait(int(interval * 1000))  # Wait for the specified interval in milliseconds (pygame, not os)
+		mixer.music.stop()
+		mixer.quit()
+
+	def Stop(self):
+		print("Stopping Track (placeholder)")
 
 	# get the length of this track (INT ONLY)
 	def GetTrackLength(self):
@@ -42,7 +49,6 @@ class Track:
 		length_in_seconds = (mixer.Sound(self.filepath).get_length())
 		mixer.quit()
 		return length_in_seconds
-
 
 
 # get a random filepath from the session, and return a Track object
@@ -81,5 +87,6 @@ if __name__ == '__main__':
 
 	print(track)
 	if track:
-		track.PlayTrack(0,0,5)
+		interval = 5
+		track.Play(track.GetRandomTimestamp(0,0,interval),interval)
 # -----------------------------------------

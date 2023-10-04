@@ -122,8 +122,8 @@ class SessionPage(tk.Frame):
 		
 		# play/pause
 		## get a symbol/icon eventually
-		self.is_paused = False # default to playing (probably will change if we add a start button or smth)
-		btn_play = ttk.Button(self, text =constants.PAUSE_BUTTON,
+		self.is_paused = True # default to playing (probably will change if we add a start button or smth)
+		btn_play = ttk.Button(self, text =constants.PLAY_BUTTON,
 							command = lambda : self.toggle_state(
 								[self.is_paused], 
 								btn_play,
