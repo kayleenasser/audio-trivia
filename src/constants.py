@@ -12,6 +12,9 @@ HIDE_ANSWER = "Hide Answer"
 PLAY_BUTTON = "Play"
 PAUSE_BUTTON = "Pause"
 REPLAY_BUTTON = "Replay"
+SUCCESS_BUTTON = "Checkmark"
+FAILURE_BUTTON = "X"
+RETRY_BUTTON = "Retry"
 
 EXAMPLE_SESSIONS = [
     "default",

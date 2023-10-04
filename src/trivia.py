@@ -103,7 +103,7 @@ class Trivia:
     def PlayDifferentInterval(self):
         print("PlayDifferentInterval.")
         # get a new timestamp and play it (same file)
-        self.timeStamp = tracks.GetRandomTimestamp(self.track, self.interval_length, self.start_delay, self.end_delay)
+        self.timeStamp = self.track.GetRandomTimestamp(self.interval_length, self.start_delay, self.end_delay)
         self.track.Play(self.timeStamp, self.interval_length)
 
 # ERRORS
