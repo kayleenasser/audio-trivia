@@ -97,8 +97,8 @@ class SessionPage(tk.Frame):
 		tk.Frame.__init__(self, parent)
 
 		row = 0
-		label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
-		label.grid(row = row, column = 4, padx = 10, pady = 10)
+		self.title_label = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		self.title_label.grid(row = row, column = 4, padx = 10, pady = 10)
 		row+=1
 
 		# switch to HOME
@@ -156,14 +156,17 @@ class SessionPage(tk.Frame):
 								constants.HIDE_ANSWER, 
 								constants.SHOW_ANSWER, 
 								self.UpdateAnswerToggle,
-								None)
+								self.ShowHideAnswer)
 							)
 		btn_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# this will change and can't be initialized once, so will have to move to a callback probably? We'll see 
 		# self.answer = trivia.GetAnswer()
-		# self.lbl_answer = ttk.Label(self, text = answer, font = LARGE_FONT)
+		self.lbl_answer = ttk.Label(self, text = "myanswer", font = SMALL_FONT)
+		self.lbl_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
+		self.lbl_answer.grid_remove()
+		row+=1
 
 		# success
 		success_button = ttk.Button(self, text ="Check",
@@ -203,9 +206,11 @@ class SessionPage(tk.Frame):
 	
 	def ShowHideAnswer(self, is_answer_showing):
 		if is_answer_showing:
-			label.show()
+			self.answer = self.trivia.GetAnswer()
+			self.lbl_answer.grid()
+			self.lbl_answer.config(text=self.answer)
 		else:
-			label.hide()
+			self.lbl_answer.grid_remove()
 
 	def initialize_trivia(self, session_name):
 		# Check if trivia instance is already created
@@ -223,7 +228,7 @@ class tkinterApp(tk.Tk):
 		
 		# Setup
 		self.title(constants.APP_TITLE)
-		self.geometry('350x500') #widthxheight
+		self.geometry('500x500') #widthxheight
 		
 		# creating a container
 		container = tk.Frame(self)
@@ -255,6 +260,7 @@ class tkinterApp(tk.Tk):
 		frame = self.frames[cont]
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
+			frame.title_label.config(text=self.session_name)
 		frame.tkraise(*args)
 
 	# generic message popup helper
