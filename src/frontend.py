@@ -124,13 +124,13 @@ class SessionPage(ctk.CTkFrame):
 		# NAV BUTTONS ########################################################
 		# switch to HOME
 		btn_home = ctk.CTkButton(self, text=constants.HOME, 
-			command= lambda: controller.show_frame(HomePage), height=20,
+			command= lambda:controller.show_frame(HomePage), height=20,
 			width=80)
 		btn_home.place(relx=0.05, rely=0.05, anchor=NW)
 
 		# switch to SETTINGS
 		btn_settings = ctk.CTkButton(self, text=constants.SETTINGS, 
-			command= lambda: controller.show_frame(SettingsPage), height=20,
+			command= lambda:controller.show_frame(SettingsPage), height=20,
 			width=80)
 		btn_settings.place(relx=0.05, rely=0.1, anchor=NW)
 
@@ -140,27 +140,27 @@ class SessionPage(ctk.CTkFrame):
 		# use this to prevent yay or nay button use until audio has played
 		self._track_has_played = False
 		btn_play = ctk.CTkButton(self, text=constants.PLAY_BUTTON,
-			command=lambda : self.toggle_state([self._is_paused], btn_play,
+			command=lambda: self._toggle_state([self._is_paused], btn_play,
 			constants.PLAY_BUTTON, constants.PAUSE_BUTTON,
-			self.update_play_toggle, self.trivia.PlayPauseTrack))
+			self._update_play_toggle, self._trivia.PlayPauseTrack))
 		btn_play.place(relx=0.4, rely=0.3, anchor=ctk.E)
 
 		# increase interval
 		self._btn_increase = ctk.CTkButton(self, text='+3 secs.',
-			command=lambda : self.trivia.IncreaseIntervalLength())
+			command=lambda: self._trivia.IncreaseIntervalLength())
 		self._btn_increase.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
 
 		# replay
 		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
-			command=lambda : self.trivia.ReplayTrack())
+			command=lambda: self._trivia.ReplayTrack())
 		replay_button.place(relx=0.6, rely=0.3, anchor=ctk.W)
 		
 		# toggle value when pressed and show/hide the answer label
 		self._is_answer_showing = False
 		btn_answer = ctk.CTkButton(self, text=constants.SHOW_ANSWER,
-			command=lambda : self.toggle_state([self._is_answer_showing],
+			command=lambda: self._toggle_state([self._is_answer_showing],
 			btn_answer, constants.HIDE_ANSWER, constants.SHOW_ANSWER,
-			self.update_answer_toggle, self.show_hide_answer))
+			self._update_answer_toggle, self._show_hide_answer))
 		btn_answer.place(relx=0.5, rely=0.45, anchor=ctk.CENTER)
 
 		# this will change and can't be initialized once, so will have to move
@@ -171,24 +171,24 @@ class SessionPage(ctk.CTkFrame):
 
 		# success (add point to score, go to next)
 		btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
-			command=lambda : self.update_score(is_success=True,
-			callback=self.trivia.PlayNextTrack))
+			command=lambda: self._update_score(is_success=True,
+			callback=self._trivia.PlayNextTrack))
 		btn_success.place(relx=0.3, rely=0.7, anchor=ctk.W)
 
 		# failure (no point, go to next)
 		btn_failure = ctk.CTkButton(self, text=constants.FAILURE_BUTTON,
-			command=lambda : self.update_score(is_success=False,
-			callback=self.trivia.PlayNextTrack))
+			command=lambda: self._update_score(is_success=False,
+			callback=self._trivia.PlayNextTrack))
 		btn_failure.place(relx=0.7, rely=0.7, anchor=ctk.E)
 
 		# retry
 		btn_retry = ctk.CTkButton(self, text=constants.RETRY_BUTTON,
-			command=lambda : self.trivia.PlayDifferentInterval())
+			command=lambda: self._trivia.PlayDifferentInterval())
 		btn_retry.place(relx=0.5, rely=0.8, anchor=ctk.CENTER)
 	
 	# for play/pause and show/hide answer
 	# need to make it a list so that it's mutable
-	def toggle_state(self, state_list, button, true_text, false_text,
+	def _toggle_state(self, state_list, button, true_text, false_text,
 		updater, callback):
 		state_list[0] = not state_list[0]
 		# Toggle the state
@@ -197,56 +197,59 @@ class SessionPage(ctk.CTkFrame):
 		else:
 			button.configure(text=false_text)
 
-		# Pass the current state to a function
+		# pass the current state to a function
 		if updater:
 			updater(state_list[0], callback)
 	
-	def update_play_toggle(self, is_paused, callback):
+	def _update_play_toggle(self, is_paused, callback):
 		self._is_paused = is_paused
-		# the first time (or rather, every time) it plays the track, update that one has been played. 
-		# (this is to ensure we don't add score before it's been played)
+		# the first time (or rather, every time) it plays the track, update
+		# the one has been played. (this is to ensure we don't add score
+		# before it's been played.)
 		if not self._is_paused:
 			self._track_has_played = True
 		if callback:
 			callback(self._is_paused)
 
-	def update_answer_toggle(self, is_answer_showing, callback):
+	def _update_answer_toggle(self, is_answer_showing, callback):
 		self._is_answer_showing = is_answer_showing
 		if callback:
 			callback(self._is_answer_showing)
 	
-	def update_score(self, is_success, callback):
+	def _update_score(self, is_success, callback):
 		if self._track_has_played:
 			if is_success:
-				self.trivia.UpdateScore()
-				self._score.set(f'{self.trivia.GetScore()} points')
+				self._trivia.UpdateScore()
+				self._score.set(f'{self._trivia.GetScore()} points')
 				app.update_idletasks() # update score immediately before continuing
 			# typically play next song
 			if callback:
 				callback()
 
-	def show_hide_answer(self, is_answer_showing):
+	def _show_hide_answer(self, is_answer_showing):
 		if is_answer_showing:
-			self._answer = self.trivia.GetAnswer()
+			self._answer = self._trivia.GetAnswer()
 			self._lbl_answer.configure(text=self._answer)
 		else:
 			self._lbl_answer.configure(text='')
 
 	def initialize_trivia(self, session_name):
-		# Check if trivia instance is already created
+		# check if trivia instance is already created
 		if not (hasattr(self, 'trivia')):
-			self.trivia = trivia.Trivia(session_name)  # Create Trivia instance here
+			# create Trivia instance here
+			self._trivia = trivia.Trivia(session_name)  
 		else:
-			#reset when reopen sessionpage
-			self.trivia.Reset(session_name)
+			# reset when reopening SessionPage
+			self._trivia.Reset(session_name)
 		
 		# reset/update buttons, labels, & score
-		self._score.set(f"Score: {self.trivia.GetScore()}")
-		self._btn_increase.configure(text=f"+{self.trivia.GetIncreaseAmount()}s") # update the value once it's been initialized
+		self._score.set(f'Score: {self._trivia.GetScore()}')
+		# update the value once it's been initialized
+		self._btn_increase.configure(text= \
+			f'+{self._trivia.GetIncreaseAmount()} sec.')
 		self._is_answer_showing = False
 		self._track_has_played = False
-		# force update
-		app.update_idletasks()
+		app.update_idletasks() # force update
 
 
 class tkinterApp(ctk.CTk):
