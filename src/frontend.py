@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import constants as constants
+import customtkinter as ctk
+from CTkListbox import *
 import trivia
 
 LARGE_FONT = ('Verdana', 35)
@@ -12,45 +14,45 @@ SMALL_FONT = ('Verdana', 12)
 # a button to open a session
 # a button to create a session
 # a button to go to settings
-class HomePage(tk.Frame):
+class HomePage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 
-		label = ttk.Label(self, text=constants.HOME, font=LARGE_FONT)
+		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
 
 		# switch to CREATE_SESSION
-		create_session_btn = ttk.Button(self, text=constants.CREATE_SESSION,
+		create_session_btn = ctk.CTkButton(self, text=constants.CREATE_SESSION,
 			command=lambda : controller.show_frame(CreateSessionPage))
 		create_session_btn.place(relx=0.75, rely=0.5, anchor=CENTER)
 
 		# switch to OPEN_SESSION
-		open_session_btn = ttk.Button(self, text=constants.OPEN_SESSION,
+		open_session_btn = ctk.CTkButton(self, text=constants.OPEN_SESSION,
 			command=lambda : controller.open_session_popup(
 			constants.EXAMPLE_SESSIONS, controller.handle_selected_session))
 		open_session_btn.place(relx=0.25, rely=0.5, anchor=CENTER)
 
 		# switch to SETTINGS
-		settings_btn = ttk.Button(self, text=constants.SETTINGS, 
+		settings_btn = ctk.CTkButton(self, text=constants.SETTINGS, 
 			command= lambda: controller.show_frame(SettingsPage))
 		settings_btn.place(relx=0.5, rely=0.8, anchor=CENTER)
 
 
-class CreateSessionPage(tk.Frame):
+class CreateSessionPage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
-		Frame.__init__(self, parent)
+		ctk.CTkFrame.__init__(self, parent)
 
-		label = ttk.Label(self, text='Create a New Session', font=MEDIUM_FONT)
+		label = ctk.CTkLabel(self, text='Create a New Session', font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.1, anchor=CENTER)
 
-		label = ttk.Label(self, text='Session Name', font=SMALL_FONT)
+		label = ctk.CTkLabel(self, text='Session Name', font=SMALL_FONT)
 		label.place(relx=0.25, rely=0.2, anchor=CENTER)
-		session_name = ttk.Entry(self, width=15)
+		session_name = ctk.CTkEntry(self, width=15)
 		session_name.place(relx=0.6, rely=0.2, anchor=CENTER)
 		
-		btn_home = ttk.Button(self, text =constants.HOME,
+		btn_home = ctk.CTkButton(self, text =constants.HOME,
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 		
@@ -60,30 +62,30 @@ class CreateSessionPage(tk.Frame):
 # a sidebar with a list of sessions
 # a list of settings that can be edited
 # a button to save/update the settings
-class SettingsPage(tk.Frame):
+class SettingsPage(ctk.CTkFrame):
 	
 	def __init__(self, parent, controller):
 
-		row = 0;
+		row = 0
 		
-		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text =constants.SETTINGS, font = LARGE_FONT)
+		ctk.CTkFrame.__init__(self, parent)
+		label = ctk.CTkLabel(self, text =constants.SETTINGS, font = LARGE_FONT)
 		label.grid(row = row, column = 4, padx = 10, pady = 10)
 		row+=1
 
 		# Switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
+		btn_home = ctk.CTkButton(self, text =constants.HOME,
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
 
 		# # Switch to SESSIONS
-		# btn_session = ttk.Button(self, text =constants.SESSION,
+		# btn_session = ctk.Button(self, text =constants.SESSION,
 		# 					command = lambda : controller.show_frame(SessionPage))
 		# btn_session.grid(row = row, column = 1, padx = 10, pady = 10)
 		# row+=1
 
-		btn_test_popup = ttk.Button(self, text ="TEST",
+		btn_test_popup = ctk.CTkButton(self, text ="TEST",
 							command = lambda : controller.open_popup("test message", True))
 		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
@@ -97,26 +99,26 @@ class SettingsPage(tk.Frame):
 # an answer text label (hidden until answer button pressed)
 # 2 success/fail buttons
 # a Retry button that picks a different timestamp from the same audio
-class SessionPage(tk.Frame):
+class SessionPage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller, sessionName=constants.SESSION):
-		tk.Frame.__init__(self, parent)
+		ctk.CTkFrame.__init__(self, parent)
 
 		row = 0
-		self.lbl_title = ttk.Label(self, text =sessionName, font = LARGE_FONT)
+		self.lbl_title = ctk.CTkLabel(self, text =sessionName, font = LARGE_FONT)
 		self.lbl_title.grid(row = row, column = 4, padx = 10, pady = 10)
 		row+=1
 
 		# NAV BUTTONS
 
 		# switch to HOME
-		btn_home = ttk.Button(self, text =constants.HOME,
+		btn_home = ctk.CTkButton(self, text =constants.HOME,
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 5)
 		row+=1
 
 		# switch to SETTINGS
-		btn_sessions = ttk.Button(self, text =constants.SETTINGS,
+		btn_sessions = ctk.CTkButton(self, text =constants.SETTINGS,
 							command = lambda : controller.show_frame(SettingsPage))
 		btn_sessions.grid(row = row, column = 1, padx = 10, pady = 5)
 		row+=1
@@ -130,7 +132,7 @@ class SessionPage(tk.Frame):
 		## get a symbol/icon eventually
 		self.is_paused = True # default to paused (need to press play for first track)
 		self.track_has_played = False # default, use this to prevent success/x button use until track played
-		btn_play = ttk.Button(self, text =constants.PLAY_BUTTON,
+		btn_play = ctk.CTkButton(self, text =constants.PLAY_BUTTON,
 							command = lambda : self.toggle_state(
 								[self.is_paused], 
 								btn_play,
@@ -144,7 +146,7 @@ class SessionPage(tk.Frame):
 
 		# replay
 		## get a symbol/icon eventually
-		replay_button = ttk.Button(self, text ="Relay",
+		replay_button = ctk.CTkButton(self, text ="Relay",
 							command = lambda : self.trivia.ReplayTrack())
 		replay_button.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
@@ -152,7 +154,7 @@ class SessionPage(tk.Frame):
 
 		# increase interval
 		# lazy initialization, updates in the initialize_trivia()
-		self.btn_increase = ttk.Button(self, text="",
+		self.btn_increase = ctk.CTkButton(self, text="",
 							command = lambda : self.trivia.IncreaseIntervalLength())
 		self.btn_increase.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
@@ -160,7 +162,7 @@ class SessionPage(tk.Frame):
 		# show/hide answer
 		# toggle value when pressed and show/hide the answer label
 		self.is_answer_showing = False
-		btn_answer = ttk.Button(self, text =constants.SHOW_ANSWER,
+		btn_answer = ctk.CTkButton(self, text =constants.SHOW_ANSWER,
 							command = lambda : self.toggle_state(
 								[self.is_answer_showing], 
 								btn_answer,
@@ -174,27 +176,27 @@ class SessionPage(tk.Frame):
 
 		# this will change and can't be initialized once, so will have to move to a callback probably? We'll see 
 		# self.answer = trivia.GetAnswer()
-		self.lbl_answer = ttk.Label(self, text = "myanswer", font = SMALL_FONT)
+		self.lbl_answer = ctk.CTkLabel(self, text = "myanswer", font = SMALL_FONT)
 		self.lbl_answer.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		self.lbl_answer.grid_remove()
 		row+=1
 
 		# success
 		# add point (and go to next)
-		btn_success = ttk.Button(self, text ="Check",
+		btn_success = ctk.CTkButton(self, text ="Check",
 							command = lambda : self.UpdateScore(is_success=True, callback=self.trivia.PlayNextTrack))
 		btn_success.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# failure
 		# no points, just go to next
-		btn_failure = ttk.Button(self, text ="X",
+		btn_failure = ctk.CTkButton(self, text ="X",
 							command = lambda : self.UpdateScore(is_success=False, callback=self.trivia.PlayNextTrack))
 		btn_failure.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
 
 		# retry
-		btn_retry = ttk.Button(self, text ="Retry",
+		btn_retry = ctk.CTkButton(self, text ="Retry",
 							command = lambda : self.trivia.ReplayTrack())
 		btn_retry.grid(row = row, column = audio_button_column, padx = 10, pady = 5)
 		row+=1
@@ -202,7 +204,7 @@ class SessionPage(tk.Frame):
 		# Score
 		self.score_var = StringVar()
 		self.score_var.set("Score: 0") # default
-		self.lbl_score = ttk.Label(self, textvariable=self.score_var, font=SMALL_FONT)
+		self.lbl_score = ctk.CTkLabel(self, textvariable=self.score_var, font=SMALL_FONT)
 		self.lbl_score.grid(row = 0, column = 0, padx = 5, pady = 5)
 	
 	# for play/pause and show/hide answer
@@ -270,19 +272,19 @@ class SessionPage(tk.Frame):
 		# force update
 		app.update_idletasks()
 
-class tkinterApp(tk.Tk):
+class tkinterApp(ctk.CTk):
 	
 	# __init__ function for class tkinterApp
 	def __init__(self, *args, **kwargs):
-		
-		tk.Tk.__init__(self, *args, **kwargs)
-		
+
+		ctk.CTk.__init__(self, *args, **kwargs)
+
 		# Setup
 		self.title(constants.APP_TITLE)
-		self.geometry('500x500') #widthxheight
+		self.geometry('1000x1000') #widthxheight
 		
 		# creating a container
-		container = tk.Frame(self)
+		container = ctk.CTkFrame(self)
 		container.pack(side = "top", fill = "both", expand = True)
 
 		container.grid_rowconfigure(0, weight = 1)
@@ -312,11 +314,11 @@ class tkinterApp(tk.Tk):
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
 			frame.lbl_title.config(text=self.session_name)
-		frame.tkraise(*args)
+		frame.ctkraise(*args)
 
 	# generic message popup helper
 	def open_popup(self, message, isBlocking):
-		popup = tk.Toplevel(self)
+		popup = ctk.CTkToplevel(self)
 		popup.wm_title("Popup")
 		popup.geometry('50x50')
 		# popup.overrideredirect(True) # hide minimize/x button/drag bar
@@ -334,9 +336,9 @@ class tkinterApp(tk.Tk):
 		popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")  # Set popup window size and position
 
 
-		label = tk.Label(popup, text=message)
+		label = ctk.CTkLabel(popup, text=message)
 		label.pack(side="top", fill="x", pady=10)
-		button = ttk.Button(popup, text="Close", command=popup.destroy)
+		button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
 		button.pack()
 		if isBlocking:
 			popup.grab_set()
@@ -344,10 +346,10 @@ class tkinterApp(tk.Tk):
 
 	# popup for selecting a session
 	def open_session_popup(self, items, callback):
-		popup = tk.Toplevel(self)
+		popup = ctk.CTkToplevel(self)
 		popup.wm_title("Select an Item")
 
-		listbox = tk.Listbox(popup)
+		listbox = CTkListbox(popup)
 		for item in items:
 			listbox.insert(tk.END, item)
 		listbox.pack()
@@ -376,7 +378,7 @@ class tkinterApp(tk.Tk):
 		listbox.bind("<Double-Button-1>", lambda event: on_select())
 
 		# Okay button to confirm selection
-		okay_button = ttk.Button(popup, text="Okay", command=lambda: on_select())
+		okay_button = ctk.CTkButton(popup, text="Okay", command=lambda: on_select())
 		okay_button.pack()
 
 		# Make the popup modal (force user interaction)
