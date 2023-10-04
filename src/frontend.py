@@ -5,6 +5,7 @@ import constants as constants
 import customtkinter as ctk
 from CTkListbox import *
 import trivia
+import sessions
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -18,6 +19,7 @@ class HomePage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
 		ctk.CTkFrame.__init__(self, parent)
+		self.controller = controller
 
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.2, anchor=CENTER)
@@ -32,14 +34,21 @@ class HomePage(ctk.CTkFrame):
 
 		# switch to OPEN_SESSION
 		open_session_btn = ctk.CTkButton(self, text=constants.OPEN_SESSION,
-			command=lambda : controller.open_session_popup(
-			constants.EXAMPLE_SESSIONS, controller.handle_selected_session),height= 50, width=250)
+			command=lambda : self.OnOpenSessionClicked(),height= 50, width=250)
 		open_session_btn.place(relx=0.55, rely=0.5, anchor=W)
 
 		# switch to SETTINGS
 		settings_btn = ctk.CTkButton(self, text=constants.SETTINGS, 
 			command= lambda: controller.show_frame(SettingsPage),height= 10, width=10)
 		settings_btn.place(relx=0.05, rely=0.05, anchor=NW)
+	
+	def OnOpenSessionClicked(self):
+		if sessions.get_num_sessions() == 1:
+			# if only the default, we can't open any sessions so just go to create
+			self.controller.show_frame(CreateSessionPage)
+		else: 
+			self.controller.open_session_popup(sessions.get_all_sessions(False))
+			
 
 
 class CreateSessionPage(ctk.CTkFrame):
@@ -353,7 +362,7 @@ class tkinterApp(ctk.CTk):
 			self.wait_window(popup)
 
 	# popup for selecting a session
-	def open_session_popup(self, items, callback):
+	def open_session_popup(self, items):
 		popup = ctk.CTkToplevel(self)
 		popup.wm_title("Select an Item")
 
