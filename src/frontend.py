@@ -290,7 +290,6 @@ class SessionPage(ctk.CTkFrame):
 		self.lbl_title = ctk.CTkLabel(self, text=sessionName, font=LARGE_FONT)
 		self.lbl_title.place(relx=0.5, rely=0.1, anchor=ctk.CENTER)
 
-		# score
 		self._score = StringVar()
 		self._score.set("Score: 0")
 		lbl_score = ctk.CTkLabel(self, textvariable=self._score,
