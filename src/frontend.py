@@ -53,7 +53,7 @@ class HomePage(ctk.CTkFrame):
 
 		# switch to SETTINGS
 		settings_btn = ctk.CTkButton(self, text=constants.SETTINGS, 
-			command= lambda: controller.show_frame(SettingsPage),height= 10, width=10)
+			command= lambda: controller.show_frame(SettingsPage),height= 30, width=50)
 		settings_btn.place(relx=0.05, rely=0.95, anchor=SW)
 		settings_btn.lift()
 	
@@ -427,7 +427,7 @@ class SessionPage(ctk.CTkFrame):
 
 		# switch to SETTINGS
 		btn_settings = ctk.CTkButton(self, text=constants.SETTINGS, 
-			command= lambda:controller.show_frame(SettingsPage), height=25,
+			command= lambda:controller.show_frame(SettingsPage), height=50,
 			width=80)
 		btn_settings.place(relx=0.05, rely=0.1, anchor=ctk.NW)
 
