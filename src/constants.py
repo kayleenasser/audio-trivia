@@ -44,7 +44,8 @@ INCREASE_AMOUNT_KEY = 'increase_amount'
 START_DELAY_KEY = 'start_delay'
 END_DELAY_KEY = 'end_delay'
 
-DIRECTORY = 'src'
+# for running locally
+ASSETS_DIRECTORY = 'assets'
 
 
 WELCOME_TEXT = f"Welcome to {APP_TITLE}\n Please choose how you would like to run your session!"

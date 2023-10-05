@@ -1,12 +1,28 @@
 import json
 import os
 import time
+import sys
 
 import constants as const
 
 """
 A module to perform CRUD operations on sessions.json.
 """
+def assets_path(relative_path):
+		try:
+			base_path = sys._MEIPASS
+		except Exception:
+			base_path = os.path.join(os.path.dirname(__file__), const.ASSETS_DIRECTORY)
+
+		return os.path.join(base_path, relative_path)
+
+def get_path(relative_path):
+		try:
+			base_path = sys._MEIPASS
+		except Exception:
+			base_path = os.path.dirname(__file__)
+
+		return os.path.join(base_path, relative_path)
 
 def _update_sessions_json(sessions_dict : dict):
     """
@@ -17,7 +33,7 @@ def _update_sessions_json(sessions_dict : dict):
             sessions.json.
     """
     sessions_obj = json.dumps(sessions_dict, indent=4)
-    with open(os.path.join(const.DIRECTORY, const.SESSIONS_DB_FILENAME), \
+    with open(get_path(const.SESSIONS_DB_FILENAME), \
         'w') as f:
         f.write(sessions_obj)
 
@@ -37,7 +53,7 @@ def get_all_sessions(include_default=True) -> list[dict]:
         list[dict]: A list of dictionaries containing all sessions and their
             associated info.
     """
-    with open(os.path.join(const.DIRECTORY, const.SESSIONS_DB_FILENAME), \
+    with open(get_path(const.SESSIONS_DB_FILENAME), \
         'r') as f:
         sessions_dict = json.load(f)
         if not include_default:
