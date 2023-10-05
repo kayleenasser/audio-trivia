@@ -181,6 +181,33 @@ def update_session_audio_files(session_name : str,
         session[const.AUDIO_FILES_KEY] = audio_files
         sessions_dict[session_name] = session
     _update_sessions_json(sessions_dict)
+    
+def update_session_audio_answer(session_name: str, path: str, new_answer: str):
+    """
+    Updates the answer of a specific audio file associated with the specified session.
+
+    Args:
+        session_name: A string representing the name of the session to update the audio file in.
+        path: A string representing the path of the audio file to be updated.
+        new_answer: A string representing the new answer for the specified audio file.
+    """
+    sessions_dict = get_all_sessions()
+
+    if session_name in sessions_dict:
+        session = sessions_dict[session_name]
+        audio_files = session.get(const.AUDIO_FILES_KEY, [])
+
+        # Iterate through audio_files and update the answer for the specified path
+        for audio_file in audio_files:
+            if audio_file.get("path") == path:
+                audio_file["answer"] = new_answer
+
+        # Update the sessions dictionary with the modified audio_files list
+        session[const.AUDIO_FILES_KEY] = audio_files
+        sessions_dict[session_name] = session
+
+        # Update the JSON file
+        _update_sessions_json(sessions_dict)
 
 def update_session_settings(session_name : str, interval_length=None,
     increase_amount=None, start_delay=None, end_delay=None):

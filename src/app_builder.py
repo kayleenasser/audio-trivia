@@ -17,7 +17,7 @@ PyInstaller.__main__.run([
 	'Listen Up!',		# name of executable file
 	'--icon',
 	'assets/icon.ico',	# image file to use for the executable icon
-	#'--windowed',			# hide the console when running the executable #comment out if you need to debug while running from executable
+	'--windowed',			# hide the console when running the executable #comment out if you need to debug while running from executable
 	'--add-data',
 	'assets/icon.ico;.',		# import the icon file as a resource to be used (for the taskbar/tkinter window icon)
     '--add-data',

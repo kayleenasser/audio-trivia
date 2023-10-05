@@ -16,9 +16,9 @@ FILETYPES = [
 # session buttons
 SHOW_ANSWER = "Show Answer"
 HIDE_ANSWER = "Hide Answer"
-REMOVE_SONG = "Remove Song"
-RENAME_SONG = "Rename Song"
-ADD_SONG = "Add Song"
+REMOVE_SONG = "Remove Track"
+CHANGE_ANSWER = "Change Answer"
+ADD_SONG = "Add Track"
 PLAY_BUTTON = "Play"
 PAUSE_BUTTON = "Pause"
 OK_BUTTON = "Okay"

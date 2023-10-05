@@ -319,20 +319,20 @@ class SettingsPage(ctk.CTkFrame):
 			value_label_increase.configure(text=get_current_value4())
 
 
-		self.interval_slider = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed1,
+		self.slider_interval_length = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed1,
     		variable=current_value1)
-		self.interval_slider.place(relx=0.9, rely=0.3, anchor=E)
-		self.delay_from_start = ctk.CTkSlider(self,width=200, height=15, from_=0, to=100, command=slider_changed2,
+		self.slider_interval_length.place(relx=0.9, rely=0.3, anchor=E)
+		self.slider_start_delay = ctk.CTkSlider(self,width=200, height=15, from_=0, to=100, command=slider_changed2,
     		variable=current_value2)
-		self.delay_from_start.place(relx=0.9, rely=0.4, anchor=E)
-		self.delay_from_end = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed3,
+		self.slider_start_delay.place(relx=0.9, rely=0.4, anchor=E)
+		self.slider_end_delay = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed3,
     		variable=current_value3)
-		self.delay_from_end.place(relx=0.9, rely=0.5, anchor=E)
-		self.increase_amount = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed4,
+		self.slider_end_delay.place(relx=0.9, rely=0.5, anchor=E)
+		self.slider_increase_amount = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed4,
     		variable=current_value4)
-		self.increase_amount.place(relx=0.9, rely=0.6, anchor=E)
+		self.slider_increase_amount.place(relx=0.9, rely=0.6, anchor=E)
 
-		btn_apply_settings = ctk.CTkButton(self, text="Apply Settings")
+		btn_apply_settings = ctk.CTkButton(self, text="Apply Settings", command=self.SaveButton)
 		btn_apply_settings.place(relx=0.85, rely=0.775, anchor=SE)
 
 		value_int_slider = ctk.CTkLabel(self, text=get_current_value1())
@@ -362,9 +362,9 @@ class SettingsPage(ctk.CTkFrame):
 										   command=lambda: self.RemoveSong())
 		btn_remove_song.place(relx=0.5, rely=0.775, anchor=S)
 
-		btn_rename_song = ctk.CTkButton(self, text=constants.RENAME_SONG,
-										   command=lambda: controller.show_frame(HomePage))
-		btn_rename_song.place(relx=0.5, rely=0.85, anchor=S)
+		btn_change_answer = ctk.CTkButton(self, text=constants.CHANGE_ANSWER,
+										   command=self.ChangeAnswer)
+		btn_change_answer.place(relx=0.5, rely=0.85, anchor=S)
 
 		btn_add_song = ctk.CTkButton(self, text=constants.ADD_SONG,
 										command=lambda: controller.show_frame(HomePage))
@@ -398,6 +398,50 @@ class SettingsPage(ctk.CTkFrame):
 			for i in range(0,len(self.session_track_answers)):
 				self.listbox_tracks.insert(i, self.session_track_answers[i])
 
+	def ChangeAnswer(self):
+		print("change answer")
+		selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
+		selected_track = self.listbox_tracks.get(self.listbox_tracks.curselection())
+		if not selected_track:
+			return
+
+		popup = ctk.CTkToplevel(self)
+		popup.wm_title("Rename")
+		popup.geometry('300x150')  # Set the size of the popup window
+
+		txtbox_new_answer = ctk.CTkEntry(popup, width=150)
+		txtbox_new_answer.pack(pady=10)
+		txtbox_new_answer.bind('<Return>', lambda event=None: ChangeAnswer())
+
+		error_message = ctk.CTkLabel(popup, text="", text_color="red")
+		error_message.pack()
+
+		def ChangeAnswer():
+			new_answer = txtbox_new_answer.get()
+			session_paths = []
+			util.extract_data_from_json(sessions.get_session(selected_session_name), constants.PATH_KEY, values=session_paths)
+			path = session_paths[self.listbox_tracks.curselection()]
+			update_session_audio_answer(selected_session_name, path=path, new_answer=new_answer)
+			self.ReloadSessionListbox()
+			popup.destroy()
+
+		submit_btn = ctk.CTkButton(popup, text=constants.SUBMIT_BUTTON, command=ChangeAnswer)
+		submit_btn.pack()
+
+		# Center the popup window on the screen
+		popup.update_idletasks()
+		width = popup.winfo_width()
+		height = popup.winfo_height()
+		x = (popup.winfo_screenwidth() // 2) - (width // 2)
+		y = (popup.winfo_screenheight() // 2) - (height // 2)
+		popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+		# Grab focus for the input field
+		txtbox_new_answer.focus_set()
+
+		popup.grab_set()
+		self.wait_window(popup)
+
 	#remove and rename session button
 	def RenameSession(self):
 		print("RenameSession")
@@ -426,7 +470,7 @@ class SettingsPage(ctk.CTkFrame):
 			else:
 				old_name = selected_session_name
 				sessions.update_session_name(old_name, new_name)
-				self.ReloadSessionListbox()
+				self.ReloadTrackListbox()
 				popup.destroy()
 
 		submit_btn = ctk.CTkButton(popup, text=constants.SUBMIT_BUTTON, command=ChangeSessionName)
@@ -505,6 +549,16 @@ class SettingsPage(ctk.CTkFrame):
 			print(self.session_track_answers)
 			for i in range(0, len(self.session_track_answers)):
 				self.listbox_tracks.insert(i, self.session_track_answers[i])
+
+	def SaveButton(self):
+		# save all settings to json
+		selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
+		# get all the values into a list
+		sessions.update_session_settings(selected_session_name, 
+								   interval_length=int(self.slider_interval_length.get()),
+								   increase_amount=int(self.slider_increase_amount.get()), 
+								   start_delay=int(self.slider_start_delay.get()), 
+								   end_delay=int(self.slider_end_delay.get()))
 
 
 
