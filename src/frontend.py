@@ -92,15 +92,13 @@ class CreateSessionPage(ctk.CTkFrame):
 		self.listbox = tk.Listbox(self, selectmode=tk.SINGLE, width=75)
 		self.listbox.place(relx = 0.5, rely = 0.725, anchor=CENTER)
 		
-		#self.scrollbar = tk.Scrollbar(self, command=self.listbox.yview)
-		#self.scrollbar.place(relx=0.73, rely=0.7, anchor=CENTER)
-		#self.listbox.config(yscrollcommand=self.scrollbar.set)
-		
-		#self.load_audio_files(audio)
-			
-		self.edit_button = tk.Button(self, text="Edit", 
-							   command=lambda : self.edit_selected_row(audio=audio))
-		self.edit_button.place(relx=0.85, rely=0.7, anchor=CENTER)
+		self.edit_button = ctk.CTkButton(self, text="Edit", 
+					   command=lambda : self.edit_selected_row(audio=audio))
+		self.edit_button.place(relx=0.85, rely=0.65, anchor=CENTER)
+
+		self.delete_button = ctk.CTkButton(self, text="Delete", 
+					   command=lambda : self.delete_selected_row(audio=audio))
+		self.delete_button.place(relx=0.85, rely=0.75, anchor=CENTER)
 		
 		self.listbox.bind('<ButtonRelease-1>', self.on_select)
 
@@ -118,14 +116,7 @@ class CreateSessionPage(ctk.CTkFrame):
 		fn = os.path.basename(fp)
 		
 		audio.append({'path': fp, 'answer': fn})
-		self.load_audio_files(audio)
-
-	def load_audio_files(self, audio):
-
-		for item in audio:
-			print("item")
-			self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
-		
+		self.listbox.insert(tk.END, fp + ": " + fn)
 
 	def on_select(self, audio):
 		selected_index = self.listbox.curselection()
@@ -134,7 +125,6 @@ class CreateSessionPage(ctk.CTkFrame):
 			print("Selected:", audio[index])
 
 	def edit_selected_row(self, audio):
-		print("edit")
 		selected_index = self.listbox.curselection()
 		if selected_index:
 			index = int(selected_index[0])
@@ -145,10 +135,21 @@ class CreateSessionPage(ctk.CTkFrame):
 				for item in audio:
 					self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
 
+	def delete_selected_row(self, audio):
+		selected_index = self.listbox.curselection()
+		if selected_index:
+			index = int(selected_index[0])
+			print(index)
+			print(audio)
+			del audio[index]
+			self.listbox.delete(0, tk.END)
+			for item in audio:
+				self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
+
 	def clear_and_home(self, audio, session_name, controller):
-		audio = []
-		#self.load_audio_files(audio)
+		self.listbox.delete(0, tk.END)
 		session_name.delete(0, END)
+		audio.clear()
 		controller.show_frame(HomePage)
 
 
