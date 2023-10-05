@@ -87,9 +87,9 @@ class CreateSessionPage(ctk.CTkFrame):
 		label = ctk.CTkLabel(self, text='Please select audio files:', font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.45, anchor=CENTER)
 
-		btn_home = ctk.CTkButton(self, text ="Browse",
+		btn_browse = ctk.CTkButton(self, text ="Browse",
 							command = lambda : self.upload_audio(self.selected_track))
-		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
+		btn_browse.place(relx = 0.5, rely = 0.50, anchor=CENTER)
 
 		# track list
 		self.listbox_tracks = CTkListbox(height=200, width=600, master=self, command= self.on_select)
@@ -104,9 +104,9 @@ class CreateSessionPage(ctk.CTkFrame):
 					   command=lambda : self.delete_selected_row(audio=self.selected_track))
 		self.delete_button.place(relx=0.5, rely=0.95, anchor=CENTER)
 
-		btn_home = ctk.CTkButton(self, text =constants.BACK_BUTTON,
+		btn_back = ctk.CTkButton(self, text =constants.BACK_BUTTON,
 							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
+		btn_back.grid(row = 0, column = 0, padx = 10, pady = 10)
 
 		btn_OK = ctk.CTkButton(self, text =constants.SAVE_BUTTON,
 							command = lambda : add_session(self.session_name.get(), self.selected_track, controller, callback=self.clear_and_home))
@@ -116,11 +116,11 @@ class CreateSessionPage(ctk.CTkFrame):
 		tk.Tk().withdraw()
 		fp = askopenfilename()
 		fn = os.path.basename(fp)
-		
-		print(os.path.splitext(fn)[1])
-		print(constants.FILETYPES)
 
-		if (os.path.splitext(fn)[1] not in constants.FILETYPES):
+		if (fp == ""):
+			return
+
+		if ((os.path.splitext(fn)[1] not in constants.FILETYPES)):
 			messagebox.showerror('Invalid Filetype', 'Error: The filetype that was selected is invalid.')
 			return
 		
@@ -147,7 +147,7 @@ class CreateSessionPage(ctk.CTkFrame):
 
 			popup = ctk.CTkToplevel(self)
 			popup.wm_title("Rename")
-			popup.geometry('300x150')  # Set the size of the popup window
+			popup.geometry('300x200')  # Set the size of the popup window
 
 			txtbox_new_name = ctk.CTkEntry(popup, width=150)
 			txtbox_new_name.pack(pady=10)
@@ -194,9 +194,44 @@ class CreateSessionPage(ctk.CTkFrame):
 
 	def clear_and_home(self, audio, controller):
 		self.listbox_tracks.delete(0, tk.END)
-		self.session_name.delete(0, END)
 		audio.clear()
-		controller.show_frame(HomePage)
+
+		popup = ctk.CTkToplevel(self)
+		popup.wm_title("Success!")
+
+		label = ctk.CTkLabel(popup, text='You have successfully created a new collection!', font=SMALL_FONT)
+		label.place(relx=0.5, rely=0.30, anchor=CENTER)
+
+		def return_home():
+			controller.show_frame(HomePage)
+			self.session_name.delete(0, END)
+			popup.destroy()
+		
+		def start_play():
+			controller.handle_selected_session(self.session_name)
+			#controller.show_frame(SessionPage)
+			self.session_name.delete(0, END)
+			popup.destroy()
+
+		home_btn = ctk.CTkButton(popup, text="Home", command=lambda : return_home())
+		home_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
+
+		#play_btn = ctk.CTkButton(popup, text="Play with Collection", command=lambda : start_play())
+		#play_btn.place(relx=0.7, rely=0.70, anchor=CENTER)
+
+		app_x = self.winfo_x()
+		app_y = self.winfo_y()
+		app_width = self.winfo_width()
+		app_height = self.winfo_height()
+		popup_width = 400
+		popup_height = 200
+		x = app_x + app_width // 2 - popup_width // 2
+		y = app_y + app_height // 2 - popup_height // 2
+
+		popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+
+		popup.grab_set()
+		self.wait_window(popup)
 
 
 		
