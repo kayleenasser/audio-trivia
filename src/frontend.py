@@ -374,13 +374,21 @@ class SettingsPage(ctk.CTkFrame):
 	def ReloadSessionListbox(self):
 			self.listbox_sessions.delete(0, tk.END)
 			self.UpdateSessionsList()
+			self.ClearTrackList()
 			for i in range(0, len(self.sessions_list)):
 				self.listbox_sessions.insert(i, self.sessions_list[i])
+
+	def ClearTrackList(self):
+		self.session_track_paths = []
+		self.session_track_answers = []
+		if self.listbox_tracks.size() > 0:
+			self.listbox_tracks.delete(0, tk.END)
 	
 	def ReloadTrackListbox(self):
 			print("ReloadTrackList")
 			self.UpdateTrackList()
-			self.listbox_tracks.delete(0, tk.END)
+			self.ClearTrackList()
+			self.ReloadTrackListbox()
 			print(self.session_track_answers)
 			for i in range(0, len(self.session_track_answers)):
 				self.listbox_tracks.insert(i, self.session_track_answers[i])
@@ -634,6 +642,9 @@ class tkinterApp(ctk.CTk):
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
 			frame.lbl_title.configure(text=f'Session: {self.session_name}')
+		
+		if cont == SettingsPage:
+			frame.ReloadSessionListbox()
 		frame.tkraise(*args)
 
 	# generic message popup helper
