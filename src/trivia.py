@@ -109,6 +109,9 @@ class Trivia:
         self.timeStamp = self.track.GetRandomTimestamp(self.interval_length, self.start_delay, self.end_delay)
         self.track.Play(self.timeStamp, self.interval_length)
 
+    def get_interval_length(self):
+        return self.interval_length
+
 # ERRORS
 class SessionNotFoundError(Exception):
     pass
