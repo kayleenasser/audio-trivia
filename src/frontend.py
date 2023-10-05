@@ -71,7 +71,7 @@ class CreateSessionPage(ctk.CTkFrame):
 		
 		ctk.CTkFrame.__init__(self, parent)
 
-		audio = []
+		self.selected_track = []
 
 		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.20, anchor=CENTER)
@@ -85,30 +85,28 @@ class CreateSessionPage(ctk.CTkFrame):
 		label.place(relx=0.5, rely=0.45, anchor=CENTER)
 
 		btn_home = ctk.CTkButton(self, text ="Browse",
-							command = lambda : self.upload_audio(audio))
+							command = lambda : self.upload_audio(self.selected_track))
 		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
 
+		# track list
+		self.listbox_tracks = CTkListbox(height=200, width=300, master=self, command= self.on_select)
+		self.listbox_tracks.place(relx = 0.5, rely = 0.725, anchor=CENTER)
 		
-
-		self.listbox = tk.Listbox(self, selectmode=tk.SINGLE, width=75)
-		self.listbox.place(relx = 0.5, rely = 0.725, anchor=CENTER)
-		
+		# buttons
 		self.edit_button = ctk.CTkButton(self, text="Edit", 
-					   command=lambda : self.edit_selected_row(audio=audio))
+					   command=lambda : self.edit_selected_row(audio=self.selected_track))
 		self.edit_button.place(relx=0.85, rely=0.65, anchor=CENTER)
 
 		self.delete_button = ctk.CTkButton(self, text="Delete", 
-					   command=lambda : self.delete_selected_row(audio=audio))
+					   command=lambda : self.delete_selected_row(audio=self.selected_track))
 		self.delete_button.place(relx=0.85, rely=0.75, anchor=CENTER)
-		
-		self.listbox.bind('<ButtonRelease-1>', self.on_select)
 
 		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 
 		btn_OK = ctk.CTkButton(self, text = "Save",
-							command = lambda : add_session(self.session_name.get(), audio, controller, callback=self.clear_and_home))
+							command = lambda : add_session(self.session_name.get(), self.selected_track, controller, callback=self.clear_and_home))
 		btn_OK.place(relx=0.5, rely=0.95, anchor=CENTER)
 
 	def upload_audio(self, audio):
@@ -129,38 +127,37 @@ class CreateSessionPage(ctk.CTkFrame):
 				return
 
 		audio.append({'path': fp, 'answer': fn})
-		self.listbox.insert(tk.END, fp + ": " + fn)
+		self.listbox_tracks.insert(tk.END, fp + ": " + fn)
 
 	def on_select(self, audio):
-		selected_index = self.listbox.curselection()
+		print(audio)
+		selected_index = self.listbox_tracks.curselection()
 		if selected_index:
 			index = int(selected_index[0])
 			print("Selected:", audio[index])
 
 	def edit_selected_row(self, audio):
-		selected_index = self.listbox.curselection()
-		if selected_index:
-			index = int(selected_index[0])
+		selected_index = self.listbox_tracks.curselection()
+		if selected_index != None:
 			new_answer = simpledialog.askstring("Edit Answer", "Enter new answer:")
 			if new_answer != '':
-				audio[index] = {'path': audio[index]['path'], 'answer' : new_answer}
-				self.listbox.delete(0, tk.END)
+				audio[selected_index] = {'path': audio[selected_index]['path'], 'answer' : new_answer}
+				self.listbox_tracks.delete(0, tk.END)
 				for item in audio:
-					self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
+					self.listbox_tracks.insert(tk.END,  item['answer'] + ": " + item['path'])
 
 	def delete_selected_row(self, audio):
-		selected_index = self.listbox.curselection()
-		if selected_index:
-			index = int(selected_index[0])
-			print(index)
+		selected_index = self.listbox_tracks.curselection()
+		if selected_index != None:
+			print(selected_index)
 			print(audio)
-			del audio[index]
-			self.listbox.delete(0, tk.END)
+			del audio[selected_index]
+			self.listbox_tracks.delete(0, tk.END)
 			for item in audio:
-				self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
+				self.listbox_tracks.insert(tk.END, item['path'] + ": " + item['answer'])
 
 	def clear_and_home(self, audio, controller):
-		self.listbox.delete(0, tk.END)
+		self.listbox_tracks.delete(0, tk.END)
 		self.session_name.delete(0, END)
 		audio.clear()
 		controller.show_frame(HomePage)
