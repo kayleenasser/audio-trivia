@@ -28,7 +28,7 @@ class HomePage(ctk.CTkFrame):
 		ctk.CTkFrame.__init__(self, parent)
 		self.controller = controller
 
-		banner = Image.open("C:\Files\Hackathon\src\\assets\\dark-bg.PNG")
+		banner = Image.open("src\\assets\\dark-bg.PNG")
 		banner_photo = ImageTk.PhotoImage(banner)
 		baner_label = tk.Label(image=banner_photo)
 		baner_label.config(borderwidth=0)
