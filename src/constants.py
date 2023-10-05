@@ -43,6 +43,9 @@ END_DELAY_KEY = 'end_delay'
 
 DIRECTORY = 'src'
 
+
+WELCOME_TEXT = f"Welcome to {APP_TITLE}\n Please choose how you would like to run your session!"
+
 DEFAULT_SESSION = {
     "default": {
         "audio_files": [

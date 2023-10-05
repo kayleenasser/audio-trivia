@@ -40,7 +40,7 @@ class HomePage(ctk.CTkFrame):
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.35, anchor=N)
 
-		label = ctk.CTkLabel(self, text="Welcome to audio trivia!\n Please choose how you would like to run your session!", font=MEDIUM_FONT)
+		label = ctk.CTkLabel(self, text=constants.WELCOME_TEXT, font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 		# switch to CREATE_SESSION
