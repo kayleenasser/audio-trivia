@@ -453,13 +453,13 @@ class SessionPage(ctk.CTkFrame):
 		# btn_play.place(relx=0.4, rely=0.3, anchor=ctk.E)
 
 		# for both play and replay
-		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
-			command=lambda: self.OnPlayButtonPress())
-		replay_button.place(relx=0.3, rely=0.3, anchor=ctk.W)
+		btn_replay = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
+			command=lambda: self._play_button_pressed())
+		btn_replay.place(relx=0.3, rely=0.3, anchor=ctk.W)
 
 		# increase interval
 		self._btn_increase = ctk.CTkButton(self, text='+3 secs.',
-			command=lambda: self._increase_interval_length())
+			command=lambda: self._increase_interval_length(), state=DISABLED)
 		self._btn_increase.place(relx=0.7, rely=0.3, anchor=ctk.E)
 
 		self._lbl_audio_length = ctk.CTkLabel(self, text=SMALL_FONT)
@@ -467,11 +467,12 @@ class SessionPage(ctk.CTkFrame):
 		
 		# toggle value when pressed and show/hide the answer label
 		self._is_answer_showing = False
-		btn_answer = ctk.CTkButton(self, text=constants.SHOW_ANSWER,
+		self._btn_answer = ctk.CTkButton(self, text=constants.SHOW_ANSWER,
 			command=lambda: self._toggle_state([self._is_answer_showing],
-			btn_answer, constants.HIDE_ANSWER, constants.SHOW_ANSWER,
-			self._update_answer_toggle, self._show_hide_answer))
-		btn_answer.place(relx=0.5, rely=0.55, anchor=ctk.CENTER)
+			self._btn_answer, constants.HIDE_ANSWER, constants.SHOW_ANSWER,
+			self._update_answer_toggle, self._show_hide_answer),
+			state=DISABLED)
+		self._btn_answer.place(relx=0.5, rely=0.55, anchor=ctk.CENTER)
 
 		# this will change and can't be initialized once, so will have to move
 		# to a callback probably? we'll see 
@@ -480,28 +481,39 @@ class SessionPage(ctk.CTkFrame):
 		self._lbl_answer.place(relx=0.5, rely=0.6, anchor=ctk.CENTER)
 
 		# success (add point to score, go to next)
-		btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
-			command=lambda: self._success_or_failure_button_pressed())
-		btn_success.place(relx=0.3, rely=0.7, anchor=ctk.W)
+		self._btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
+			command=lambda: self._success_or_failure_button_pressed(),
+			state=DISABLED)
+		self._btn_success.place(relx=0.3, rely=0.7, anchor=ctk.W)
 
 		# failure (no point, go to next)
-		btn_failure = ctk.CTkButton(self, text=constants.FAILURE_BUTTON,
-			command=lambda: self._success_or_failure_button_pressed(False))
-		btn_failure.place(relx=0.7, rely=0.7, anchor=ctk.E)
+		self._btn_failure = ctk.CTkButton(self, text=constants.FAILURE_BUTTON,
+			command=lambda: self._success_or_failure_button_pressed(False),
+			state=DISABLED)
+		self._btn_failure.place(relx=0.7, rely=0.7, anchor=ctk.E)
 
 		# retry
-		btn_retry = ctk.CTkButton(self, text=constants.RETRY_BUTTON,
-			command=lambda: self._trivia.PlayDifferentInterval())
-		btn_retry.place(relx=0.5, rely=0.8, anchor=ctk.CENTER)
+		self._btn_retry = ctk.CTkButton(self, text=constants.RETRY_BUTTON,
+			command=lambda: self._trivia.PlayDifferentInterval(),
+			state=DISABLED)
+		self._btn_retry.place(relx=0.5, rely=0.8, anchor=ctk.CENTER)
 	
-	def OnPlayButtonPress(self):
+	def _play_button_pressed(self):
 		if not self._track_has_played:
 			# if first time opening, need to Play
 			self._trivia.PlayNextTrack()
 			self._track_has_played = True
+			# enable all buttons once audio is finished playing
+			time.sleep(self._trivia.get_interval_length())
+			self._btn_increase.configure(state=NORMAL)
+			self._btn_answer.configure(state=NORMAL)
+			self._btn_success.configure(state=NORMAL)
+			self._btn_failure.configure(state=NORMAL)
+			self._btn_retry.configure(state=NORMAL)
 		else:
 			# here we're replaying
 			self._trivia.ReplayTrack()
+
 	# for play/pause and show/hide answer
 	# need to make it a list so that it's mutable
 	def _toggle_state(self, state_list, button, true_text, false_text,
