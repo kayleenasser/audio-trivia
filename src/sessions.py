@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 import constants as const
 
@@ -67,7 +68,7 @@ def get_session(session_name : str) -> dict:
         return sessions_dict[session_name]
 
 
-def add_session(session_name : str, audio_files : list[dict[str, str]],
+def add_session(session_name : str, audio_files : list[dict[str, str]], controller, callback,
     interval_length=10, increase_amount=3, start_delay=0, end_delay=0):
     """
     Adds a new session to sessions.json with the specified arguments.
@@ -93,6 +94,10 @@ def add_session(session_name : str, audio_files : list[dict[str, str]],
     if session_name in sessions_dict:
         raise KeyError(f"The session name '{session_name}' already exists. \
             Please use another name.")
+    if (audio_files == []):
+        raise KeyError(f"No audio files were added to the session. \
+            Please add 1 or more audio files to the session.")
+    
     sessions_dict[session_name] = {
         const.AUDIO_FILES_KEY: audio_files,
         const.SETTINGS_KEY: {
@@ -103,6 +108,9 @@ def add_session(session_name : str, audio_files : list[dict[str, str]],
         }
     }
     _update_sessions_json(sessions_dict)
+
+    if (callback):
+        callback(audio_files, controller)
 
 def add_audio_file(session_name : str, audio_file : dict[str, str]):
     """
