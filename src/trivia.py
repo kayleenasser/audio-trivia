@@ -47,6 +47,7 @@ class Trivia:
         # get the track and the start timestamp
         self.track = tracks.GetRandomTrack(self.track_list) # get a random track from the session (name)
         self.timeStamp = self.track.GetRandomTimestamp(self.start_delay, self.end_delay, self.interval_length)
+        self.interval_length = self.setting_interval_length # reset interval on next song
 
         print("playnext: ", self.track)
 
