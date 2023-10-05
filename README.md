@@ -1,4 +1,4 @@
-# Audio Trivia - Magnet Forensics Hackathon
+# Listen Up! Audio Trivia - Magnet Forensics Hackathon
 ### By Ari Rubin, Emily Tang, Kaylee Nasser, and Raven Sim
 
 Build an application that takes a folder of audio files (or other source) and plays a random file at a random timestamp for a specified interval and allows you to guess the name of the file (or other success criteria).
