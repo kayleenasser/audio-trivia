@@ -560,6 +560,9 @@ class SessionPage(ctk.CTkFrame):
 
 	def _increase_interval_length(self):
 		self._trivia.IncreaseIntervalLength()
+		self.UpdateIntervalLengthLabel()
+	
+	def UpdateIntervalLengthLabel(self):
 		self._lbl_audio_length.configure(
 			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
 
@@ -575,6 +578,7 @@ class SessionPage(ctk.CTkFrame):
 		"""
 		self._update_score(is_success=is_success,
 			callback=self._trivia.PlayNextTrack)
+		self.UpdateIntervalLengthLabel()
 		
 
 	def initialize_trivia(self, session_name):
