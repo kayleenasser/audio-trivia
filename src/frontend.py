@@ -2,6 +2,9 @@ import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter import simpledialog
+from tkinter import messagebox
+from tkinter.filedialog import askopenfilename
 from sessions import _update_sessions_json
 import util
 
@@ -14,6 +17,8 @@ import trivia
 import sessions
 import os
 from PIL import Image, ImageTk
+from sessions import *
+import os
 
 LARGE_FONT = ('Verdana', 35)
 MEDIUM_FONT = ('Verdana', 18)
@@ -63,23 +68,134 @@ class HomePage(ctk.CTkFrame):
 class CreateSessionPage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
+		
 		ctk.CTkFrame.__init__(self, parent)
 
+		self.selected_track = []
+
 		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
-		label.place(relx=0.5, rely=0.25, anchor=CENTER)
+		label.place(relx=0.5, rely=0.20, anchor=CENTER)
 
 		label = ctk.CTkLabel(self, text='Please enter session name:', font=MEDIUM_FONT)
-		label.place(relx=0.5, rely=0.4, anchor=CENTER)
-		session_name = ctk.CTkEntry(self, width=200)
-		session_name.place(relx=0.5, rely=0.5, anchor=CENTER)
+		label.place(relx=0.5, rely=0.3, anchor=CENTER)
+		self.session_name = ctk.CTkEntry(self, width=200)
+		self.session_name.place(relx=0.5, rely=0.35, anchor=CENTER)
+
+		label = ctk.CTkLabel(self, text='Please select audio files:', font=MEDIUM_FONT)
+		label.place(relx=0.5, rely=0.45, anchor=CENTER)
+
+		btn_home = ctk.CTkButton(self, text ="Browse",
+							command = lambda : self.upload_audio(self.selected_track))
+		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
+
+		# track list
+		self.listbox_tracks = CTkListbox(height=200, width=600, master=self, command= self.on_select)
+		self.listbox_tracks.place(relx = 0.5, rely = 0.725, anchor=CENTER)
 		
+		# buttons
+		self.edit_button = ctk.CTkButton(self, text="Edit", 
+					   command=lambda : self.edit_selected_row(audio=self.selected_track))
+		self.edit_button.place(relx=0.25, rely=0.95, anchor=CENTER)
+
+		self.delete_button = ctk.CTkButton(self, text="Delete", 
+					   command=lambda : self.delete_selected_row(audio=self.selected_track))
+		self.delete_button.place(relx=0.5, rely=0.95, anchor=CENTER)
+
 		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-		btn_OK = ctk.CTkButton(self, text = "OK",
-							command = lambda : controller.show_frame(CreateSessionPage))
-		btn_OK.place(relx=0.5, rely=0.6, anchor=CENTER)
+		btn_OK = ctk.CTkButton(self, text = "Save",
+							command = lambda : add_session(self.session_name.get(), self.selected_track, controller, callback=self.clear_and_home))
+		btn_OK.place(relx=0.75, rely=0.95, anchor=CENTER)
+
+	def upload_audio(self, audio):
+		tk.Tk().withdraw()
+		fp = askopenfilename()
+		fn = os.path.basename(fp)
+		
+		print(os.path.splitext(fn)[1])
+		print(constants.FILETYPES)
+
+		if (os.path.splitext(fn)[1] not in constants.FILETYPES):
+			messagebox.showerror('Invalid Filetype', 'Error: The filetype that was selected is invalid.')
+			return
+		
+		for item in audio:
+			if (fp == item['path']):
+				messagebox.showerror('Duplicate File', 'Error: This file was already added to the session.')
+				return
+
+		audio.append({'path': fp, 'answer': fn})
+		#self.listbox_tracks.insert(tk.END, fp + ": " + fn)
+		self.listbox_tracks.insert(tk.END, f"Answer: {fn}, Path: {fp}")
+
+	def on_select(self, audio):
+		print(audio)
+		selected_index = self.listbox_tracks.curselection()
+		if selected_index:
+			index = int(selected_index[0])
+			print("Selected:", audio[index])
+
+	def edit_selected_row(self, audio):
+		selected_index = self.listbox_tracks.curselection()
+		if selected_index != None:
+			print("Rename track")
+
+			popup = ctk.CTkToplevel(self)
+			popup.wm_title("Rename")
+			popup.geometry('300x150')  # Set the size of the popup window
+
+			txtbox_new_name = ctk.CTkEntry(popup, width=150)
+			txtbox_new_name.pack(pady=10)
+			txtbox_new_name.bind('<Return>', lambda event=None: ChangeSessionName())
+
+			error_message = ctk.CTkLabel(popup, text="", text_color="red")
+			error_message.pack()
+
+			def ChangeSessionName():
+				new_name = txtbox_new_name.get()
+				audio[selected_index] = {'path': audio[selected_index]['path'], 'answer' : new_name}
+				self.listbox_tracks.delete(0, tk.END)
+				for item in audio:
+					self.listbox_tracks.insert(tk.END, f"Answer: {item['answer']}, Path: {item['path']}")
+				popup.destroy()
+
+			submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
+			submit_btn.pack()
+
+			# Center the popup window on the screen
+			popup.update_idletasks()
+			width = popup.winfo_width()
+			height = popup.winfo_height()
+			x = (popup.winfo_screenwidth() // 2) - (width // 2)
+			y = (popup.winfo_screenheight() // 2) - (height // 2)
+			popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+			# Grab focus for the input field
+			txtbox_new_name.focus_set()
+
+			popup.grab_set()
+			self.wait_window(popup)
+	
+
+	def delete_selected_row(self, audio):
+		selected_index = self.listbox_tracks.curselection()
+		if selected_index != None:
+			print(selected_index)
+			print(audio)
+			del audio[selected_index]
+			self.listbox_tracks.delete(0, tk.END)
+			for item in audio:
+				self.listbox_tracks.insert(tk.END, f"Answer: {item['answer']}, Path: {item['path']}")
+
+	def clear_and_home(self, audio, controller):
+		self.listbox_tracks.delete(0, tk.END)
+		self.session_name.delete(0, END)
+		audio.clear()
+		controller.show_frame(HomePage)
+
+
 		
 
 
