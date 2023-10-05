@@ -84,8 +84,8 @@ class CreateSessionPage(ctk.CTkFrame):
 
 		label = ctk.CTkLabel(self, text='Please enter session name:', font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.3, anchor=CENTER)
-		session_name = ctk.CTkEntry(self, width=200)
-		session_name.place(relx=0.5, rely=0.35, anchor=CENTER)
+		self.session_name = ctk.CTkEntry(self, width=200)
+		self.session_name.place(relx=0.5, rely=0.35, anchor=CENTER)
 
 		label = ctk.CTkLabel(self, text='Please select audio files:', font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.45, anchor=CENTER)
@@ -114,7 +114,7 @@ class CreateSessionPage(ctk.CTkFrame):
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 
 		btn_OK = ctk.CTkButton(self, text = "Save",
-							command = lambda : add_session(session_name.get(), audio, callback=self.clear_and_home(audio, session_name, controller)))
+							command = lambda : add_session(self.session_name.get(), audio, controller, callback=self.clear_and_home))
 		btn_OK.place(relx=0.5, rely=0.95, anchor=CENTER)
 
 	def upload_audio(self, audio):
@@ -153,9 +153,9 @@ class CreateSessionPage(ctk.CTkFrame):
 			for item in audio:
 				self.listbox.insert(tk.END, item['path'] + ": " + item['answer'])
 
-	def clear_and_home(self, audio, session_name, controller):
+	def clear_and_home(self, audio, controller):
 		self.listbox.delete(0, tk.END)
-		session_name.delete(0, END)
+		self.session_name.delete(0, END)
 		audio.clear()
 		controller.show_frame(HomePage)
 
