@@ -1,12 +1,13 @@
-import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from tkinter import simpledialog
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
-from sessions import _update_sessions_json
 import util
+
+import sys
+from ctypes import windll # Only exists on windows.
 
 import CTkListbox
 
@@ -578,14 +579,23 @@ class tkinterApp(ctk.CTk):
 	def __init__(self, *args, **kwargs):
 
 		ctk.CTk.__init__(self, *args, **kwargs)
+
+		try:
+			# setting icon in taskbar
+			myappid = "Magnet.Listen-Up!.1.0"
+			windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+		except ImportError:
+			pass
+
+		
 		ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
 		ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-		self.after(201, lambda :self.iconbitmap('src\\assets\icon.ico'))
+		self.after(201, lambda :self.iconbitmap(assets_path('icon.ico')))
 		# Setup
 		self.title(constants.APP_TITLE)
 		self.geometry('800x600') #widthxheight
 
-		self.after(201, lambda :app.iconbitmap('src\\assets\icon.ico'))
+		self.after(201, lambda :app.iconbitmap(assets_path('icon.ico')))
 
 		# creating a container
 		container = ctk.CTkFrame(self)
@@ -609,7 +619,13 @@ class tkinterApp(ctk.CTk):
 			frame.grid(row = 0, column = 0, sticky ="nsew")
 
 		self.show_frame(HomePage)
+	def resource_path(relative_path):
+		try:
+			base_path = sys._MEIPASS
+		except Exception:
+			base_path = os.path.dirname(__file__)
 
+		return os.path.join(base_path, relative_path)
 	# change pages
 	def show_frame(self, cont, *args):
 		frame = self.frames[cont]
@@ -704,7 +720,7 @@ class tkinterApp(ctk.CTk):
 		self.show_frame(SessionPage)	
 
 	def initialize_banner(self):
-		banner = Image.open("src\\assets\\dark-bg.PNG")
+		banner = Image.open(assets_path("dark-bg.PNG"))
 		banner_photo = ImageTk.PhotoImage(banner)
 		self.banner_label = tk.Label(image=banner_photo)
 		self.banner_label.configure(borderwidth=0)
