@@ -74,10 +74,10 @@ class CreateSessionPage(ctk.CTkFrame):
 
 		self.selected_track = []
 
-		label = ctk.CTkLabel(self, text='Create a New Session', font=LARGE_FONT)
+		label = ctk.CTkLabel(self, text='Create a New Collection', font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.20, anchor=CENTER)
 
-		label = ctk.CTkLabel(self, text='Please enter session name:', font=MEDIUM_FONT)
+		label = ctk.CTkLabel(self, text='Please enter collection name:', font=MEDIUM_FONT)
 		label.place(relx=0.5, rely=0.3, anchor=CENTER)
 		self.session_name = ctk.CTkEntry(self, width=200)
 		self.session_name.place(relx=0.5, rely=0.35, anchor=CENTER)
