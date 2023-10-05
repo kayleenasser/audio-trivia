@@ -43,7 +43,7 @@ class Track:
 		self.playing = True
 		mixer.init()
 		mixer.music.load(self.filepath) # Loading the song
-		mixer.music.set_volume(0.7)  # Setting the volume 
+		mixer.music.set_volume(0.5)  # Setting the volume 
 		mixer.music.play(start = timestamp) # Starting song from second indicated
 
 		clock = pygame.time.Clock()
