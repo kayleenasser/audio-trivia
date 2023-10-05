@@ -28,14 +28,6 @@ class HomePage(ctk.CTkFrame):
 	def __init__(self, parent, controller):
 		ctk.CTkFrame.__init__(self, parent)
 		self.controller = controller
-		# banner = Image.open("src\\assets\\dark-bg.PNG")
-		# banner_photo = ImageTk.PhotoImage(banner)
-		# baner_label = tk.Label(image=banner_photo)
-		# baner_label.config(borderwidth=0)
-		# baner_label.image = banner_photo
-		# # Position banner
-		# baner_label.place(relx=0.5, rely=0, anchor=N)
-		# baner_label
 
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.35, anchor=N)
@@ -100,19 +92,16 @@ class SettingsPage(ctk.CTkFrame):
 	def __init__(self, parent, controller):
 
 		def _LoadAnswers(event):
-			if(listbox_sessions.selected!=None):
-				print("selected session: ", listbox_sessions.get(listbox_sessions.curselection()))
-
+			if(self.listbox_sessions.selected!=None):
 				# all the track answers for the 
-				selected_session_name = listbox_sessions.get(listbox_sessions.curselection())
+				selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
 				session_data = sessions.get_session(selected_session_name)
 				session_tracks = []
 				util.extract_data_from_json(session_data,
 												 constants.ANSWER_KEY,
 												 values=session_tracks)
 				# display them in the listbox
-				for i in range(0,len(session_tracks)-1):
-					print(session_tracks[i])
+				for i in range(0,len(session_tracks)):
 					listbox_songs.insert(i, session_tracks[i])
 		
 		row = 0
@@ -131,11 +120,11 @@ class SettingsPage(ctk.CTkFrame):
 
 		# get the sessions from the json
 		# load them into the listbox
-		self.LoadSessionsList()
-		listbox_sessions = CTkListbox(height=300, width=150, master=self)
-		listbox_sessions.place(x=200, y=200)
+		self.UpdateSessionsList()
+		self.listbox_sessions = CTkListbox(height=300, width=150, master=self)
+		self.listbox_sessions.place(x=200, y=200)
 		for i in range(0, len(self.sessions_list)):
-			listbox_sessions.insert(i, self.sessions_list[i])
+			self.listbox_sessions.insert(i, self.sessions_list[i])
 
 		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
@@ -143,7 +132,7 @@ class SettingsPage(ctk.CTkFrame):
 		btn_remove_session.place(x=50,y=300)
 
 		btn_rename_session = ctk.CTkButton(self, text="Rename Session",
-								 command=lambda: rename_session())
+								 command=lambda: RenameSession())
 		btn_rename_session.place(x=50,y=350)
 
 
@@ -151,7 +140,7 @@ class SettingsPage(ctk.CTkFrame):
 		listbox_songs = CTkListbox(height=300, width=200, master=self)
 		listbox_songs.place(x=400, y=200)
 			
-		listbox_sessions.bind("<Button-1>", _LoadAnswers)
+		self.listbox_sessions.bind("<Button-1>", _LoadAnswers)
 
 		#Song option buttons
 		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
@@ -170,38 +159,38 @@ class SettingsPage(ctk.CTkFrame):
 		# 					command = lambda : controller.open_popup("test message", True))
 		# btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
 		# row+=1
-		
 
 		#remove and rename session button
-		def rename_session():
-			selected_session = listbox_sessions.curselection()
-			if not selected_session:
+		def RenameSession():
+			print("RenameSession")
+			selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
+			if not selected_session_name:
 				return
 
 			popup = ctk.CTkToplevel(self)
 			popup.wm_title("Rename")
 			popup.geometry('300x150')  # Set the size of the popup window
 
-			inputtxt = ctk.CTkEntry(popup, width=150)
-			inputtxt.pack(pady=10)
+			txtbox_new_name = ctk.CTkEntry(popup, width=150)
+			txtbox_new_name.pack(pady=10)
 
-			errormessage = ctk.CTkLabel(popup, text="", text_color="red")
-			errormessage.pack()
+			error_message = ctk.CTkLabel(popup, text="", text_color="red")
+			error_message.pack()
 
-			def changename():
-				newname = inputtxt.get()
-				if newname in data:
-					errormessage.config(text="No duplicate session names")
+			def ChangeSessionName():
+				new_name = txtbox_new_name.get()
+				if new_name in self.sessions_list:
+					if new_name == constants.DEFAULT_SESSION:
+						error_message.configure(text="Sorry, you can't choose this name.")
+					else:
+						error_message.configure(text="This session name already exists!")
 				else:
-					old_name = listbox_sessions.get(selected_session)
-					data[newname] = data[old_name]
-					del data[old_name]
-					_update_sessions_json(data)
-					listbox_sessions.delete(selected_session)
-					listbox_sessions.insert(selected_session, newname)
+					old_name = selected_session_name
+					sessions.update_session_name(old_name, new_name)
+					self.ReloadSessionListbox()
 					popup.destroy()
 
-			submit_btn = ctk.CTkButton(popup, text="Submit", command=changename)
+			submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
 			submit_btn.pack()
 
 			# Center the popup window on the screen
@@ -213,15 +202,21 @@ class SettingsPage(ctk.CTkFrame):
 			popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
 			# Grab focus for the input field
-			inputtxt.focus_set()
+			txtbox_new_name.focus_set()
 
 			popup.grab_set()
 			self.wait_window(popup)
 	
-	def LoadSessionsList(self):
+	def UpdateSessionsList(self):
 		# exclude the default from the list
 		self.sessions_list = list(sessions.get_all_sessions(False).keys())
 		print(self.sessions_list)
+
+	def ReloadSessionListbox(self):
+			#self.listbox_sessions.
+			self.UpdateSessionsList()
+			for i in range(0, len(self.sessions_list)):
+				self.listbox_sessions.insert(i, self.sessions_list[i])
 
 
 
@@ -543,7 +538,7 @@ class tkinterApp(ctk.CTk):
 		banner = Image.open("src\\assets\\dark-bg.PNG")
 		banner_photo = ImageTk.PhotoImage(banner)
 		self.banner_label = tk.Label(image=banner_photo)
-		self.banner_label.config(borderwidth=0)
+		self.banner_label.configure(borderwidth=0)
 		self.banner_label.image = banner_photo
 		self.banner_label.place(relx=0.5, rely=0, anchor=N)
 
