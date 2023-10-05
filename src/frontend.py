@@ -283,8 +283,11 @@ class SettingsPage(ctk.CTkFrame):
 											constants.ANSWER_KEY,
 											values=self.session_track_answers)
 		# display them in the listbox
-		for i in range(0,len(self.session_track_answers)):
-			self.listbox_tracks.insert(i, self.session_track_answers[i])
+		if len(self.session_track_answers) == 0:
+			self.ClearTrackList()
+		else:
+			for i in range(0,len(self.session_track_answers)):
+				self.listbox_tracks.insert(i, self.session_track_answers[i])
 
 	#remove and rename session button
 	def RenameSession(self):
@@ -359,8 +362,8 @@ class SettingsPage(ctk.CTkFrame):
 		self.ReloadTrackListbox()
 
 	def UpdateSessionsList(self):
-		# exclude the default from the list
-		self.sessions_list = list(sessions.get_all_sessions(False).keys())
+		# don't exclude the default from the list
+		self.sessions_list = list(sessions.get_all_sessions().keys())
 		print(self.sessions_list)
 
 	def UpdateTrackList(self):
@@ -372,11 +375,12 @@ class SettingsPage(ctk.CTkFrame):
 											values=self.session_track_answers)
 
 	def ReloadSessionListbox(self):
-			self.listbox_sessions.delete(0, tk.END)
-			self.UpdateSessionsList()
-			self.ClearTrackList()
-			for i in range(0, len(self.sessions_list)):
-				self.listbox_sessions.insert(i, self.sessions_list[i])
+			if self.listbox_sessions.size() > 0:
+				self.listbox_sessions.delete(0, tk.END)
+				self.UpdateSessionsList()
+				self.ClearTrackList()
+				for i in range(0, len(self.sessions_list)):
+					self.listbox_sessions.insert(i, self.sessions_list[i])
 
 	def ClearTrackList(self):
 		self.session_track_paths = []
