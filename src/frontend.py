@@ -253,12 +253,16 @@ class SettingsPage(ctk.CTkFrame):
 		current_value1 = tk.DoubleVar()
 		current_value2 = tk.DoubleVar()
 		current_value3 = tk.DoubleVar()
+		current_value4 = tk.DoubleVar()
+
 		def get_current_value1():
 			return '{: .2f}'.format(current_value1.get())
 		def get_current_value2():
 			return '{: .2f}'.format(current_value2.get())
 		def get_current_value3():
 			return '{: .2f}'.format(current_value3.get())
+		def get_current_value4():
+			return '{: .2f}'.format(current_value4.get())
 
 		def slider_changed1(event):
 			value_int_slider.configure(text=get_current_value1())
@@ -269,19 +273,22 @@ class SettingsPage(ctk.CTkFrame):
 		def slider_changed3(event):
 			value_label_delay_end.configure(text=get_current_value3())
 
+		def slider_changed4(event):
+			value_label_delay_end.configure(text=get_current_value4())
 
-		self.interval_slider = ctk.CTkSlider(self, width=200, height=20, from_=0, to=100, command=slider_changed1,
-    variable=current_value1)
+
+		self.interval_slider = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed1,
+    		variable=current_value1)
 		self.interval_slider.place(relx=0.9, rely=0.3, anchor=E)
-		self.delay_from_start = ctk.CTkSlider(self,width=200, height=20, from_=0, to=100, command=slider_changed2,
-    variable=current_value2)
+		self.delay_from_start = ctk.CTkSlider(self,width=200, height=15, from_=0, to=100, command=slider_changed2,
+    		variable=current_value2)
 		self.delay_from_start.place(relx=0.9, rely=0.4, anchor=E)
-		self.delay_from_end = ctk.CTkSlider(self, width=200, height=20, from_=0, to=100, command=slider_changed3,
-    variable=current_value3)
+		self.delay_from_end = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed3,
+    		variable=current_value3)
 		self.delay_from_end.place(relx=0.9, rely=0.5, anchor=E)
-		self.increase_amount = ctk.CTkTextbox(self, width=200, height=20)
-		self.increase_amount.insert("0.1", "Enter value")
-		self.increase_amount.place(relx=0.9, rely=0.62, anchor=E)
+		self.increase_amount = ctk.CTkSlider(self, width=200, height=15, from_=0, to=100, command=slider_changed4,
+    		variable=current_value4)
+		self.delay_from_end.place(relx=0.9, rely=0.6, anchor=E)
 
 		btn_apply_settings = ctk.CTkButton(self, text="Apply Settings")
 		btn_apply_settings.place(relx=0.85, rely=0.775, anchor=SE)
@@ -292,6 +299,8 @@ class SettingsPage(ctk.CTkFrame):
 		value_label_delay_start.place(relx=0.95, rely=0.4, anchor=E)
 		value_label_delay_end = ctk.CTkLabel(self, text=get_current_value3())
 		value_label_delay_end.place(relx=0.95, rely=0.5, anchor=E)
+		value_label_increase = ctk.CTkLabel(self, text=get_current_value4())
+		value_label_increase.place(relx=0.95, rely=0.6, anchor=E)
 
 		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text=constants.REMOVE_SESSION,
