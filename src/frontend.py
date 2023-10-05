@@ -94,19 +94,19 @@ class CreateSessionPage(ctk.CTkFrame):
 		self.listbox_tracks.place(relx = 0.5, rely = 0.725, anchor=CENTER)
 		
 		# buttons
-		self.edit_button = ctk.CTkButton(self, text="Edit", 
+		self.edit_button = ctk.CTkButton(self, text=constants.EDIT_BUTTON, 
 					   command=lambda : self.edit_selected_row(audio=self.selected_track))
 		self.edit_button.place(relx=0.25, rely=0.95, anchor=CENTER)
 
-		self.delete_button = ctk.CTkButton(self, text="Delete", 
+		self.delete_button = ctk.CTkButton(self, text=constants.DELETE_BUTTON, 
 					   command=lambda : self.delete_selected_row(audio=self.selected_track))
 		self.delete_button.place(relx=0.5, rely=0.95, anchor=CENTER)
 
-		btn_home = ctk.CTkButton(self, text ="Back",
+		btn_home = ctk.CTkButton(self, text =constants.BACK_BUTTON,
 							command = lambda : controller.show_frame(HomePage))
 		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-		btn_OK = ctk.CTkButton(self, text = "Save",
+		btn_OK = ctk.CTkButton(self, text =constants.SAVE_BUTTON,
 							command = lambda : add_session(self.session_name.get(), self.selected_track, controller, callback=self.clear_and_home))
 		btn_OK.place(relx=0.75, rely=0.95, anchor=CENTER)
 
@@ -162,7 +162,7 @@ class CreateSessionPage(ctk.CTkFrame):
 					self.listbox_tracks.insert(tk.END, f"Answer: {item['answer']}, Path: {item['path']}")
 				popup.destroy()
 
-			submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
+			submit_btn = ctk.CTkButton(popup, text=constants.SUBMIT_BUTTON, command=ChangeSessionName)
 			submit_btn.pack()
 
 			# Center the popup window on the screen
@@ -235,11 +235,11 @@ class SettingsPage(ctk.CTkFrame):
 			self.listbox_sessions.insert(i, self.sessions_list[i])
 
 		# Other buttons
-		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
+		btn_remove_session = ctk.CTkButton(self, text=constants.REMOVE_SESSION,
 								 command=lambda: self.RemoveSession())
 		btn_remove_session.place(x=50,y=300)
 
-		btn_rename_session = ctk.CTkButton(self, text="Rename Session",
+		btn_rename_session = ctk.CTkButton(self, text=constants.RENAME_SESSION,
 								 command=lambda: self.RenameSession())
 		btn_rename_session.place(x=50,y=350)
 
@@ -253,15 +253,15 @@ class SettingsPage(ctk.CTkFrame):
 		self.listbox_tracks.place(x=400, y=200)
 
 		#Song option buttons
-		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
+		btn_remove_song = ctk.CTkButton(self, text=constants.REMOVE_SONG,
 										   command=lambda: self.RemoveSong())
 		btn_remove_song.place(x=630, y=280)
 
-		btn_rename_song = ctk.CTkButton(self, text="Rename Song",
+		btn_rename_song = ctk.CTkButton(self, text=constants.RENAME_SONG,
 										   command=lambda: controller.show_frame(HomePage))
 		btn_rename_song.place(x=630, y=330)
 
-		btn_add_song = ctk.CTkButton(self, text="Add Song",
+		btn_add_song = ctk.CTkButton(self, text=constants.ADD_SONG,
 										command=lambda: controller.show_frame(HomePage))
 		btn_add_song.place(x=630, y=480)
 
@@ -312,16 +312,16 @@ class SettingsPage(ctk.CTkFrame):
 			new_name = txtbox_new_name.get()
 			if new_name in self.sessions_list:
 				if new_name == constants.DEFAULT_SESSION:
-					error_message.configure(text="Sorry, you can't choose this name.")
+					error_message.configure(text=constants.BAD_NAME)
 				else:
-					error_message.configure(text="This session name already exists!")
+					error_message.configure(text=constants.ALREADY_EXISTS)
 			else:
 				old_name = selected_session_name
 				sessions.update_session_name(old_name, new_name)
 				self.ReloadSessionListbox()
 				popup.destroy()
 
-		submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
+		submit_btn = ctk.CTkButton(popup, text=constants.SUBMIT_BUTTON, command=ChangeSessionName)
 		submit_btn.pack()
 
 		# Center the popup window on the screen
@@ -662,7 +662,7 @@ class tkinterApp(ctk.CTk):
 
 		label = ctk.CTkLabel(popup, text=message)
 		label.pack(side="top", fill="x", pady=10)
-		button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
+		button = ctk.CTkButton(popup, text=constants.CLOSE_BUTTON, command=popup.destroy)
 		button.pack()
 		if isBlocking:
 			popup.grab_set()
@@ -703,7 +703,7 @@ class tkinterApp(ctk.CTk):
 		listbox.bind("<Double-Button-1>", lambda event: on_select())
 
 		# Okay button to confirm selection
-		okay_button = ctk.CTkButton(popup, text="Okay", command=lambda: on_select())
+		okay_button = ctk.CTkButton(popup, text=constants.OK_BUTTON, command=lambda: on_select())
 		okay_button.pack()
 
 		# Make the popup modal (force user interaction)
