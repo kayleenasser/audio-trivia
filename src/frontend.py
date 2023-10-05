@@ -296,10 +296,10 @@ class SessionPage(ctk.CTkFrame):
 			font=MEDIUM_FONT)
 		lbl_score.place(relx=0.95, rely=0.05, anchor=ctk.NE)
 
-		self._replay_count = 0
-		self._lbl_replay = ctk.CTkLabel(self, text='Replays: 0',
+		self._track_count = 1
+		self._lbl_track_count = ctk.CTkLabel(self, text='Track #1',
 			font=MEDIUM_FONT)
-		self._lbl_replay.place(relx=0.95, rely=0.1, anchor=ctk.NE)
+		self._lbl_track_count.place(relx=0.95, rely=0.1, anchor=ctk.NE)
 
 		# NAV BUTTONS ########################################################
 		# switch to HOME
@@ -334,7 +334,7 @@ class SessionPage(ctk.CTkFrame):
 
 		# replay
 		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
-			command=lambda: self._replay_track())
+			command=lambda: self._trivia.ReplayTrack())
 		replay_button.place(relx=0.6, rely=0.3, anchor=ctk.W)
 		
 		# toggle value when pressed and show/hide the answer label
@@ -353,14 +353,12 @@ class SessionPage(ctk.CTkFrame):
 
 		# success (add point to score, go to next)
 		btn_success = ctk.CTkButton(self, text=constants.SUCCESS_BUTTON,
-			command=lambda: self._update_score(is_success=True,
-			callback=self._trivia.PlayNextTrack))
+			command=lambda: self._success_or_failure_button_pressed())
 		btn_success.place(relx=0.3, rely=0.7, anchor=ctk.W)
 
 		# failure (no point, go to next)
 		btn_failure = ctk.CTkButton(self, text=constants.FAILURE_BUTTON,
-			command=lambda: self._update_score(is_success=False,
-			callback=self._trivia.PlayNextTrack))
+			command=lambda: self._success_or_failure_button_pressed(False))
 		btn_failure.place(relx=0.7, rely=0.7, anchor=ctk.E)
 
 		# retry
@@ -420,11 +418,20 @@ class SessionPage(ctk.CTkFrame):
 		self._trivia.IncreaseIntervalLength()
 		self._lbl_audio_length.configure(
 			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
-		
-	def _replay_track(self):
-		self._replay_count += 1
-		self._lbl_replay.configure(text=f'Replays: {self._replay_count}')
-		self._trivia.ReplayTrack()
+
+	def _increase_track_count(self):
+		self._track_count += 1
+		self._lbl_track_count.configure(text=f'Track #{self._track_count}')
+
+	def _success_or_failure_button_pressed(self, is_success=True):
+		"""
+		Args:
+			is_success: True, if the success button was pressed. False, if
+				not. Default is True.
+		"""
+		self._update_score(is_success=is_success,
+			callback=self._trivia.PlayNextTrack)
+		self._increase_track_count()
 
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
@@ -437,8 +444,8 @@ class SessionPage(ctk.CTkFrame):
 		
 		# reset/update buttons, labels, & score
 		self._score.set(f'Score: {self._trivia.GetScore()}')
-		self._replay_count = 0
-		self._lbl_replay.configure(text=f'Replays: {self._replay_count}')
+		self._track_count = 1
+		self._lbl_track_count.configure(text=f'Track #{self._track_count}')
 		# update the value once it's been initialized
 		self._btn_increase.configure(text= \
 			f'+{self._trivia.GetIncreaseAmount()} sec.')
