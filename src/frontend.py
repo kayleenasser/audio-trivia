@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from tkinter import simpledialog
+from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from sessions import _update_sessions_json
 import util
@@ -115,6 +116,18 @@ class CreateSessionPage(ctk.CTkFrame):
 		fp = askopenfilename()
 		fn = os.path.basename(fp)
 		
+		print(os.path.splitext(fn)[1])
+		print(constants.FILETYPES)
+
+		if (os.path.splitext(fn)[1] not in constants.FILETYPES):
+			messagebox.showerror('Invalid Filetype', 'Error: The filetype that was selected is invalid.')
+			return
+		
+		for item in audio:
+			if (fp == item['path']):
+				messagebox.showerror('Duplicate File', 'Error: This file was already added to the session.')
+				return
+
 		audio.append({'path': fp, 'answer': fn})
 		self.listbox.insert(tk.END, fp + ": " + fn)
 
@@ -129,7 +142,7 @@ class CreateSessionPage(ctk.CTkFrame):
 		if selected_index:
 			index = int(selected_index[0])
 			new_answer = simpledialog.askstring("Edit Answer", "Enter new answer:")
-			if new_answer is not None:
+			if new_answer != '':
 				audio[index] = {'path': audio[index]['path'], 'answer' : new_answer}
 				self.listbox.delete(0, tk.END)
 				for item in audio:

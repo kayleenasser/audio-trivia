@@ -94,6 +94,10 @@ def add_session(session_name : str, audio_files : list[dict[str, str]], controll
     if session_name in sessions_dict:
         raise KeyError(f"The session name '{session_name}' already exists. \
             Please use another name.")
+    if (audio_files == []):
+        raise KeyError(f"No audio files were added to the session. \
+            Please add 1 or more audio files to the session.")
+    
     sessions_dict[session_name] = {
         const.AUDIO_FILES_KEY: audio_files,
         const.SETTINGS_KEY: {

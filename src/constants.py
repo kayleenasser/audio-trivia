@@ -5,6 +5,9 @@ SESSION = "Session"
 HOME = "Home"
 OPEN_SESSION = "Open Session"
 CREATE_SESSION = "Create Session"
+FILETYPES = [
+    ".mp3"
+]
 
 # session buttons
 SHOW_ANSWER = "Show Answer"
