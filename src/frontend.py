@@ -441,26 +441,33 @@ class SessionPage(ctk.CTkFrame):
 
 		# GAMEPLAY BUTTONS ###################################################
 		# play/pause
-		self._is_paused = True # paused, need to press play for audio
+		#self._is_paused = True # paused, need to press play for audio
+
 		# use this to prevent yay or nay button use until audio has played
 		self._track_has_played = False
-		btn_play = ctk.CTkButton(self, text=constants.PLAY_BUTTON,
-			command=lambda: self._toggle_state([self._is_paused], btn_play,
-			constants.PLAY_BUTTON, constants.PAUSE_BUTTON,
-			self._update_play_toggle, self._trivia.PlayPauseTrack))
-		btn_play.place(relx=0.4, rely=0.3, anchor=ctk.E)
+
+		# btn_play = ctk.CTkButton(self, text=constants.PLAY_BUTTON,
+		# 	command=lambda: self._toggle_state([self._is_paused], btn_play,
+		# 	constants.PLAY_BUTTON, constants.PAUSE_BUTTON,
+		# 	self._update_play_toggle, self._trivia.PlayPauseTrack))
+		# btn_play.place(relx=0.4, rely=0.3, anchor=ctk.E)
+		# replay
+
+		# For both play and replay
+		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
+			command=lambda: self.OnPlayButtonPress())
+		replay_button.place(relx=0.4, rely=0.3, anchor=ctk.E)
+		# replay
 
 		# increase interval
 		self._btn_increase = ctk.CTkButton(self, text='+3 secs.',
 			command=lambda: self._increase_interval_length())
-		self._btn_increase.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
-		self._lbl_audio_length = ctk.CTkLabel(self, text=SMALL_FONT)
-		self._lbl_audio_length.place(relx=0.5, rely=0.35, anchor=ctk.CENTER)
+		self._btn_increase.place(relx=0.6, rely=0.3, anchor=ctk.W)
 
-		# replay
-		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
-			command=lambda: self._trivia.ReplayTrack())
-		replay_button.place(relx=0.6, rely=0.3, anchor=ctk.W)
+		self._lbl_audio_length = ctk.CTkLabel(self, text=SMALL_FONT)
+		self._lbl_audio_length.place(relx=0.6, rely=0.35, anchor=ctk.W)
+
+		
 		
 		# toggle value when pressed and show/hide the answer label
 		self._is_answer_showing = False
@@ -491,6 +498,13 @@ class SessionPage(ctk.CTkFrame):
 			command=lambda: self._trivia.PlayDifferentInterval())
 		btn_retry.place(relx=0.5, rely=0.8, anchor=ctk.CENTER)
 	
+	def OnPlayButtonPress(self):
+		if not self._track_has_played:
+			# if first time opening, need to Play
+			self._trivia.PlayNextTrack()
+		else:
+			# here we're replaying
+			self._trivia.ReplayTrack()
 	# for play/pause and show/hide answer
 	# need to make it a list so that it's mutable
 	def _toggle_state(self, state_list, button, true_text, false_text,
