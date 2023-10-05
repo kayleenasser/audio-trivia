@@ -17,6 +17,7 @@ from CTkListbox import *
 import trivia
 import sessions
 import os
+import tracks
 from PIL import Image, ImageTk
 from sessions import *
 import os
@@ -29,6 +30,7 @@ SMALL_FONT = ('Verdana', 12)
 # a button to open a session
 # a button to create a session
 # a button to go to settings
+#fg_color="#2BCDEC", font=('Verdana', 16, "bold"),
 class HomePage(ctk.CTkFrame):
 
 	def __init__(self, parent, controller):
@@ -227,39 +229,67 @@ class SettingsPage(ctk.CTkFrame):
 		# load them into the listbox
 		self.UpdateSessionsList()
 		self.listbox_sessions = CTkListbox(height=300, width=200, master=self, command=self.LoadAnswers)
-		self.listbox_sessions.place(relx=0.2, rely=0.45, anchor=W)
+		self.listbox_sessions.place(relx=0.05, rely=0.45, anchor=W)
 		for i in range(0, len(self.sessions_list)):
 			self.listbox_sessions.insert(i, self.sessions_list[i])
 
 		#Songs Box
 		self.listbox_tracks = CTkListbox(height=300, width=200, master=self,command=self.SelectTrackCallback)
-		self.listbox_tracks.place(relx=0.8, rely=0.45, anchor=E)
+		self.listbox_tracks.place(relx=0.5, rely=0.45, anchor=CENTER)
+
+		#add ui for globalsettings (interval length, etc) as a third column beside the listboxes
+		interval_label = ctk.CTkLabel(self, text="Interval Length", font=MEDIUM_FONT)
+		interval_label.place(relx=0.85, rely=0.25, anchor=E)
+
+		interval_label = ctk.CTkLabel(self, text="Delay from Start", font=MEDIUM_FONT)
+		interval_label.place(relx=0.85, rely=0.35, anchor=E)
+
+		interval_label = ctk.CTkLabel(self, text="Delay from End", font=MEDIUM_FONT)
+		interval_label.place(relx=0.85, rely=0.45, anchor=E)
+
+		interval_label = ctk.CTkLabel(self, text="Increase Time Amount", font=MEDIUM_FONT)
+		interval_label.place(relx=0.9, rely=0.55, anchor=E)
+
+
+		self.interval_slider = ctk.CTkSlider(self, width=200, height=20, from_=0, to=100)
+		self.interval_slider.place(relx=0.9, rely=0.3, anchor=E)
+		self.delay_from_start = ctk.CTkSlider(self,width=200, height=20, from_=0, to=100)
+		self.delay_from_start.place(relx=0.9, rely=0.4, anchor=E)
+		self.delay_from_end = ctk.CTkSlider(self, width=200, height=20, from_=0, to=100)
+		self.delay_from_end.place(relx=0.9, rely=0.5, anchor=E)
+		self.increase_amount = ctk.CTkTextbox(self, width=200, height=20)
+		self.increase_amount.insert("0.1", "Enter value")
+		self.increase_amount.place(relx=0.9, rely=0.62, anchor=E)
+
+		btn_apply_settings = ctk.CTkButton(self, text="Apply Settings")
+		btn_apply_settings.place(relx=0.85, rely=0.775, anchor=SE)
+
 
 		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text=constants.REMOVE_SESSION,
 								 command=lambda: self.RemoveSession())
-		btn_remove_session.place(relx=0.25, rely=0.775, anchor=SW)
+		btn_remove_session.place(relx=0.1, rely=0.775, anchor=SW)
 
 		btn_rename_session = ctk.CTkButton(self, text=constants.RENAME_SESSION,
 								 command=lambda: self.RenameSession())
-		btn_rename_session.place(relx=0.25, rely=0.85, anchor=SW)
+		btn_rename_session.place(relx=0.1, rely=0.85, anchor=SW)
 
 		btn_create_session = ctk.CTkButton(self, text=constants.CREATE_SESSION,
 								 command=lambda: controller.show_frame(CreateSessionPage))
-		btn_create_session.place(relx=0.25, rely=0.925, anchor=SW)
+		btn_create_session.place(relx=0.1, rely=0.925, anchor=SW)
 
 		#Song option buttons
 		btn_remove_song = ctk.CTkButton(self, text=constants.REMOVE_SONG,
 										   command=lambda: self.RemoveSong())
-		btn_remove_song.place(relx=0.75, rely=0.775, anchor=SE)
+		btn_remove_song.place(relx=0.5, rely=0.775, anchor=S)
 
 		btn_rename_song = ctk.CTkButton(self, text=constants.RENAME_SONG,
 										   command=lambda: controller.show_frame(HomePage))
-		btn_rename_song.place(relx=0.75, rely=0.85, anchor=SE)
+		btn_rename_song.place(relx=0.5, rely=0.85, anchor=S)
 
 		btn_add_song = ctk.CTkButton(self, text=constants.ADD_SONG,
 										command=lambda: controller.show_frame(HomePage))
-		btn_add_song.place(relx=0.75, rely=0.925, anchor=SE)
+		btn_add_song.place(relx=0.5, rely=0.925, anchor=S)
 
 		# btn_test_popup = ctk.CTkButton(self, text ="TEST",
 		# 					command = lambda : controller.open_popup("test message", True))
