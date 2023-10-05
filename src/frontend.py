@@ -212,58 +212,54 @@ class SettingsPage(ctk.CTkFrame):
 		self.session_track_answers = [] 
 		self.session_track_paths = []
 		session_data = None
-		row = 0
-		
+
 		ctk.CTkFrame.__init__(self, parent)
 		# title label
-		label = ctk.CTkLabel(self, text =constants.SETTINGS, font = LARGE_FONT)
-		label.grid(row = row, column = 4, padx = 10, pady = 10)
-		row+=1
+		label = ctk.CTkLabel(self, text=constants.SETTINGS, font=LARGE_FONT)
+		label.place(relx=0.5, rely=0.075, anchor=N)
 
 		# Switch to HOME
-		btn_home = ctk.CTkButton(self, text =constants.HOME,
-							command = lambda : controller.show_frame(HomePage))
-		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
-		row+=1
+		btn_home = ctk.CTkButton(self, text =constants.BACK_BUTTON, command = lambda : controller.show_frame(HomePage))
+		btn_home.grid(row = 0, column = 0, padx = 10, pady = 10)
+
 
 		# get the sessions from the json
 		# load them into the listbox
 		self.UpdateSessionsList()
-		self.listbox_sessions = CTkListbox(height=300, width=150, master=self, command=self.LoadAnswers)
-		self.listbox_sessions.place(x=200, y=200)
+		self.listbox_sessions = CTkListbox(height=300, width=200, master=self, command=self.LoadAnswers)
+		self.listbox_sessions.place(relx=0.2, rely=0.45, anchor=W)
 		for i in range(0, len(self.sessions_list)):
 			self.listbox_sessions.insert(i, self.sessions_list[i])
+
+		#Songs Box
+		self.listbox_tracks = CTkListbox(height=300, width=200, master=self,command=self.SelectTrackCallback)
+		self.listbox_tracks.place(relx=0.8, rely=0.45, anchor=E)
 
 		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text=constants.REMOVE_SESSION,
 								 command=lambda: self.RemoveSession())
-		btn_remove_session.place(x=50,y=300)
+		btn_remove_session.place(relx=0.25, rely=0.775, anchor=SW)
 
 		btn_rename_session = ctk.CTkButton(self, text=constants.RENAME_SESSION,
 								 command=lambda: self.RenameSession())
-		btn_rename_session.place(x=50,y=350)
+		btn_rename_session.place(relx=0.25, rely=0.85, anchor=SW)
 
 		btn_create_session = ctk.CTkButton(self, text=constants.CREATE_SESSION,
 								 command=lambda: controller.show_frame(CreateSessionPage))
-		btn_create_session.place(x=50,y=400)
-
-
-		#Songs Box
-		self.listbox_tracks = CTkListbox(height=300, width=200, master=self,command=self.SelectTrackCallback)
-		self.listbox_tracks.place(x=400, y=200)
+		btn_create_session.place(relx=0.25, rely=0.925, anchor=SW)
 
 		#Song option buttons
 		btn_remove_song = ctk.CTkButton(self, text=constants.REMOVE_SONG,
 										   command=lambda: self.RemoveSong())
-		btn_remove_song.place(x=630, y=280)
+		btn_remove_song.place(relx=0.75, rely=0.775, anchor=SE)
 
 		btn_rename_song = ctk.CTkButton(self, text=constants.RENAME_SONG,
 										   command=lambda: controller.show_frame(HomePage))
-		btn_rename_song.place(x=630, y=330)
+		btn_rename_song.place(relx=0.75, rely=0.85, anchor=SE)
 
 		btn_add_song = ctk.CTkButton(self, text=constants.ADD_SONG,
 										command=lambda: controller.show_frame(HomePage))
-		btn_add_song.place(x=630, y=480)
+		btn_add_song.place(relx=0.75, rely=0.925, anchor=SE)
 
 		# btn_test_popup = ctk.CTkButton(self, text ="TEST",
 		# 					command = lambda : controller.open_popup("test message", True))
