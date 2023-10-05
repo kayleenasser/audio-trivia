@@ -435,13 +435,13 @@ class SessionPage(ctk.CTkFrame):
 
 		# switch to SETTINGS
 		btn_settings = ctk.CTkButton(self, text=constants.SETTINGS, 
-			command= lambda:controller.show_frame(SettingsPage), height=50,
+			command= lambda:controller.show_frame(SettingsPage), height=25,
 			width=80)
 		btn_settings.place(relx=0.05, rely=0.1, anchor=ctk.NW)
 
 		# GAMEPLAY BUTTONS ###################################################
 		# play/pause
-		#self._is_paused = True # paused, need to press play for audio
+		# self._is_paused = True # paused, need to press play for audio
 
 		# use this to prevent yay or nay button use until audio has played
 		self._track_has_played = False
@@ -451,23 +451,19 @@ class SessionPage(ctk.CTkFrame):
 		# 	constants.PLAY_BUTTON, constants.PAUSE_BUTTON,
 		# 	self._update_play_toggle, self._trivia.PlayPauseTrack))
 		# btn_play.place(relx=0.4, rely=0.3, anchor=ctk.E)
-		# replay
 
-		# For both play and replay
+		# for both play and replay
 		replay_button = ctk.CTkButton(self, text=constants.REPLAY_BUTTON,
 			command=lambda: self.OnPlayButtonPress())
-		replay_button.place(relx=0.4, rely=0.3, anchor=ctk.E)
-		# replay
+		replay_button.place(relx=0.3, rely=0.3, anchor=ctk.W)
 
 		# increase interval
 		self._btn_increase = ctk.CTkButton(self, text='+3 secs.',
 			command=lambda: self._increase_interval_length())
-		self._btn_increase.place(relx=0.6, rely=0.3, anchor=ctk.W)
+		self._btn_increase.place(relx=0.7, rely=0.3, anchor=ctk.E)
 
 		self._lbl_audio_length = ctk.CTkLabel(self, text=SMALL_FONT)
-		self._lbl_audio_length.place(relx=0.6, rely=0.35, anchor=ctk.W)
-
-		
+		self._lbl_audio_length.place(relx=0.5, rely=0.35, anchor=ctk.CENTER)
 		
 		# toggle value when pressed and show/hide the answer label
 		self._is_answer_showing = False
@@ -571,6 +567,8 @@ class SessionPage(ctk.CTkFrame):
 		self._update_score(is_success=is_success,
 			callback=self._trivia.PlayNextTrack)
 		self._increase_track_count()
+		self._lbl_audio_length.configure(
+			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
 
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
