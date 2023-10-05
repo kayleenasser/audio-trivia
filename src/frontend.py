@@ -366,9 +366,9 @@ class SettingsPage(ctk.CTkFrame):
 										   command=self.ChangeAnswer)
 		btn_change_answer.place(relx=0.5, rely=0.85, anchor=S)
 
-		btn_add_song = ctk.CTkButton(self, text=constants.ADD_SONG,
+		btn_add_track = ctk.CTkButton(self, text=constants.ADD_TRACK, state='disabled',
 										command=lambda: controller.show_frame(HomePage))
-		btn_add_song.place(relx=0.5, rely=0.925, anchor=S)
+		btn_add_track.place(relx=0.5, rely=0.925, anchor=S)
 
 		# btn_test_popup = ctk.CTkButton(self, text ="TEST",
 		# 					command = lambda : controller.open_popup("test message", True))
@@ -392,11 +392,10 @@ class SettingsPage(ctk.CTkFrame):
 											constants.ANSWER_KEY,
 											values=self.session_track_answers)
 		# display them in the listbox
-		if len(self.session_track_answers) == 0:
-			self.ClearTrackList()
-		else:
-			for i in range(0,len(self.session_track_answers)):
-				self.listbox_tracks.insert(i, self.session_track_answers[i])
+		self.ClearTrackList()
+		self.UpdateTrackList()
+		for i in range(0,len(self.session_track_answers)):
+			self.listbox_tracks.insert(i, self.session_track_answers[i])
 
 	def ChangeAnswer(self):
 		print("change answer")
@@ -522,7 +521,6 @@ class SettingsPage(ctk.CTkFrame):
 	def UpdateTrackList(self):
 		print("UpdateTrackList")
 		# exclude the default from the list
-		self.session_track_answers = []
 		util.extract_data_from_json(sessions.get_session(self.selected_session),
 											constants.ANSWER_KEY,
 											values=self.session_track_answers)
@@ -540,13 +538,12 @@ class SettingsPage(ctk.CTkFrame):
 		self.session_track_answers = []
 		if self.listbox_tracks.size() > 0:
 			self.listbox_tracks.delete(0, tk.END)
+		self.update_idletasks()
 	
 	def ReloadTrackListbox(self):
 			print("ReloadTrackList")
-			self.UpdateTrackList()
 			self.ClearTrackList()
-			self.ReloadTrackListbox()
-			print(self.session_track_answers)
+			self.UpdateTrackList()
 			for i in range(0, len(self.session_track_answers)):
 				self.listbox_tracks.insert(i, self.session_track_answers[i])
 
