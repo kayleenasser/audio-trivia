@@ -558,7 +558,6 @@ class SessionPage(ctk.CTkFrame):
 			if callback:
 				callback()
 			
-
 	def _show_hide_answer(self, is_answer_showing):
 		if is_answer_showing:
 			self._answer = self._trivia.GetAnswer()
@@ -568,9 +567,9 @@ class SessionPage(ctk.CTkFrame):
 
 	def _increase_interval_length(self):
 		self._trivia.IncreaseIntervalLength()
-		self.UpdateIntervalLengthLabel()
+		self._update_lbl_audio_length()
 	
-	def UpdateIntervalLengthLabel(self):
+	def _update_lbl_audio_length(self):
 		self._lbl_audio_length.configure(
 			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
 
@@ -586,9 +585,7 @@ class SessionPage(ctk.CTkFrame):
 		"""
 		self._update_score(is_success=is_success,
 			callback=self._trivia.PlayNextTrack)
-		self.UpdateIntervalLengthLabel()
-		self._lbl_audio_length.configure(
-			text=f'Audio Length: {self._trivia.get_interval_length()} sec.')
+		self._update_lbl_audio_length()
 
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
