@@ -27,9 +27,9 @@ EDIT_BUTTON = "Edit"
 BACK_BUTTON = "Back"
 SAVE_BUTTON = "Save"
 DELETE_BUTTON = "Delete"
-REPLAY_BUTTON = "Replay"
+REPLAY_BUTTON = "Play"      # yes i know this is a duplicate, it's a placeholder
 SUBMIT_BUTTON = "Submit"
-SUCCESS_BUTTON = "Checkmark"
+SUCCESS_BUTTON = "✔"
 FAILURE_BUTTON = "X"
 RETRY_BUTTON = "Retry"
 
