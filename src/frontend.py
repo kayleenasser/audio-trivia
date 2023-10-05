@@ -27,15 +27,14 @@ class HomePage(ctk.CTkFrame):
 	def __init__(self, parent, controller):
 		ctk.CTkFrame.__init__(self, parent)
 		self.controller = controller
-
-		banner = Image.open("src\\assets\\dark-bg.PNG")
-		banner_photo = ImageTk.PhotoImage(banner)
-		baner_label = tk.Label(image=banner_photo)
-		baner_label.config(borderwidth=0)
-		baner_label.image = banner_photo
-		# Position banner
-		baner_label.place(relx=0.5, rely=0, anchor=N)
-		baner_label
+		# banner = Image.open("src\\assets\\dark-bg.PNG")
+		# banner_photo = ImageTk.PhotoImage(banner)
+		# baner_label = tk.Label(image=banner_photo)
+		# baner_label.config(borderwidth=0)
+		# baner_label.image = banner_photo
+		# # Position banner
+		# baner_label.place(relx=0.5, rely=0, anchor=N)
+		# baner_label
 
 		label = ctk.CTkLabel(self, text=constants.HOME, font=LARGE_FONT)
 		label.place(relx=0.5, rely=0.35, anchor=N)
@@ -102,6 +101,7 @@ class SettingsPage(ctk.CTkFrame):
 		row = 0
 		
 		ctk.CTkFrame.__init__(self, parent)
+		# title label
 		label = ctk.CTkLabel(self, text =constants.SETTINGS, font = LARGE_FONT)
 		label.grid(row = row, column = 4, padx = 10, pady = 10)
 		row+=1
@@ -420,12 +420,16 @@ class tkinterApp(ctk.CTk):
 			frame.grid(row = 0, column = 0, sticky ="nsew")
 
 		self.show_frame(HomePage)
-		
-	
 
 	# change pages
 	def show_frame(self, cont, *args):
 		frame = self.frames[cont]
+
+		if cont == HomePage:
+			self.initialize_banner()
+		else:
+			self.hide_banner()
+
 		if cont == SessionPage:
 			frame.initialize_trivia(self.session_name)  # Initialize Trivia instance before showing SessionPage
 			frame.lbl_title.configure(text=self.session_name)
@@ -509,6 +513,17 @@ class tkinterApp(ctk.CTk):
 		self.session_name = session_name
 		print(f"Selected item: {session_name}")
 		self.show_frame(SessionPage)	
+
+	def initialize_banner(self):
+		banner = Image.open("src\\assets\\dark-bg.PNG")
+		banner_photo = ImageTk.PhotoImage(banner)
+		self.banner_label = tk.Label(image=banner_photo)
+		self.banner_label.config(borderwidth=0)
+		self.banner_label.image = banner_photo
+		self.banner_label.place(relx=0.5, rely=0, anchor=N)
+
+	def hide_banner(self):
+		self.banner_label.place_forget()
 
 	
 
