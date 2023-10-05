@@ -11,6 +11,7 @@ class Trivia:
     # OnSessionOpened
     def __init__(self, session_name):
         self.Reset(session_name)
+        self.track = None
     
     # resets the trivia instance based on the current session
     def Reset(self, session_name):
@@ -79,7 +80,7 @@ class Trivia:
         self.interval_length += self.increase_amount
 
     def GetAnswer(self):
-        return "self.track.name" #self.track.name # or other success criteria
+        return self.track.name # or other success criteria
     
     def GetIncreaseAmount(self):
         return self.increase_amount
