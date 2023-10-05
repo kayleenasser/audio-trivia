@@ -491,8 +491,9 @@ class SettingsPage(ctk.CTkFrame):
 	
 	def RemoveSession(self):
 		selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
-		if not selected_session_name:
+		if not selected_session_name or selected_session_name == constants.DEFAULT_SESSION_NAME:
 			return
+
 		sessions.delete_session(session_name=selected_session_name)
 		self.ReloadSessionListbox()
 	
