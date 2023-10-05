@@ -1,14 +1,14 @@
 # frontend.py ################################################################
 APP_TITLE = "Listen Up!"
 SETTINGS = "Settings"
-SESSION = "Session"
+SESSION = "Collection"
 HOME = "Home"
-OPEN_SESSION = "Open Session"
-CREATE_SESSION = "Create Session"
-REMOVE_SESSION = "Remove Session"
-RENAME_SESSION = "Rename Session"
+OPEN_SESSION = "Open Collection"
+CREATE_SESSION = "Create Collection"
+REMOVE_SESSION = "Remove Collection"
+RENAME_SESSION = "Rename Collection"
 BAD_NAME = "Sorry, you can't choose this name."
-ALREADY_EXISTS = "This session name already exists!"
+ALREADY_EXISTS = "This collection name already exists!"
 FILETYPES = [
     ".mp3"
 ]
@@ -62,7 +62,7 @@ END_DELAY_KEY = 'end_delay'
 ASSETS_DIRECTORY = 'assets'
 
 
-WELCOME_TEXT = f"Welcome to {APP_TITLE}\n Please choose how you would like to run your session!"
+WELCOME_TEXT = f"Welcome to {APP_TITLE}\n Please choose how you would like to run your game!"
 
 DEFAULT_SESSION = {
     "default": {
