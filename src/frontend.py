@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from sessions import _update_sessions_json
+import util
 
 import CTkListbox
 
@@ -98,6 +99,22 @@ class SettingsPage(ctk.CTkFrame):
 	
 	def __init__(self, parent, controller):
 
+		def _LoadAnswers(event):
+			if(listbox_sessions.selected!=None):
+				print("selected session: ", listbox_sessions.get(listbox_sessions.curselection()))
+
+				# all the track answers for the 
+				selected_session_name = listbox_sessions.get(listbox_sessions.curselection())
+				session_data = sessions.get_session(selected_session_name)
+				session_tracks = []
+				util.extract_data_from_json(session_data,
+												 constants.ANSWER_KEY,
+												 values=session_tracks)
+				# display them in the listbox
+				for i in range(0,len(session_tracks)-1):
+					print(session_tracks[i])
+					listbox_songs.insert(i, session_tracks[i])
+		
 		row = 0
 		
 		ctk.CTkFrame.__init__(self, parent)
@@ -112,54 +129,15 @@ class SettingsPage(ctk.CTkFrame):
 		btn_home.grid(row = row, column = 1, padx = 10, pady = 10)
 		row+=1
 
-		f = open('src/sessions.json')
-		data = json.load(f)
-		sessionsList = list(data.keys())
-		listbox_sessions = CTkListbox(height=300, width=150, master=self, text_color="black")
+		# get the sessions from the json
+		# load them into the listbox
+		self.LoadSessionsList()
+		listbox_sessions = CTkListbox(height=300, width=150, master=self)
 		listbox_sessions.place(x=200, y=200)
-		for i in range(1, len(sessionsList) + 1):
-			listbox_sessions.insert(i, sessionsList[i - 1])
-		#remove and rename session button
-		def rename_session():
-			if(listbox_sessions.curselection()==None):
-				return
-			popup = ctk.CTkToplevel(self)
-			popup.wm_title("Rename")
-			popup.geometry('150x150')
-			app_x = self.winfo_x()
-			app_y = self.winfo_y()
-			app_width = self.winfo_width()
-			app_height = self.winfo_height()
-			popup_width = 250
-			popup_height = 200
-			x = app_x + app_width // 2 - popup_width // 2
-			y = app_y + app_height // 2 - popup_height // 2
-			popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")  # Set popup window size and position
-			inputtxt = tk.Text(popup,
-                   height = 5,
-                   width = 20)
+		for i in range(0, len(self.sessions_list)):
+			listbox_sessions.insert(i, self.sessions_list[i])
 
-			def changename():
-				newname = inputtxt.get(1.0, "end-1c")
-				if(newname in data):
-					errormessage = ctk.CTkLabel(popup,text="No duplicate session names",text_color="red")
-					errormessage.place(x=50,y=110)
-				else:
-					data[newname] = data[listbox_sessions.get(listbox_sessions.curselection())]
-					del data[listbox_sessions.get(listbox_sessions.curselection())]
-					_update_sessions_json(data)
-					listbox_sessions.insert(listbox_sessions.curselection(),newname)
-					listbox_sessions.delete(listbox_sessions.curselection())
-					popup.destroy()
-					return
-
-			submit_btn = ctk.CTkButton(popup,text="Submit",command=changename)
-			submit_btn.place(x=50,y=70)
-			inputtxt.pack()
-			if True:
-				popup.grab_set()
-				self.wait_window(popup)
-
+		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
 								 command=lambda: controller.show_frame(HomePage))
 		btn_remove_session.place(x=50,y=300)
@@ -170,16 +148,10 @@ class SettingsPage(ctk.CTkFrame):
 
 
 		#Songs Box
-		listbox_songs = CTkListbox(height=300, width=200, master=self, text_color="black")
+		listbox_songs = CTkListbox(height=300, width=200, master=self)
 		listbox_songs.place(x=400, y=200)
-		def loadSongs(evt):
-			if(listbox_sessions.selected!=None):
-				print(listbox_sessions.get(listbox_sessions.curselection()))
-				selsesh = data[listbox_sessions.get(listbox_sessions.curselection())]
-				audfiles = selsesh['audio_files']
-				for i in range(1,len(audfiles)+1):
-					listbox_songs.insert(i, audfiles[i - 1]['answer'])
-		listbox_sessions.bind("<Double-Button-1>", loadSongs)
+			
+		listbox_sessions.bind("<Button-1>", _LoadAnswers)
 
 		#Song option buttons
 		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
@@ -194,10 +166,63 @@ class SettingsPage(ctk.CTkFrame):
 										command=lambda: controller.show_frame(HomePage))
 		btn_add_song.place(x=630, y=480)
 
-		btn_test_popup = ctk.CTkButton(self, text ="TEST",
-							command = lambda : controller.open_popup("test message", True))
-		btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
-		row+=1
+		# btn_test_popup = ctk.CTkButton(self, text ="TEST",
+		# 					command = lambda : controller.open_popup("test message", True))
+		# btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
+		# row+=1
+		
+
+		#remove and rename session button
+		def rename_session():
+			selected_session = listbox_sessions.curselection()
+			if not selected_session:
+				return
+
+			popup = ctk.CTkToplevel(self)
+			popup.wm_title("Rename")
+			popup.geometry('300x150')  # Set the size of the popup window
+
+			inputtxt = ctk.CTkEntry(popup, width=150)
+			inputtxt.pack(pady=10)
+
+			errormessage = ctk.CTkLabel(popup, text="", text_color="red")
+			errormessage.pack()
+
+			def changename():
+				newname = inputtxt.get()
+				if newname in data:
+					errormessage.config(text="No duplicate session names")
+				else:
+					old_name = listbox_sessions.get(selected_session)
+					data[newname] = data[old_name]
+					del data[old_name]
+					_update_sessions_json(data)
+					listbox_sessions.delete(selected_session)
+					listbox_sessions.insert(selected_session, newname)
+					popup.destroy()
+
+			submit_btn = ctk.CTkButton(popup, text="Submit", command=changename)
+			submit_btn.pack()
+
+			# Center the popup window on the screen
+			popup.update_idletasks()
+			width = popup.winfo_width()
+			height = popup.winfo_height()
+			x = (popup.winfo_screenwidth() // 2) - (width // 2)
+			y = (popup.winfo_screenheight() // 2) - (height // 2)
+			popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+			# Grab focus for the input field
+			inputtxt.focus_set()
+
+			popup.grab_set()
+			self.wait_window(popup)
+	
+	def LoadSessionsList(self):
+		# exclude the default from the list
+		self.sessions_list = list(sessions.get_all_sessions(False).keys())
+		print(self.sessions_list)
+
 
 
 
