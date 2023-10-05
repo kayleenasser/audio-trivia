@@ -7,50 +7,5 @@
             "start_delay": 0,
             "end_delay": 0
         }
-    },
-    "aa": {
-        "audio_files": [],
-        "settings": {
-            "interval_length": 5,
-            "increase_amount": 3,
-            "start_delay": 0,
-            "end_delay": 0
-        }
-    },
-    "adfsd": {
-        "audio_files": [
-            {
-                "path": "C:/Hackathon/audio-trivia/res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
-                "answer": "1-01 The Boy in the Iceberg, The Ava.mp3"
-            },
-            {
-                "path": "C:/Hackathon/audio-trivia/res/test_audio/1-04 The Warriors of Kyoshi.mp3",
-                "answer": "1-04 The Warriors of Kyoshi.mp3"
-            }
-        ],
-        "settings": {
-            "interval_length": 5,
-            "increase_amount": 3,
-            "start_delay": 0,
-            "end_delay": 0
-        }
-    },
-    "last": {
-        "audio_files": [
-            {
-                "path": "C:/Hackathon/audio-trivia/res/test_audio/Simpsons.mp3",
-                "answer": "Simpsons.mp3"
-            },
-            {
-                "path": "C:/Hackathon/audio-trivia/res/test_audio/Lady Gaga - Bad Romance.mp3",
-                "answer": "Lady Gaga - Bad Romance.mp3"
-            }
-        ],
-        "settings": {
-            "interval_length": 5,
-            "increase_amount": 3,
-            "start_delay": 0,
-            "end_delay": 0
-        }
     }
 }
