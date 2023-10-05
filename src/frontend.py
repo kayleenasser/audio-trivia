@@ -91,19 +91,10 @@ class SettingsPage(ctk.CTkFrame):
 	
 	def __init__(self, parent, controller):
 
-		def _LoadAnswers(event):
-			if(self.listbox_sessions.selected!=None):
-				# all the track answers for the 
-				selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
-				session_data = sessions.get_session(selected_session_name)
-				session_tracks = []
-				util.extract_data_from_json(session_data,
-												 constants.ANSWER_KEY,
-												 values=session_tracks)
-				# display them in the listbox
-				for i in range(0,len(session_tracks)):
-					listbox_songs.insert(i, session_tracks[i])
-		
+		#initialize
+		self.session_track_answers = [] 
+		self.session_track_paths = []
+		session_data = None
 		row = 0
 		
 		ctk.CTkFrame.__init__(self, parent)
@@ -121,30 +112,32 @@ class SettingsPage(ctk.CTkFrame):
 		# get the sessions from the json
 		# load them into the listbox
 		self.UpdateSessionsList()
-		self.listbox_sessions = CTkListbox(height=300, width=150, master=self)
+		self.listbox_sessions = CTkListbox(height=300, width=150, master=self, command=self.LoadAnswers)
 		self.listbox_sessions.place(x=200, y=200)
 		for i in range(0, len(self.sessions_list)):
 			self.listbox_sessions.insert(i, self.sessions_list[i])
 
 		# Other buttons
 		btn_remove_session = ctk.CTkButton(self, text="Remove Session",
-								 command=lambda: controller.show_frame(HomePage))
+								 command=lambda: self.RemoveSession())
 		btn_remove_session.place(x=50,y=300)
 
 		btn_rename_session = ctk.CTkButton(self, text="Rename Session",
-								 command=lambda: RenameSession())
+								 command=lambda: self.RenameSession())
 		btn_rename_session.place(x=50,y=350)
+
+		btn_create_session = ctk.CTkButton(self, text=constants.CREATE_SESSION,
+								 command=lambda: controller.show_frame(CreateSessionPage))
+		btn_create_session.place(x=50,y=400)
 
 
 		#Songs Box
-		listbox_songs = CTkListbox(height=300, width=200, master=self)
-		listbox_songs.place(x=400, y=200)
-			
-		self.listbox_sessions.bind("<Button-1>", _LoadAnswers)
+		self.listbox_tracks = CTkListbox(height=300, width=200, master=self,command=self.SelectTrackCallback)
+		self.listbox_tracks.place(x=400, y=200)
 
 		#Song option buttons
 		btn_remove_song = ctk.CTkButton(self, text="Remove Song",
-										   command=lambda: controller.show_frame(HomePage))
+										   command=lambda: self.RemoveSong())
 		btn_remove_song.place(x=630, y=280)
 
 		btn_rename_song = ctk.CTkButton(self, text="Rename Song",
@@ -160,65 +153,124 @@ class SettingsPage(ctk.CTkFrame):
 		# btn_test_popup.grid(row = row, column = 1, padx = 10, pady = 10)
 		# row+=1
 
-		#remove and rename session button
-		def RenameSession():
-			print("RenameSession")
-			selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
-			if not selected_session_name:
-				return
+	def SelectTrackCallback(self, event):
+		if event != None:
+			print("selectrackcallback: ", event)
+			self.selected_track = event
 
-			popup = ctk.CTkToplevel(self)
-			popup.wm_title("Rename")
-			popup.geometry('300x150')  # Set the size of the popup window
+	def LoadAnswers(self, event):
+		print("listbox event: ", event)
+		if event is None:
+			return
+		# all the track answers for the session
+		self.selected_session = event
+		session_data = sessions.get_session(event)
+		self.session_track_answers = []
+		util.extract_data_from_json(session_data,
+											constants.ANSWER_KEY,
+											values=self.session_track_answers)
+		# display them in the listbox
+		for i in range(0,len(self.session_track_answers)):
+			self.listbox_tracks.insert(i, self.session_track_answers[i])
 
-			txtbox_new_name = ctk.CTkEntry(popup, width=150)
-			txtbox_new_name.pack(pady=10)
+	#remove and rename session button
+	def RenameSession(self):
+		print("RenameSession")
+		selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
+		if not selected_session_name:
+			return
 
-			error_message = ctk.CTkLabel(popup, text="", text_color="red")
-			error_message.pack()
+		popup = ctk.CTkToplevel(self)
+		popup.wm_title("Rename")
+		popup.geometry('300x150')  # Set the size of the popup window
 
-			def ChangeSessionName():
-				new_name = txtbox_new_name.get()
-				if new_name in self.sessions_list:
-					if new_name == constants.DEFAULT_SESSION:
-						error_message.configure(text="Sorry, you can't choose this name.")
-					else:
-						error_message.configure(text="This session name already exists!")
+		txtbox_new_name = ctk.CTkEntry(popup, width=150)
+		txtbox_new_name.pack(pady=10)
+		txtbox_new_name.bind('<Return>', lambda event=None: ChangeSessionName())
+
+		error_message = ctk.CTkLabel(popup, text="", text_color="red")
+		error_message.pack()
+
+		def ChangeSessionName():
+			new_name = txtbox_new_name.get()
+			if new_name in self.sessions_list:
+				if new_name == constants.DEFAULT_SESSION:
+					error_message.configure(text="Sorry, you can't choose this name.")
 				else:
-					old_name = selected_session_name
-					sessions.update_session_name(old_name, new_name)
-					self.ReloadSessionListbox()
-					popup.destroy()
+					error_message.configure(text="This session name already exists!")
+			else:
+				old_name = selected_session_name
+				sessions.update_session_name(old_name, new_name)
+				self.ReloadSessionListbox()
+				popup.destroy()
 
-			submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
-			submit_btn.pack()
+		submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
+		submit_btn.pack()
 
-			# Center the popup window on the screen
-			popup.update_idletasks()
-			width = popup.winfo_width()
-			height = popup.winfo_height()
-			x = (popup.winfo_screenwidth() // 2) - (width // 2)
-			y = (popup.winfo_screenheight() // 2) - (height // 2)
-			popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+		# Center the popup window on the screen
+		popup.update_idletasks()
+		width = popup.winfo_width()
+		height = popup.winfo_height()
+		x = (popup.winfo_screenwidth() // 2) - (width // 2)
+		y = (popup.winfo_screenheight() // 2) - (height // 2)
+		popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
-			# Grab focus for the input field
-			txtbox_new_name.focus_set()
+		# Grab focus for the input field
+		txtbox_new_name.focus_set()
 
-			popup.grab_set()
-			self.wait_window(popup)
+		popup.grab_set()
+		self.wait_window(popup)
 	
+	def RemoveSession(self):
+		selected_session_name = self.listbox_sessions.get(self.listbox_sessions.curselection())
+		if not selected_session_name:
+			return
+		sessions.delete_session(session_name=selected_session_name)
+		self.ReloadSessionListbox()
+	
+	# with the assumption that we're dumping them in the box in order that they appear in the json
+	# just going to get the path based on the index
+	def RemoveSong(self):
+		print("RemoveSong")
+		self.session_track_paths = []
+		util.extract_data_from_json(sessions.get_session(self.selected_session),
+										constants.PATH_KEY,
+										values=self.session_track_paths)
+		print(self.listbox_tracks.curselection())
+		track_to_remove = self.session_track_paths[self.listbox_tracks.curselection()]
+		print("tracktoremove: ", track_to_remove)
+		if not track_to_remove:
+			return
+		
+		sessions.delete_audio_file(self.selected_session,track_to_remove)
+		self.ReloadTrackListbox()
+
 	def UpdateSessionsList(self):
 		# exclude the default from the list
 		self.sessions_list = list(sessions.get_all_sessions(False).keys())
 		print(self.sessions_list)
 
+	def UpdateTrackList(self):
+		print("UpdateTrackList")
+		# exclude the default from the list
+		self.session_track_answers = []
+		util.extract_data_from_json(sessions.get_session(self.selected_session),
+											constants.ANSWER_KEY,
+											values=self.session_track_answers)
+
 	def ReloadSessionListbox(self):
-			#self.listbox_sessions.
+			self.listbox_sessions.delete(0, tk.END)
 			self.UpdateSessionsList()
 			for i in range(0, len(self.sessions_list)):
 				self.listbox_sessions.insert(i, self.sessions_list[i])
-
-
+	
+	def ReloadTrackListbox(self):
+			print("ReloadTrackList")
+			self.UpdateTrackList()
+			self.listbox_tracks.delete(0, tk.END)
+			print(self.session_track_answers)
+			for i in range(0, len(self.session_track_answers)):
+				self.listbox_tracks.insert(i, self.session_track_answers[i])
 
 
 
