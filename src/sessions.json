@@ -1,5 +1,5 @@
 {
-    "Default": {
+    "default": {
         "audio_files": [
             {
                 "path": "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
@@ -12,6 +12,50 @@
             {
                 "path": "res/test_audio/1-04 The Warriors of Kyoshi.mp3",
                 "answer": "The Warriors of Kyoshi"
+            }
+        ],
+        "settings": {
+            "interval_length": 5,
+            "increase_amount": 3,
+            "start_delay": 0,
+            "end_delay": 0
+        }
+    },
+    "test1": {
+        "audio_files": [
+            {
+                "path": "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
+                "answer": "The Boy in the Iceberg1"
+            },
+            {
+                "path": "res/test_audio/1-03 The Southern Air Temple.mp3",
+                "answer": "The Southern Air Temple2"
+            },
+            {
+                "path": "res/test_audio/1-04 The Warriors of Kyoshi.mp3",
+                "answer": "The Warriors of Kyoshi3"
+            }
+        ],
+        "settings": {
+            "interval_length": 5,
+            "increase_amount": 3,
+            "start_delay": 0,
+            "end_delay": 0
+        }
+    },
+    "test2": {
+        "audio_files": [
+            {
+                "path": "res/test_audio/1-01 The Boy in the Iceberg, The Ava.mp3",
+                "answer": "The Boy in the Iceberg3"
+            },
+            {
+                "path": "res/test_audio/1-03 The Southern Air Temple.mp3",
+                "answer": "The Southern Air Temple2"
+            },
+            {
+                "path": "res/test_audio/1-04 The Warriors of Kyoshi.mp3",
+                "answer": "The Warriors of Kyoshi1"
             }
         ],
         "settings": {
