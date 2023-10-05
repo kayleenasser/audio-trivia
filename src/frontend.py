@@ -502,6 +502,7 @@ class SessionPage(ctk.CTkFrame):
 		if not self._track_has_played:
 			# if first time opening, need to Play
 			self._trivia.PlayNextTrack()
+			self._track_has_played = True
 		else:
 			# here we're replaying
 			self._trivia.ReplayTrack()
@@ -542,9 +543,13 @@ class SessionPage(ctk.CTkFrame):
 				self._score.set(f'{self._trivia.GetScore()} points')
 				 # update score immediately before continuing
 				app.update_idletasks()
+
+			#update the counter
+			self._increase_track_count()
 			# typically play next song
 			if callback:
 				callback()
+			
 
 	def _show_hide_answer(self, is_answer_showing):
 		if is_answer_showing:
@@ -570,7 +575,7 @@ class SessionPage(ctk.CTkFrame):
 		"""
 		self._update_score(is_success=is_success,
 			callback=self._trivia.PlayNextTrack)
-		self._increase_track_count()
+		
 
 	def initialize_trivia(self, session_name):
 		# check if trivia instance is already created
