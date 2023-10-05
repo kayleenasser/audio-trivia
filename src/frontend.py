@@ -198,6 +198,13 @@ class CreateSessionPage(ctk.CTkFrame):
 
 		popup = ctk.CTkToplevel(self)
 		popup.wm_title("Success!")
+		# Center the popup window on the screen
+		popup.update_idletasks()
+		width = popup.winfo_width()
+		height = popup.winfo_height()
+		x = (popup.winfo_screenwidth() // 2) - (width // 2)
+		y = (popup.winfo_screenheight() // 2) - (height // 2)
+		popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
 		label = ctk.CTkLabel(popup, text='You have successfully created a new collection!', font=SMALL_FONT)
 		label.place(relx=0.5, rely=0.30, anchor=CENTER)
