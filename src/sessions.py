@@ -84,8 +84,7 @@ def get_session(session_name : str) -> dict:
         return sessions_dict[session_name]
 
 
-def add_session(session_name : str, audio_files : list[dict[str, str]], controller, callback,
-    interval_length=10, increase_amount=3, start_delay=0, end_delay=0):
+def add_session(session_name : str, audio_files : list[dict[str, str]], controller, callback):
     """
     Adds a new session to sessions.json with the specified arguments.
 
@@ -117,10 +116,10 @@ def add_session(session_name : str, audio_files : list[dict[str, str]], controll
     sessions_dict[session_name] = {
         const.AUDIO_FILES_KEY: audio_files,
         const.SETTINGS_KEY: {
-            const.INTERVAL_LENGTH_KEY: interval_length,
-            const.INCREASE_AMOUNT_KEY: increase_amount,
-            const.START_DELAY_KEY: start_delay,
-            const.END_DELAY_KEY: end_delay
+            const.INTERVAL_LENGTH_KEY: sessions_dict[const.DEFAULT_SESSION_NAME][const.SETTINGS_KEY][const.INTERVAL_LENGTH_KEY],
+            const.INCREASE_AMOUNT_KEY: sessions_dict[const.DEFAULT_SESSION_NAME][const.SETTINGS_KEY][const.INCREASE_AMOUNT_KEY],
+            const.START_DELAY_KEY: sessions_dict[const.DEFAULT_SESSION_NAME][const.SETTINGS_KEY][const.START_DELAY_KEY],
+            const.END_DELAY_KEY: sessions_dict[const.DEFAULT_SESSION_NAME][const.SETTINGS_KEY][const.END_DELAY_KEY]
         }
     }
     _update_sessions_json(sessions_dict)
