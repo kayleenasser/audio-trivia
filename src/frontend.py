@@ -89,17 +89,17 @@ class CreateSessionPage(ctk.CTkFrame):
 		btn_home.place(relx = 0.5, rely = 0.50, anchor=CENTER)
 
 		# track list
-		self.listbox_tracks = CTkListbox(height=200, width=300, master=self, command= self.on_select)
+		self.listbox_tracks = CTkListbox(height=200, width=600, master=self, command= self.on_select)
 		self.listbox_tracks.place(relx = 0.5, rely = 0.725, anchor=CENTER)
 		
 		# buttons
 		self.edit_button = ctk.CTkButton(self, text="Edit", 
 					   command=lambda : self.edit_selected_row(audio=self.selected_track))
-		self.edit_button.place(relx=0.85, rely=0.65, anchor=CENTER)
+		self.edit_button.place(relx=0.25, rely=0.95, anchor=CENTER)
 
 		self.delete_button = ctk.CTkButton(self, text="Delete", 
 					   command=lambda : self.delete_selected_row(audio=self.selected_track))
-		self.delete_button.place(relx=0.85, rely=0.75, anchor=CENTER)
+		self.delete_button.place(relx=0.5, rely=0.95, anchor=CENTER)
 
 		btn_home = ctk.CTkButton(self, text ="Back",
 							command = lambda : controller.show_frame(HomePage))
@@ -107,7 +107,7 @@ class CreateSessionPage(ctk.CTkFrame):
 
 		btn_OK = ctk.CTkButton(self, text = "Save",
 							command = lambda : add_session(self.session_name.get(), self.selected_track, controller, callback=self.clear_and_home))
-		btn_OK.place(relx=0.5, rely=0.95, anchor=CENTER)
+		btn_OK.place(relx=0.75, rely=0.95, anchor=CENTER)
 
 	def upload_audio(self, audio):
 		tk.Tk().withdraw()
@@ -127,7 +127,8 @@ class CreateSessionPage(ctk.CTkFrame):
 				return
 
 		audio.append({'path': fp, 'answer': fn})
-		self.listbox_tracks.insert(tk.END, fp + ": " + fn)
+		#self.listbox_tracks.insert(tk.END, fp + ": " + fn)
+		self.listbox_tracks.insert(tk.END, f"Answer: {fn}, Path: {fp}")
 
 	def on_select(self, audio):
 		print(audio)
@@ -139,12 +140,44 @@ class CreateSessionPage(ctk.CTkFrame):
 	def edit_selected_row(self, audio):
 		selected_index = self.listbox_tracks.curselection()
 		if selected_index != None:
-			new_answer = simpledialog.askstring("Edit Answer", "Enter new answer:")
-			if new_answer != '':
-				audio[selected_index] = {'path': audio[selected_index]['path'], 'answer' : new_answer}
+			print("Rename track")
+
+			popup = ctk.CTkToplevel(self)
+			popup.wm_title("Rename")
+			popup.geometry('300x150')  # Set the size of the popup window
+
+			txtbox_new_name = ctk.CTkEntry(popup, width=150)
+			txtbox_new_name.pack(pady=10)
+			txtbox_new_name.bind('<Return>', lambda event=None: ChangeSessionName())
+
+			error_message = ctk.CTkLabel(popup, text="", text_color="red")
+			error_message.pack()
+
+			def ChangeSessionName():
+				new_name = txtbox_new_name.get()
+				audio[selected_index] = {'path': audio[selected_index]['path'], 'answer' : new_name}
 				self.listbox_tracks.delete(0, tk.END)
 				for item in audio:
-					self.listbox_tracks.insert(tk.END,  item['answer'] + ": " + item['path'])
+					self.listbox_tracks.insert(tk.END, f"Answer: {item['answer']}, Path: {item['path']}")
+				popup.destroy()
+
+			submit_btn = ctk.CTkButton(popup, text="Submit", command=ChangeSessionName)
+			submit_btn.pack()
+
+			# Center the popup window on the screen
+			popup.update_idletasks()
+			width = popup.winfo_width()
+			height = popup.winfo_height()
+			x = (popup.winfo_screenwidth() // 2) - (width // 2)
+			y = (popup.winfo_screenheight() // 2) - (height // 2)
+			popup.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+			# Grab focus for the input field
+			txtbox_new_name.focus_set()
+
+			popup.grab_set()
+			self.wait_window(popup)
+	
 
 	def delete_selected_row(self, audio):
 		selected_index = self.listbox_tracks.curselection()
@@ -154,7 +187,7 @@ class CreateSessionPage(ctk.CTkFrame):
 			del audio[selected_index]
 			self.listbox_tracks.delete(0, tk.END)
 			for item in audio:
-				self.listbox_tracks.insert(tk.END, item['path'] + ": " + item['answer'])
+				self.listbox_tracks.insert(tk.END, f"Answer: {item['answer']}, Path: {item['path']}")
 
 	def clear_and_home(self, audio, controller):
 		self.listbox_tracks.delete(0, tk.END)
